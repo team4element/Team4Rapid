@@ -7,6 +7,6 @@ import org.junit.*;
 public class RobotTest {
     @Test
     public void doesTestWork() {
-        assertEquals(0, 1);
+        assertEquals(1, 1);
     }
 }
