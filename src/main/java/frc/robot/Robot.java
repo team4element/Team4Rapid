@@ -5,6 +5,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import frc.robot.controllers.DriverController;
+import frc.robot.subsystems.Drive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -14,8 +16,15 @@ import edu.wpi.first.wpilibj.TimedRobot;
  * project.
  */
 public
-class Robot extends TimedRobot
-{
+class Robot extends TimedRobot {
+  // Subsystems
+  Drive mDrive = Drive.getInstance();
+
+  // Controllers
+  DriverController mDriverController = new DriverController();
+
+
+
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
@@ -65,12 +74,14 @@ class Robot extends TimedRobot
   @Override public void
   teleopInit ()
   {
+    System.out.println("Teleop Init!");
   }
 
   /** This function is called periodically during operator control. */
   @Override public void
   teleopPeriodic ()
   {
+    mDrive.letsDrive(mDriverController.getThrottle(), mDriverController.getTurn());
   }
 
   /** This function is called once when the robot is disabled. */
