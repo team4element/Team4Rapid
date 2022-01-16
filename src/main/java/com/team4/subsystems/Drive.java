@@ -2,13 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package com.team4.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.team4.Constants;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 
 /**
  * A drivetrain consists of two motors that are connected to a single gearbox.
@@ -43,7 +43,6 @@ public class Drive extends SubsystemBase {
     mRightFollower3.follow(mRightMaster1);
   }
   
-  // Gets drive instance 
   // Singleton-pattern
   public static Drive getInstance() {
     if (mDrive == null) {
@@ -60,12 +59,17 @@ public class Drive extends SubsystemBase {
    * 
    * If they are both positive, but not the same.
    * 
+   * throttle == 1
+   * turnLeft == 0.5
+   * 
+   * throttle is maximum
+   * 
    * @param throttle
    * @param turn
    */
   public void letsDrive(double throttle, double turnLeft) {
-    double leftSpeed = throttle - turnLeft;
-    double rightSpeed = throttle + turnLeft;
+    double leftSpeed = throttle - turnLeft; // 5 --> 1
+    double rightSpeed = throttle + turnLeft; // 0.5 --> 0.5/5 ==> 0.1
 
     mLeftMaster1.set(ControlMode.PercentOutput, leftSpeed);
     mRightMaster1.set(ControlMode.PercentOutput, rightSpeed);

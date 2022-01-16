@@ -2,11 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot;
+package com.team4;
+
+import com.team4.controllers.DriverController;
+import com.team4.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import frc.robot.controllers.DriverController;
-import frc.robot.subsystems.Drive;
+import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -23,6 +25,7 @@ class Robot extends TimedRobot {
   // Controllers
   DriverController mDriverController = new DriverController();
 
+  // DifferentialDrive
 
 
   /**
@@ -79,7 +82,7 @@ class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override public void
-  teleopPeriodic ()
+  teleopPeriodic()
   {
     mDrive.letsDrive(mDriverController.getThrottle(), mDriverController.getTurn());
   }
