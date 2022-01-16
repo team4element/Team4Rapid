@@ -1,4 +1,4 @@
-package com.team4.controllers;
+package com.team4.robot.controllers;
 
 // import com.team4.robot.constants.Constants;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;

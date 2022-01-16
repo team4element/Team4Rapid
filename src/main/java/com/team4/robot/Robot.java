@@ -2,13 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package com.team4;
+package com.team4.robot;
 
-import com.team4.controllers.DriverController;
-import com.team4.subsystems.Drive;
+import com.team4.lib.util.DriveHelper;
+import com.team4.robot.controllers.DriverController;
+import com.team4.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+// import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -21,20 +22,17 @@ public
 class Robot extends TimedRobot {
   // Subsystems
   Drive mDrive = Drive.getInstance();
+  DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
   DriverController mDriverController = new DriverController();
-
-  // DifferentialDrive
-
 
   /**
    * This function is run when the robot is first started up and should be used
    * for any initialization code.
    */
   @Override public void
-  robotInit ()
-  {
+  robotInit () {
     
   }
 
@@ -47,8 +45,7 @@ class Robot extends TimedRobot {
    * LiveWindow and SmartDashboard integrated updating.
    */
   @Override public void
-  robotPeriodic ()
-  {
+  robotPeriodic () {
   }
 
   /**
@@ -63,46 +60,47 @@ class Robot extends TimedRobot {
    * SendableChooser make sure to add them to the chooser code above as well.
    */
   @Override public void
-  autonomousInit ()
-  {
+  autonomousInit () {
   }
 
   /** This function is called periodically during autonomous. */
   @Override public void
-  autonomousPeriodic ()
-  {
+  autonomousPeriodic () {
   }
 
   /** This function is called once when teleop is enabled. */
   @Override public void
-  teleopInit ()
-  {
+  teleopInit () {
     System.out.println("Teleop Init!");
   }
 
   /** This function is called periodically during operator control. */
   @Override public void
-  teleopPeriodic()
-  {
-    mDrive.letsDrive(mDriverController.getThrottle(), mDriverController.getTurn());
+  teleopPeriodic() {
+    // get the controller inputs
+    // Tell the drive to drive
+    double throttle = mDriverController.getThrottle();
+    double turn = mDriverController.getTurn();
+
+    mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
+
+    // TODO: Expand on onLoop to subsystem manager. It makes sense!!
+    mDrive.onLoop();
   }
 
   /** This function is called once when the robot is disabled. */
   @Override public void
-  disabledInit ()
-  {
+  disabledInit () {
   }
 
   /** This function is called periodically when disabled. */
   @Override public void
-  disabledPeriodic ()
-  {
+  disabledPeriodic () {
   }
 
   /** This function is called once when test mode is enabled. */
   @Override public void
-  testInit ()
-  {
+  testInit () {
   }
 
   /** This function is called periodically during test mode. */

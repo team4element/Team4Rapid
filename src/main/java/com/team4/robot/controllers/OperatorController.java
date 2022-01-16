@@ -1,4 +1,4 @@
-package com.team4.controllers;
+package com.team4.robot.controllers;
 
 public class OperatorController {
     private final XboxController mController;
