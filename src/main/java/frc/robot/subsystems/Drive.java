@@ -8,6 +8,8 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.lib.drivers.CANSpeedControllerFactory;
+import frc.lib.drivers.TalonUtil;
 import frc.robot.Constants;
 
 /**
@@ -21,26 +23,31 @@ public class Drive extends SubsystemBase {
   private static Drive mDrive = null;
 
   // Motors that controls wheels
-  private final TalonFX mLeftMaster1, mleftFollower2, mleftFollower3;
+  private final TalonFX mLeftMaster1, mLeftFollower2, mLeftFollower3;
   private final TalonFX mRightMaster1, mRightFollower2, mRightFollower3;
 
   
   /** Creates a new Drive. */
   // Constructor
   private Drive() {
-    mLeftMaster1 = new TalonFX(Constants.kLeftMaster1);
-    mleftFollower2 = new TalonFX(Constants.kLeftFollower2);
-    mleftFollower3 = new TalonFX(Constants.kLeftFollower3);
+    mLeftMaster1 = CANSpeedControllerFactory.createDefaultTalonFX(Constants.kLeftMaster1);
+    mLeftFollower2 = CANSpeedControllerFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower2, mLeftMaster1);
+    mLeftFollower3 = CANSpeedControllerFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower3, mLeftMaster1);
 
-    mleftFollower2.follow(mLeftMaster1);
-    mleftFollower3.follow(mLeftMaster1);
+    // Configures the left talons + sets up talon encoder
+    TalonUtil.configureTalonFX(mLeftMaster1, true, true);
+    TalonUtil.configureTalonFX(mLeftFollower2, true, false);    
+    TalonUtil.configureTalonFX(mLeftFollower3, true, false);    
 
-    mRightMaster1 = new TalonFX(Constants.kRightMaster1);
-    mRightFollower2 = new TalonFX(Constants.kRightFollower2);
-    mRightFollower3 = new TalonFX(Constants.kRightFollower3);
 
-    mRightFollower2.follow(mRightMaster1);
-    mRightFollower3.follow(mRightMaster1);
+    mRightMaster1 = CANSpeedControllerFactory.createDefaultTalonFX(Constants.kRightMaster1);
+    mRightFollower2 = CANSpeedControllerFactory.createPermanentSlaveTalonFX(Constants.kRightFollower2, mRightMaster1);
+    mRightFollower3 = CANSpeedControllerFactory.createPermanentSlaveTalonFX(Constants.kRightFollower3, mRightMaster1);
+    
+    // Configures the right talons + sets up talon encoder
+    TalonUtil.configureTalonFX(mRightMaster1, false, true);
+    TalonUtil.configureTalonFX(mRightFollower2, false, false);
+    TalonUtil.configureTalonFX(mRightFollower3, false, false);
   }
   
   // Gets drive instance 
