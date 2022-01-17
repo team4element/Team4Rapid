@@ -6,7 +6,9 @@ package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team254.lib.drivers.TalonFXFactory;
 import com.team254.lib.util.DriveSignal;
 import com.team4.robot.Constants;
@@ -26,8 +28,8 @@ public class Drive extends Subsystem {
   private static Drive mDrive = null;
 
   // Motors that controls wheels
-  private final TalonFX mLeftMaster1, mleftFollower2;
-  private final TalonFX mRightMaster1, mRightFollower2;
+  private final WPI_TalonFX mLeftMaster1, mleftFollower2;
+  private final WPI_TalonFX mRightMaster1, mRightFollower2;
 
   private final Set<TalonFX> mLeftSide = new HashSet<>();
   private final Set<TalonFX> mRightSide = new HashSet<>();
@@ -151,9 +153,8 @@ public class Drive extends Subsystem {
    * Handles writing internal state to the motors
    */
   public synchronized void writePeriodicOutputs() {
-    // In the open loop control, set demand on each of the talons
+    // In the open loop control, set demand on each of the talons as percent output
     if (mDriveControlState == DriveControlState.OPEN_LOOP) {
-      // print left and right demands
       System.out.println("Left Demand: " + mPeriodicIO.left_demand);
       System.out.println("Right Demand: " + mPeriodicIO.right_demand);
 

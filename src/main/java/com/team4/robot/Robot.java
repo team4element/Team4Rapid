@@ -4,11 +4,13 @@
 
 package com.team4.robot;
 
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.simulation.EncoderSim;
 
 /**
  * This is the root Robot class.
@@ -30,6 +32,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 public class Robot extends TimedRobot {
   // Subsystems
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+
   Drive mDrive = Drive.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
@@ -43,7 +46,8 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     mSubsystemManager.setSubsystems(
-        mDrive);
+        mDrive
+    );
 
   }
 
