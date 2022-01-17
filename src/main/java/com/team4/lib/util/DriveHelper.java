@@ -22,6 +22,7 @@ public class DriveHelper{
     public DriveHelper(){
     }
 
+    // TODO: Look at 2020 254 code updates for this
     public DriveSignal elementDrive(double throttle, double wheel, boolean quickTurn) {
         if (Util.epsilonEquals(throttle, 0.0, 0.04)) {
             throttle = 0.0;
@@ -37,7 +38,7 @@ public class DriveHelper{
         throttle = Math.sin(Math.PI / 2.0 * kThrottleLinearity * throttle);
         // throttle = Math.sin(Math.PI / 2.0 * kThrottleLinearity * throttle);
         throttle = throttle / (throttleDenom * throttleDenom);
-        throttle *= kThrottleGain;        
+        throttle *= kThrottleGain;
         
         final double kWheelGain = 0.05;
         final double kWheelNonlinearity = 0.05;
@@ -57,4 +58,7 @@ public class DriveHelper{
         
         return new DriveSignal(signal.getLeft() / scaling_factor, signal.getRight() / scaling_factor);
     }
+    // TODO: Add Cheesy Drive
+    // TODO: Add Tank Drive
+    // TODO: Add Curvature Drive
 }
