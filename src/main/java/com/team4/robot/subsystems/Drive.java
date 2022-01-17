@@ -12,7 +12,8 @@ import com.team254.lib.util.DriveSignal;
 import com.team4.robot.Constants;
 import com.team4.robot.subsystems.states.TalonControlState;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * A drivetrain consists of two motors that are connected to a single gearbox.
@@ -21,12 +22,16 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  * 
  */
 
-public class Drive extends SubsystemBase {
+public class Drive extends Subsystem {
   private static Drive mDrive = null;
 
   // Motors that controls wheels
   private final TalonFX mLeftMaster1, mleftFollower2;
   private final TalonFX mRightMaster1, mRightFollower2;
+
+  private final Set<TalonFX> mLeftSide = new HashSet<>();
+  private final Set<TalonFX> mRightSide = new HashSet<>();
+
 
   private static enum DriveControlState {
     OPEN_LOOP,
@@ -47,8 +52,14 @@ public class Drive extends SubsystemBase {
     mLeftMaster1 = TalonFXFactory.createDefaultTalon(Constants.kLeftMaster1);
     mleftFollower2 = TalonFXFactory.createPermanentSlaveTalon(Constants.kLeftFollower2, Constants.kLeftMaster1);
 
+    mLeftSide.add(mLeftMaster1);
+    mLeftSide.add(mleftFollower2);
+
     mRightMaster1 = TalonFXFactory.createDefaultTalon(Constants.kRightMaster1);
     mRightFollower2 = TalonFXFactory.createPermanentSlaveTalon(Constants.kRightFollower2, Constants.kRightMaster1);
+
+    mRightSide.add(mRightMaster1);
+    mRightSide.add(mRightFollower2);
 
     mIsBrakeMode = false;
     setBrakeMode(false);
@@ -146,16 +157,11 @@ public class Drive extends SubsystemBase {
       System.out.println("Left Demand: " + mPeriodicIO.left_demand);
       System.out.println("Right Demand: " + mPeriodicIO.right_demand);
 
-      mLeftMaster1.set(ControlMode.PercentOutput, mPeriodicIO.left_demand);
-      mleftFollower2.set(ControlMode.PercentOutput, mPeriodicIO.left_demand);
-
-      mRightMaster1.set(ControlMode.PercentOutput, mPeriodicIO.right_demand);
-      mRightFollower2.set(ControlMode.PercentOutput, mPeriodicIO.right_demand);
+      mLeftSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.left_demand));
+      mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
     }
-
   }
 
   public void onLoop() {
-    writePeriodicOutputs();
   }
 }
