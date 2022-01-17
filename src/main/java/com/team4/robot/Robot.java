@@ -6,10 +6,14 @@ package com.team4.robot;
 
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
+import com.team4.robot.controllers.OperatorController;
+import com.team4.robot.limelight.LimelightManager;
 import com.team4.robot.subsystems.Drive;
+import com.team4.robot.subsystems.Limelight;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 // import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -22,10 +26,12 @@ public
 class Robot extends TimedRobot {
   // Subsystems
   Drive mDrive = Drive.getInstance();
+  LimelightManager mLimelight = LimelightManager.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
   DriverController mDriverController = new DriverController();
+  OperatorController mOperatorController = new OperatorController();
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -33,7 +39,7 @@ class Robot extends TimedRobot {
    */
   @Override public void
   robotInit () {
-    
+    mLimelight.setShooterLimelight(new Limelight(Constants.kShooterLimelightConsts));
   }
 
   /**
@@ -84,8 +90,13 @@ class Robot extends TimedRobot {
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
+    mLimelight.enableVision(mOperatorController.getVision());
+
     // TODO: Expand on onLoop to subsystem manager. It makes sense!!
     mDrive.onLoop();
+    mLimelight.onLoop();
+    // sends the distance to smart dashboard
+    SmartDashboard.putNumber("Limelight Distance", mLimelight.getDistanceFromTarget());
   }
 
   /** This function is called once when the robot is disabled. */
