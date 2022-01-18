@@ -254,6 +254,14 @@ public class Drive extends Subsystem {
   @Override
   public void readPeriodicInputs() {
     // While enabled, gets information from sensors
+    double newLeftPositionMeters = nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition());
+    double newRightPositionMeters = nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition());
+
+    m_odometry.update(m_gyro.getRotation2d(),
+        newLeftPositionMeters,
+        newRightPositionMeters);
+
+    m_field.setRobotPose(m_odometry.getPoseMeters());
 
   }
 
@@ -278,14 +286,6 @@ public class Drive extends Subsystem {
 
   @Override
   public void onLoop(double timestamp) {
-    double newLeftPositionMeters = nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition());
-    double newRightPositionMeters = nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition());
-
-    m_odometry.update(m_gyro.getRotation2d(),
-        newLeftPositionMeters,
-        newRightPositionMeters);
-
-    m_field.setRobotPose(m_odometry.getPoseMeters());
   }
 
   public void onSimulationLoop() {
