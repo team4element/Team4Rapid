@@ -20,10 +20,8 @@ import com.team4.robot.Constants;
 import com.team4.robot.subsystems.states.TalonControlState;
 
 /**
- * A drivetrain consists of two motors that are connected to a single gearbox.
- * 
- * 
- * 
+ * A drivetrain consists of multiple motors that are connected to a single gearbox.
+ * A drivetrain allows for Open-Loop control as well as closed-loop control.
  */
 
 public class Drive extends Subsystem {
@@ -53,9 +51,24 @@ public class Drive extends Subsystem {
     talon.setInverted(!left);
 
     if (main_encoder_talon) {
-        // status frames (maybe set for characterization?)
+        // Talons are configured to perform different motor functions at different frequencies.
+        // These can be changed by calling setStatusFramePeriod().
+        // Status1 (10ms): Motor Output Refresh
+        // Status 2 (20ms): Sensor Updates
+        // Status 3 (>100ms): Quadrature Information
+        // Status 4 (>100ms): Analog Input/Supply Battery Voltage
+        // Full Documentation can be found here
+        // https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html#setting-status-frame-periods
+        
         TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs), "could not set drive feedback frame");
+
+        // The Talon Motor Controller can have different feedback sensors.
+        // Integrated Sensor: built in encoder
+        // Other options are found here.
+        // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html?highlight=configSelectedFeedbackSensor#sensor-options
         TalonUtil.checkError(talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs), "could not detect motor encoder"); //primary closed-loop, 100 ms timeout
+        
+        // Used to ensure that positive sensor readings correspond to positive PercentOutput
         talon.setSensorPhase(true);
     }
     
@@ -69,10 +82,8 @@ public class Drive extends Subsystem {
   }
 
   /** Creates a new Drive. */
-  // Constructor
   private Drive() {
-    // Starts all Talons in Open-Loop Mode
-    // TODO: Ensure all are in open-loop mode
+    // Starts all Talons in Coast Mode
     mLeftMaster1 = (WPI_TalonFX) TalonFactory.createDefaultTalonFX(Constants.kLeftMaster1);
     configureTalonFX(mLeftMaster1, true, true);
     
@@ -80,6 +91,7 @@ public class Drive extends Subsystem {
     configureTalonFX(mleftFollower2, true, false);
 
     
+    // This is a convenience method to act upon all the motors on the left side of the drivetrain.
     mLeftSide.add(mLeftMaster1);
     mLeftSide.add(mleftFollower2);
 
@@ -108,7 +120,6 @@ public class Drive extends Subsystem {
 
     return mDrive;
   }
-
 
   /**
    * This represents ALL of the Subsystem-related Inputs and Outputs.
