@@ -46,4 +46,8 @@ public class SubsystemManager {
     public void onDisabledStop() {}
 
     public void onEnabledStop() {}
+
+    public void onSimulationLoop() {
+        mAllSubsystems.forEach(Subsystem::onSimulationLoop);
+    }
 }

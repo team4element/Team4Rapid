@@ -14,14 +14,21 @@ import com.team254.lib.util.DriveSignal;
 import com.team4.robot.Constants;
 import com.team4.robot.subsystems.states.TalonControlState;
 
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+
 import java.util.HashSet;
 import java.util.Set;
 
 /**
  * A drivetrain consists of two motors that are connected to a single gearbox.
- * 
- * 
- * 
  */
 
 public class Drive extends Subsystem {
@@ -44,7 +51,23 @@ public class Drive extends Subsystem {
 
   private boolean mIsBrakeMode;
 
+
   private PeriodicIO mPeriodicIO;
+  private DifferentialDrivetrainSim m_driveSim;
+  private TalonFXSimCollection m_leftDriveSim;
+  private TalonFXSimCollection m_rightDriveSim;
+  //Use a standard analog gyro since Pigeon doesn't have sim support yet
+  AnalogGyro m_gyro = new AnalogGyro(1);
+  AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
+
+  final int kCountsPerRev = 4096;
+  final double kSensorGearRatio = 1;
+  final double kGearRatio = 10.71;
+  final double kWheelRadiusInches = 3;
+  final int k100msPerSecond = 10;
+
+  Field2d m_field;
+  DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
   /** Creates a new Drive. */
   // Constructor
@@ -68,6 +91,23 @@ public class Drive extends Subsystem {
 
     // Container which stores all the Inputs and Outputs to the System
     mPeriodicIO = new PeriodicIO();
+
+    // TODO: Add constants later
+    m_driveSim = new DifferentialDrivetrainSim(
+      DCMotor.getFalcon500(2),
+      kGearRatio,
+      2.1, // MOI of robot
+      26.5, // Robot Mass
+      Units.inchesToMeters(kWheelRadiusInches), // Wheel Radius
+      0.546, // Track Width (meters)
+      null // Measurement Noise
+    );
+    m_leftDriveSim = mLeftMaster1.getSimCollection();
+    m_rightDriveSim = mRightMaster1.getSimCollection();
+
+    m_field = new Field2d();
+
+    SmartDashboard.putData("Field", m_field);
   }
 
 
@@ -155,14 +195,59 @@ public class Drive extends Subsystem {
   public synchronized void writePeriodicOutputs() {
     // In the open loop control, set demand on each of the talons as percent output
     if (mDriveControlState == DriveControlState.OPEN_LOOP) {
-      System.out.println("Left Demand: " + mPeriodicIO.left_demand);
-      System.out.println("Right Demand: " + mPeriodicIO.right_demand);
+      // System.out.println("Left Demand: " + mPeriodicIO.left_demand);
+      // System.out.println("Right Demand: " + mPeriodicIO.right_demand);
 
       mLeftSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.left_demand));
       mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
+
+      SmartDashboard.putData("Field", m_field);
     }
   }
 
   public void onLoop() {
+
+    m_odometry.update(m_gyro.getRotation2d(),
+    nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition()),
+    nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition()));
+    m_field.setRobotPose(m_odometry.getPoseMeters());
+  }
+
+  public void onSimulationLoop() {
+    // System.out.println("Simulating Drive" + mLeftMaster1.getMotorOutputVoltage() + mRightMaster1.getMotorOutputVoltage());
+    m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
+    m_driveSim.update(0.02);
+
+    m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
+    m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));
+    m_rightDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getRightPositionMeters()));
+    m_rightDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getRightVelocityMetersPerSecond()));
+
+    m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+
+    m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+    m_rightDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+  }
+
+  private int distanceToNativeUnits(double positionMeters){
+    double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    double motorRotations = wheelRotations * kSensorGearRatio;
+    int sensorCounts = (int)(motorRotations * kCountsPerRev);
+    return sensorCounts;
+  }
+
+  private int velocityToNativeUnits(double velocityMetersPerSecond){
+    double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
+    double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
+    int sensorCountsPer100ms = (int)(motorRotationsPer100ms * kCountsPerRev);
+    return sensorCountsPer100ms;
+  }
+
+  private double nativeUnitsToDistanceMeters(double sensorCounts){
+    double motorRotations = (double)sensorCounts / kCountsPerRev;
+    double wheelRotations = motorRotations / kSensorGearRatio;
+    double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    return positionMeters;
   }
 }

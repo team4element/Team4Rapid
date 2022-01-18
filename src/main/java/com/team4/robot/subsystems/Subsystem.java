@@ -14,4 +14,5 @@ public abstract class Subsystem extends SubsystemBase {
     // This is called in between the Input and Output calls
     public void onLoop() {}
     
+    public void onSimulationLoop() {}
 }
