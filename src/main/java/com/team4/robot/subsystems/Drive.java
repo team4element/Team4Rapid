@@ -11,13 +11,23 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team254.lib.drivers.TalonUtil;
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 import com.team4.robot.subsystems.states.TalonControlState;
+
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.AnalogGyro;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * A drivetrain consists of multiple motors that are connected to a single gearbox.
@@ -31,8 +41,8 @@ public class Drive extends Subsystem {
   private final WPI_TalonFX mLeftMaster1, mleftFollower2;
   private final WPI_TalonFX mRightMaster1, mRightFollower2;
 
-  private final Set<TalonFX> mLeftSide = new HashSet<>();
-  private final Set<TalonFX> mRightSide = new HashSet<>();
+  private final Set<WPI_TalonFX> mLeftSide = new HashSet<>();
+  private final Set<WPI_TalonFX> mRightSide = new HashSet<>();
 
 
   private static enum DriveControlState {
@@ -44,9 +54,25 @@ public class Drive extends Subsystem {
 
   private boolean mIsBrakeMode;
 
-  private PeriodicIO mPeriodicIO;
 
-  public static void configureTalonFX(TalonFX talon, boolean left, boolean main_encoder_talon) {
+  private PeriodicIO mPeriodicIO;
+  private DifferentialDrivetrainSim m_driveSim;
+  private TalonFXSimCollection m_leftDriveSim;
+  private TalonFXSimCollection m_rightDriveSim;
+  // Use a standard analog gyro since Pigeon doesn't have sim support yet. There is a pigeon.getDegrees then you can force to be a Rotation2d. This is a hack.
+  AnalogGyro m_gyro = new AnalogGyro(1);
+  AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
+
+  final int kCountsPerRev = 4096;
+  final double kSensorGearRatio = 1;
+  final double kGearRatio = 10.71;
+  final double kWheelRadiusInches = 3;
+  final int k100msPerSecond = 10;
+
+  Field2d m_field;
+  DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+
+  public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
     // general
     talon.setInverted(!left);
 
@@ -84,10 +110,10 @@ public class Drive extends Subsystem {
   /** Creates a new Drive. */
   private Drive() {
     // Starts all Talons in Coast Mode
-    mLeftMaster1 = (WPI_TalonFX) TalonFactory.createDefaultTalonFX(Constants.kLeftMaster1);
+    mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kLeftMaster1);
     configureTalonFX(mLeftMaster1, true, true);
     
-    mleftFollower2 = (WPI_TalonFX) TalonFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower2, mLeftMaster1);
+    mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower2, mLeftMaster1);
     configureTalonFX(mleftFollower2, true, false);
 
     
@@ -95,10 +121,10 @@ public class Drive extends Subsystem {
     mLeftSide.add(mLeftMaster1);
     mLeftSide.add(mleftFollower2);
 
-    mRightMaster1 = (WPI_TalonFX) TalonFactory.createDefaultTalonFX(Constants.kRightMaster1);
+    mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kRightMaster1);
     configureTalonFX(mRightMaster1, false, true);
 
-    mRightFollower2 = (WPI_TalonFX) TalonFactory.createPermanentSlaveTalonFX(Constants.kRightFollower2, mRightMaster1);
+    mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kRightFollower2, mRightMaster1);
     configureTalonFX(mRightFollower2, false, false);
 
     mRightSide.add(mRightMaster1);
@@ -109,6 +135,23 @@ public class Drive extends Subsystem {
 
     // Container which stores all the Inputs and Outputs to the System
     mPeriodicIO = new PeriodicIO();
+
+    // TODO: Add constants later
+    m_driveSim = new DifferentialDrivetrainSim(
+      DCMotor.getFalcon500(2),
+      kGearRatio,
+      2.1, // MOI of robot
+      26.5, // Robot Mass
+      Units.inchesToMeters(kWheelRadiusInches), // Wheel Radius
+      0.546, // Track Width (meters)
+      null // Measurement Noise
+    );
+    m_leftDriveSim = mLeftMaster1.getSimCollection();
+    m_rightDriveSim = mRightMaster1.getSimCollection();
+
+    m_field = new Field2d();
+
+    SmartDashboard.putData("Field", m_field);
   }
 
 
@@ -201,22 +244,66 @@ public class Drive extends Subsystem {
   public synchronized void writePeriodicOutputs() {
     // In the open loop control, set demand on each of the talons as percent output
     if (mDriveControlState == DriveControlState.OPEN_LOOP) {
-      System.out.println("Left Demand: " + mPeriodicIO.left_demand);
-      System.out.println("Right Demand: " + mPeriodicIO.right_demand);
-
       mLeftSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.left_demand));
       mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
-    }
-  }
 
-  @Override
-  public void onLoop(double timestamp) {
-    
+    }
+    SmartDashboard.putData("Field", m_field);
   }
 
   @Override
   public void onDisableLoop() {
       // TODO set motors to 0
-  
+  }
+
+  @Override
+  public void onLoop(double timestamp) {
+    
+    m_odometry.update(m_gyro.getRotation2d(),
+    nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition()),
+    nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition()));
+
+    System.out.println("New Odometry: " + m_odometry.getPoseMeters());
+    m_field.setRobotPose(m_odometry.getPoseMeters());
+  }
+
+  public void onSimulationLoop() {
+    System.out.println("Simulating Drive" + mLeftMaster1.getMotorOutputVoltage() + mRightMaster1.getMotorOutputVoltage());
+    m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
+    m_driveSim.update(0.02);
+
+    m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
+    m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));
+    m_rightDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getRightPositionMeters()));
+    m_rightDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getRightVelocityMetersPerSecond()));
+
+    System.out.println("Sensor Pos: " + mLeftMaster1.getSelectedSensorPosition());
+
+    m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+
+    m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+    m_rightDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+  }
+
+  private int distanceToNativeUnits(double positionMeters){
+    double wheelRotations = positionMeters/(2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    double motorRotations = wheelRotations * kSensorGearRatio;
+    int sensorCounts = (int)(motorRotations * kCountsPerRev);
+    return sensorCounts;
+  }
+
+  private int velocityToNativeUnits(double velocityMetersPerSecond){
+    double wheelRotationsPerSecond = velocityMetersPerSecond/(2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
+    double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
+    int sensorCountsPer100ms = (int)(motorRotationsPer100ms * kCountsPerRev);
+    return sensorCountsPer100ms;
+  }
+
+  private double nativeUnitsToDistanceMeters(double sensorCounts){
+    double motorRotations = (double)sensorCounts / kCountsPerRev;
+    double wheelRotations = motorRotations / kSensorGearRatio;
+    double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+    return positionMeters;
   }
 }

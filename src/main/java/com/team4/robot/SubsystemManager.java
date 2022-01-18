@@ -52,4 +52,8 @@ public class SubsystemManager {
     public void onEnabledStart() {}
 
     public void onDisabledStart() {}
+
+    public void onSimulationLoop() {
+        mAllSubsystems.forEach(Subsystem::onSimulationLoop);
+    }
 }

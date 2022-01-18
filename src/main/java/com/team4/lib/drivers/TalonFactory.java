@@ -5,7 +5,7 @@ import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team254.lib.drivers.LazyTalonFX;
 
@@ -52,12 +52,12 @@ public class TalonFactory {
     }
 
     // create a CANTalon with the default (out of the box) configuration
-    public static TalonFX createDefaultTalonFX(int id) {
+    public static WPI_TalonFX createDefaultTalonFX(int id) {
         return createTalonFX(id, kDefaultConfiguration);
     }
         
-    public static TalonFX createPermanentSlaveTalonFX(int id, TalonFX master) {
-        final TalonFX talon = createTalonFX(id, kSlaveConfiguration);
+    public static WPI_TalonFX createPermanentSlaveTalonFX(int id, WPI_TalonFX master) {
+        final WPI_TalonFX talon = createTalonFX(id, kSlaveConfiguration);
         talon.follow(master);
         return talon;
     }
@@ -102,8 +102,8 @@ public class TalonFactory {
         return talon;
     }
 
-    public static TalonFX createTalonFX(int id, Configuration config) {
-        TalonFX talon = new LazyTalonFX(id);
+    public static WPI_TalonFX createTalonFX(int id, Configuration config) {
+        WPI_TalonFX talon = new LazyTalonFX(id);
         talon.set(ControlMode.PercentOutput, 0.0);
 
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);
