@@ -1,11 +1,13 @@
 package com.team4.robot.controllers;
 
+import com.team4.robot.Constants;
+
 public class DriverController {
     private final XboxController mController;
 
     public DriverController() {
         // TODO: Add Constant
-        mController = new XboxController(0);
+        mController = new XboxController(Constants.kDriverControlSlot);
     }
 
     public double getThrottle() {

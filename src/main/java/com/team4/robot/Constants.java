@@ -1,6 +1,13 @@
 package com.team4.robot;
 
 public class Constants {
+    public static final int kCANTimeoutMs = 10;
+    public static final int kLongCANTimeoutMs = 100;
+
+    // Controllers
+    public static final int kDriverControlSlot = 0;
+    public static final int kOperatorControlSlot = 1;
+
     // Hardware
     public static final int kLeftMaster1 = 1;
     public static final int kLeftFollower2 = 2;

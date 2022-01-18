@@ -3,8 +3,9 @@ package com.team4.robot;
 import java.util.Arrays;
 import java.util.List;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.robot.subsystems.Subsystem;
+
+import edu.wpi.first.wpilibj.Timer;
 
 /**
  * This is a class that manages all the subsystems.
@@ -35,15 +36,20 @@ public class SubsystemManager {
      */
     public void onEnabledLoop() {
         mAllSubsystems.forEach(Subsystem::readPeriodicInputs);
-        mAllSubsystems.forEach(Subsystem::onLoop);
+        mAllSubsystems.forEach(l -> l.onLoop(Timer.getFPGATimestamp()));
         mAllSubsystems.forEach(Subsystem::writePeriodicOutputs);
     }
 
     public void onDisabledLoop() {
         mAllSubsystems.forEach(Subsystem::readPeriodicInputs);
+        mAllSubsystems.forEach(Subsystem::onDisableLoop);
     }
 
     public void onDisabledStop() {}
 
     public void onEnabledStop() {}
+
+    public void onEnabledStart() {}
+
+    public void onDisabledStart() {}
 }

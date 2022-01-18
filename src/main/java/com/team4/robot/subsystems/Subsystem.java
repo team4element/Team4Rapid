@@ -7,11 +7,14 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 // We will only add this complexity later if we really want it
 public abstract class Subsystem extends SubsystemBase {
     // This is used to aggregate all reads in a single call
-    public void readPeriodicInputs() {}
+    public abstract void readPeriodicInputs();
     // This is used to aggregate all writes in a single call
-    public void writePeriodicOutputs() {}
+    public abstract void writePeriodicOutputs();
 
     // This is called in between the Input and Output calls
-    public void onLoop() {}
+    public abstract void onLoop(double timestamp);
+
+    // This is used to stop all motors on disable
+    public abstract void onDisableLoop();
     
 }

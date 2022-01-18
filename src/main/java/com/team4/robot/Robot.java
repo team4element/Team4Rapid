@@ -4,13 +4,11 @@
 
 package com.team4.robot;
 
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 
 /**
  * This is the root Robot class.
@@ -49,6 +47,7 @@ public class Robot extends TimedRobot {
         mDrive
     );
 
+    
   }
 
   /**
@@ -72,6 +71,7 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     mSubsystemManager.onDisabledStop();
+    mSubsystemManager.onEnabledStart();
   }
 
   /**
@@ -82,7 +82,8 @@ public class Robot extends TimedRobot {
    * placed here.
    */
   @Override
-  public void autonomousPeriodic() {
+  public void autonomousPeriodic() { 
+    mSubsystemManager.onEnabledLoop();
   }
 
   /**
@@ -93,7 +94,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     System.out.println("Teleop Init!");
     mSubsystemManager.onDisabledStop();
-    mSubsystemManager.onEnabledLoop();
+    mSubsystemManager.onEnabledStart();
   }
 
   /**
@@ -120,6 +121,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledInit() {
     mSubsystemManager.onEnabledStop();
+    mSubsystemManager.onDisabledStart();
   }
 
   /**

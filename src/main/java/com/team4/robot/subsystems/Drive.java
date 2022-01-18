@@ -4,18 +4,20 @@
 
 package com.team4.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.NeutralMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.team254.lib.drivers.TalonFXFactory;
-import com.team254.lib.util.DriveSignal;
-import com.team4.robot.Constants;
-import com.team4.robot.subsystems.states.TalonControlState;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.can.TalonFX;
+import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.team254.lib.drivers.TalonUtil;
+import com.team254.lib.util.DriveSignal;
+import com.team4.lib.drivers.TalonFactory;
+import com.team4.robot.Constants;
+import com.team4.robot.subsystems.states.TalonControlState;
 
 /**
  * A drivetrain consists of two motors that are connected to a single gearbox.
@@ -46,19 +48,46 @@ public class Drive extends Subsystem {
 
   private PeriodicIO mPeriodicIO;
 
+  public static void configureTalonFX(TalonFX talon, boolean left, boolean main_encoder_talon) {
+    // general
+    talon.setInverted(!left);
+
+    if (main_encoder_talon) {
+        // status frames (maybe set for characterization?)
+        TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs), "could not set drive feedback frame");
+        TalonUtil.checkError(talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs), "could not detect motor encoder"); //primary closed-loop, 100 ms timeout
+        talon.setSensorPhase(true);
+    }
+    
+    // implement if desire current limit
+    // checkError(talon.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 40, 50, .5), kLongCANTimeoutMs), "Could not set supply current limits");
+    // checkError(talon.configStatorCurrentLimit(new StatorCurrentLimitConfiguration(true, 60, 60, 0.2), kLongCANTimeoutMs), "Could not set stator current limits");
+
+    // implement if desire voltage compensation
+    // checkError(talon.configVoltageCompSaturation(12.0, kLongCANTimeoutMs), "could not config voltage comp saturation");
+    // talon.enableVoltageCompensation(true);
+  }
+
   /** Creates a new Drive. */
   // Constructor
   private Drive() {
     // Starts all Talons in Open-Loop Mode
     // TODO: Ensure all are in open-loop mode
-    mLeftMaster1 = TalonFXFactory.createDefaultTalon(Constants.kLeftMaster1);
-    mleftFollower2 = TalonFXFactory.createPermanentSlaveTalon(Constants.kLeftFollower2, Constants.kLeftMaster1);
+    mLeftMaster1 = (WPI_TalonFX) TalonFactory.createDefaultTalonFX(Constants.kLeftMaster1);
+    configureTalonFX(mLeftMaster1, true, true);
+    
+    mleftFollower2 = (WPI_TalonFX) TalonFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower2, mLeftMaster1);
+    configureTalonFX(mleftFollower2, true, false);
 
+    
     mLeftSide.add(mLeftMaster1);
     mLeftSide.add(mleftFollower2);
 
-    mRightMaster1 = TalonFXFactory.createDefaultTalon(Constants.kRightMaster1);
-    mRightFollower2 = TalonFXFactory.createPermanentSlaveTalon(Constants.kRightFollower2, Constants.kRightMaster1);
+    mRightMaster1 = (WPI_TalonFX) TalonFactory.createDefaultTalonFX(Constants.kRightMaster1);
+    configureTalonFX(mRightMaster1, false, true);
+
+    mRightFollower2 = (WPI_TalonFX) TalonFactory.createPermanentSlaveTalonFX(Constants.kRightFollower2, mRightMaster1);
+    configureTalonFX(mRightFollower2, false, false);
 
     mRightSide.add(mRightMaster1);
     mRightSide.add(mRightFollower2);
@@ -149,9 +178,15 @@ public class Drive extends Subsystem {
     mPeriodicIO.right_feedforward = 0.0;
   }
 
+  @Override
+  public void readPeriodicInputs() {
+      // While enabled, gets information from sensors
+  }
+
   /**
    * Handles writing internal state to the motors
    */
+  @Override
   public synchronized void writePeriodicOutputs() {
     // In the open loop control, set demand on each of the talons as percent output
     if (mDriveControlState == DriveControlState.OPEN_LOOP) {
@@ -163,6 +198,14 @@ public class Drive extends Subsystem {
     }
   }
 
-  public void onLoop() {
+  @Override
+  public void onLoop(double timestamp) {
+    
+  }
+
+  @Override
+  public void onDisableLoop() {
+      // TODO set motors to 0
+  
   }
 }
