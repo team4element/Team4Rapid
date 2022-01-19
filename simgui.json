@@ -19,6 +19,7 @@
       "/LiveWindow/Drive": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[1]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+      "/Shuffleboard/Drive/m_gyro": "Gyro",
       "/SmartDashboard/Field": "Field2d"
     },
     "windows": {
@@ -27,6 +28,14 @@
           "visible": true
         }
       }
+    }
+  },
+  "NetworkTables": {
+    "Shuffleboard": {
+      "Drive": {
+        "open": true
+      },
+      "open": true
     }
   }
 }
