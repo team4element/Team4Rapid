@@ -152,14 +152,13 @@ public class Drive extends Subsystem {
     // Container which stores all the Inputs and Outputs to the System
     mPeriodicIO = new PeriodicIO();
 
-    // TODO: Add constants later
     m_driveSim = new DifferentialDrivetrainSim(
         DCMotor.getFalcon500(2),
         kGearRatio,
-        2.1, // MOI of robot
-        26.5, // Robot Mass
-        Units.inchesToMeters(kWheelRadiusInches), // Wheel Radius
-        0.546, // Track Width (meters)
+        Constants.kRobotMOI, // MOI of robot
+        Constants.kRobotMass, // Robot Mass
+        Units.inchesToMeters(Constants.kDriveWheelRadiusInches),
+        Units.inchesToMeters(Constants.kDriveWheelTrackWidthInches),
         null // Measurement Noise
     );
     m_leftDriveSim = mLeftMaster1.getSimCollection();

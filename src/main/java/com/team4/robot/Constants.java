@@ -21,4 +21,8 @@ public class Constants {
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
     public static final double kTrackScrubFactor = 1.0;  // Tune me!    
     public static final double kDriveGearRatio = 1/7.29; //On actual bot 12d / 48d, 7.71/1  1/7.71, .129701
+
+		public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center
+		public static final double kRobotMass = 56; // Robot Mass (kg)
+
 }
