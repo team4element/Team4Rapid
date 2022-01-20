@@ -29,6 +29,8 @@ import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * A drivetrain consists of multiple motors that are connected to a single
@@ -36,7 +38,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * A drivetrain allows for Open-Loop control as well as closed-loop control.
  */
 
-public class Drive extends Subsystem {
+public class Drive extends Subsystem implements Loggable {
   private static Drive mDrive = null;
 
   // Motors that controls wheels
@@ -182,9 +184,11 @@ public class Drive extends Subsystem {
    * This represents ALL of the Subsystem-related Inputs and Outputs.
    * This includes Motor Signals, and Sensor Signals
    */
-  public static class PeriodicIO {
+  public class PeriodicIO implements Loggable {
     // Desired Demands on the motor signals
+		@Log
     public double left_demand;
+		@Log
     public double right_demand;
 
     // Sensor Inputs

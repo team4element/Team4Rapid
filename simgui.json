@@ -24,7 +24,15 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "bottom": 900,
+        "height": 8.229599952697754,
+        "image": "/Users/adamgarcia/Documents/code/Robotics/Team4Rapid/field/2022-field.png",
+        "left": 74,
+        "right": 1774,
+        "top": 50,
+        "width": 16.459199905395508,
         "window": {
+          "name": "Robot",
           "visible": true
         }
       }
