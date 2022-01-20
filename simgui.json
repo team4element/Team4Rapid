@@ -17,6 +17,8 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Drive": "Subsystem",
+      "/LiveWindow/Intake": "Subsystem",
+      "/LiveWindow/Superstructure": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[1]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/Shuffleboard/Drive/m_gyro": "Gyro",
@@ -41,6 +43,24 @@
   "NetworkTables": {
     "Shuffleboard": {
       "Drive": {
+        "PeriodicIO": {
+          "open": true
+        },
+        "open": true
+      },
+      "Intake": {
+        "IntakePeriodicIO": {
+          "open": true
+        },
+        "open": true
+      },
+      "Robot": {
+        "open": true
+      },
+      "open": true
+    },
+    "SmartDashboard": {
+      "Field": {
         "open": true
       },
       "open": true

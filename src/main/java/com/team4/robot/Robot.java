@@ -7,6 +7,9 @@ package com.team4.robot;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Drive;
+import com.team4.robot.subsystems.Intake;
+import com.team4.robot.subsystems.Superstructure;
+import com.team4.robot.subsystems.Superstructure.SuperstructureState;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.oblarg.oblog.Logger;
@@ -34,6 +37,8 @@ public class Robot extends TimedRobot {
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
   Drive mDrive = Drive.getInstance();
+	Intake mIntake = Intake.getInstance();
+	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
@@ -47,10 +52,10 @@ public class Robot extends TimedRobot {
   public void robotInit() {
 		Logger.configureLoggingAndConfig(this, false);
     mSubsystemManager.setSubsystems(
-        mDrive
+        mDrive,
+				mIntake,
+				mSuperstructure
     );
-
-    
   }
 
   /**
@@ -62,7 +67,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotPeriodic() {
 		Logger.updateEntries();
-    // TODO: mSubsystemManager output to smart dashboard
     // Add try catch like 254 does.
   }
 
@@ -112,7 +116,13 @@ public class Robot extends TimedRobot {
     double throttle = mDriverController.getThrottle();
     double turn = mDriverController.getTurn();
 
+		boolean isDeploy = mDriverController.getIsDeploy();
+
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
+		if (isDeploy) {
+			mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
+		}
+		
 
     // Run each subsystem's periodic function
     mSubsystemManager.onEnabledLoop();

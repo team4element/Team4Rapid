@@ -38,293 +38,293 @@ import io.github.oblarg.oblog.annotations.Log;
  * A drivetrain allows for Open-Loop control as well as closed-loop control.
  */
 
-public class Drive extends Subsystem implements Loggable {
-  private static Drive mDrive = null;
+/**
+ * This represents ALL of the Subsystem-related Inputs and Outputs.
+ * This includes Motor Signals, and Sensor Signals
+ */
+class DrivePeriodicIO implements Loggable {
+	// Desired Demands on the motor signals
+	@Log
+	public double left_demand;
+	@Log
+	public double right_demand;
 
-  // Motors that controls wheels
-  private final WPI_TalonFX mLeftMaster1, mleftFollower2;
-  private final WPI_TalonFX mRightMaster1, mRightFollower2;
+	// Sensor Inputs
 
-  private final Set<WPI_TalonFX> mLeftSide = new HashSet<>();
-  private final Set<WPI_TalonFX> mRightSide = new HashSet<>();
+	// Robot State Outputs (useful for high-level control)
+	@Log
+	public double left_feedforward;
+	public double right_feedforward;
+}
 
-  private static enum DriveControlState {
-    OPEN_LOOP,
-  }
+public class Drive extends Subsystem<DrivePeriodicIO> {
+	private static Drive mInstance = null;
 
-  private DriveControlState mDriveControlState;
-  private TalonControlState mTalonControlState;
+	// Motors that controls wheels
+	private final WPI_TalonFX mLeftMaster1, mleftFollower2;
+	private final WPI_TalonFX mRightMaster1, mRightFollower2;
 
-  private boolean mIsBrakeMode;
+	private final Set<WPI_TalonFX> mLeftSide = new HashSet<>();
+	private final Set<WPI_TalonFX> mRightSide = new HashSet<>();
 
-  private PeriodicIO mPeriodicIO;
-  private DifferentialDrivetrainSim m_driveSim;
-  private TalonFXSimCollection m_leftDriveSim;
-  private TalonFXSimCollection m_rightDriveSim;
+	private static enum DriveControlState {
+		OPEN_LOOP,
+	}
 
-  // TODO: Need to switch to NavX. Might not have an easy Sim to use.
-  AnalogGyro m_gyro = new AnalogGyro(1);
-  AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
+	private DriveControlState mDriveControlState;
+	private TalonControlState mTalonControlState;
 
-  // TODO: Where did we find documentation of this?
-  final int kCountsPerRev = 4096;
-  final double kSensorGearRatio = 1;
-  final double kGearRatio = 10.71;
-  final double kWheelRadiusInches = 3;
-  final int k100msPerSecond = 10;
+	private boolean mIsBrakeMode;
 
-  Field2d m_field;
-  DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
+	private DrivePeriodicIO mPeriodicIO;
+	private DifferentialDrivetrainSim m_driveSim;
+	private TalonFXSimCollection m_leftDriveSim;
+	private TalonFXSimCollection m_rightDriveSim;
 
-  public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
-    // general
-    // This is a manual override to enable drivetrain simulation to work.
-    // Simulation will be very useful for debugging auton modes.
-    if (Robot.isReal()) {
-      talon.setInverted(!left);
-    }
+	// TODO: Need to switch to NavX. Might not have an easy Sim to use.
+	AnalogGyro m_gyro = new AnalogGyro(1);
+	AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
 
-    if (main_encoder_talon) {
-      // Talons are configured to perform different motor functions at different
-      // frequencies.
-      // These can be changed by calling setStatusFramePeriod().
-      // Status1 (10ms): Motor Output Refresh
-      // Status 2 (20ms): Sensor Updates
-      // Status 3 (>100ms): Quadrature Information
-      // Status 4 (>100ms): Analog Input/Supply Battery Voltage
-      // Full Documentation can be found here
-      // https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html#setting-status-frame-periods
+	// TODO: Where did we find documentation of this?
+	final int kCountsPerRev = 4096;
+	final double kSensorGearRatio = 1;
+	final double kGearRatio = 10.71;
+	final double kWheelRadiusInches = 3;
+	final int k100msPerSecond = 10;
 
-      TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
-          "could not set drive feedback frame");
+	Field2d m_field;
+	DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
 
-      // The Talon Motor Controller can have different feedback sensors.
-      // Integrated Sensor: built in encoder
-      // Other options are found here.
-      // https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html?highlight=configSelectedFeedbackSensor#sensor-options
-      TalonUtil.checkError(
-          talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
-          "could not detect motor encoder"); // primary closed-loop, 100 ms timeout
+	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
+		talon.setInverted(!left);
+		// general
+		// This is a manual override to enable drivetrain simulation to work.
+		// Simulation will be very useful for debugging auton modes.
+		if (Robot.isSimulation()) {
+			talon.setInverted(false);
+		}
 
-      // Used to ensure that positive sensor readings correspond to positive
-      // PercentOutput
-      talon.setSensorPhase(true);
-    }
+		if (main_encoder_talon) {
+			// Talons are configured to perform different motor functions at different
+			// frequencies.
+			// These can be changed by calling setStatusFramePeriod().
+			// Status1 (10ms): Motor Output Refresh
+			// Status 2 (20ms): Sensor Updates
+			// Status 3 (>100ms): Quadrature Information
+			// Status 4 (>100ms): Analog Input/Supply Battery Voltage
+			// Full Documentation can be found here
+			// https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html#setting-status-frame-periods
 
-    // implement if desire current limit
-    // checkError(talon.configSupplyCurrentLimit(new
-    // SupplyCurrentLimitConfiguration(true, 40, 50, .5), kLongCANTimeoutMs), "Could
-    // not set supply current limits");
-    // checkError(talon.configStatorCurrentLimit(new
-    // StatorCurrentLimitConfiguration(true, 60, 60, 0.2), kLongCANTimeoutMs),
-    // "Could not set stator current limits");
+			TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
+					"could not set drive feedback frame");
 
-    // implement if desire voltage compensation
-    // checkError(talon.configVoltageCompSaturation(12.0, kLongCANTimeoutMs), "could
-    // not config voltage comp saturation");
-    // talon.enableVoltageCompensation(true);
-  }
+			// The Talon Motor Controller can have different feedback sensors.
+			// Integrated Sensor: built in encoder
+			// Other options are found here.
+			// https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html?highlight=configSelectedFeedbackSensor#sensor-options
+			TalonUtil.checkError(
+					talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
+					"could not detect motor encoder"); // primary closed-loop, 100 ms timeout
 
-  /** Creates a new Drive. */
-  private Drive() {
-    // Starts all Talons in Coast Mode
-    mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
-    configureTalonFX(mLeftMaster1, true, true);
+			// Used to ensure that positive sensor readings correspond to positive
+			// PercentOutput
+			talon.setSensorPhase(true);
+		}
 
-    mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveLeftFollower2, mLeftMaster1);
-    configureTalonFX(mleftFollower2, true, false);
+		// implement if desire current limit
+		// checkError(talon.configSupplyCurrentLimit(new
+		// SupplyCurrentLimitConfiguration(true, 40, 50, .5), kLongCANTimeoutMs), "Could
+		// not set supply current limits");
+		// checkError(talon.configStatorCurrentLimit(new
+		// StatorCurrentLimitConfiguration(true, 60, 60, 0.2), kLongCANTimeoutMs),
+		// "Could not set stator current limits");
 
-    // This is a convenience method to act upon all the motors on the left side of
-    // the drivetrain.
-    mLeftSide.add(mLeftMaster1);
-    mLeftSide.add(mleftFollower2);
+		// implement if desire voltage compensation
+		// checkError(talon.configVoltageCompSaturation(12.0, kLongCANTimeoutMs), "could
+		// not config voltage comp saturation");
+		// talon.enableVoltageCompensation(true);
+	}
 
-    mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveRightMaster1);
-    configureTalonFX(mRightMaster1, false, true);
+	/** Creates a new Drive. */
+	private Drive() {
+		mPeriodicIO = new DrivePeriodicIO();
 
-    mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveRightFollower2, mRightMaster1);
-    configureTalonFX(mRightFollower2, false, false);
+		// Starts all Talons in Coast Mode
+		mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
+		configureTalonFX(mLeftMaster1, true, true);
 
-    mRightSide.add(mRightMaster1);
-    mRightSide.add(mRightFollower2);
+		mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveLeftFollower2, mLeftMaster1);
+		configureTalonFX(mleftFollower2, true, false);
 
-    mIsBrakeMode = false;
-    setBrakeMode(false);
+		// This is a convenience method to act upon all the motors on the left side of
+		// the drivetrain.
+		mLeftSide.add(mLeftMaster1);
+		mLeftSide.add(mleftFollower2);
 
-    // Container which stores all the Inputs and Outputs to the System
-    mPeriodicIO = new PeriodicIO();
+		mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveRightMaster1);
+		configureTalonFX(mRightMaster1, false, true);
 
-    m_driveSim = new DifferentialDrivetrainSim(
-        DCMotor.getFalcon500(2),
-        kGearRatio,
-        Constants.kRobotMOI, // MOI of robot
-        Constants.kRobotMass, // Robot Mass
-        Units.inchesToMeters(Constants.kDriveWheelRadiusInches),
-        Units.inchesToMeters(Constants.kDriveWheelTrackWidthInches),
-        null // Measurement Noise
-    );
-    m_leftDriveSim = mLeftMaster1.getSimCollection();
-    m_rightDriveSim = mRightMaster1.getSimCollection();
+		mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveRightFollower2, mRightMaster1);
+		configureTalonFX(mRightFollower2, false, false);
 
-    m_field = new Field2d();
+		mRightSide.add(mRightMaster1);
+		mRightSide.add(mRightFollower2);
 
-    SmartDashboard.putData("Field", m_field);
-  }
+		mIsBrakeMode = false;
+		setBrakeMode(false);
 
-  // Singleton-pattern
-  public static Drive getInstance() {
-    if (mDrive == null) {
-      mDrive = new Drive();
-    }
 
-    return mDrive;
-  }
+		m_driveSim = new DifferentialDrivetrainSim(
+				DCMotor.getFalcon500(2),
+				kGearRatio,
+				Constants.kRobotMOI, // MOI of robot
+				Constants.kRobotMass, // Robot Mass
+				Units.inchesToMeters(Constants.kDriveWheelRadiusInches),
+				Units.inchesToMeters(Constants.kDriveWheelTrackWidthInches),
+				null // Measurement Noise
+		);
+		m_leftDriveSim = mLeftMaster1.getSimCollection();
+		m_rightDriveSim = mRightMaster1.getSimCollection();
 
-  /**
-   * This represents ALL of the Subsystem-related Inputs and Outputs.
-   * This includes Motor Signals, and Sensor Signals
-   */
-  public class PeriodicIO implements Loggable {
-    // Desired Demands on the motor signals
-		@Log
-    public double left_demand;
-		@Log
-    public double right_demand;
+		m_field = new Field2d();
 
-    // Sensor Inputs
+		SmartDashboard.putData("Field", m_field);
+	}
 
-    // Robot State Outputs (useful for high-level control)
-    public double left_feedforward;
-    public double right_feedforward;
-  }
+	// Singleton-pattern
+	public static Drive getInstance() {
+		if (mInstance == null) {
+			mInstance = new Drive();
+		}
 
-  /**
-   * https://docs.ctre-phoenix.com/en/stable/ch13_MC.html#neutral-mode
-   * https://firstwiki.github.io/wiki/talon-sr#:~:text=In%20'brake'%20mode%2C%20the,stops%20can%20cause%20tipping%20issues.
-   * The Neutral Mode determines the TalonFX behavior when no signal is supplied.
-   * 
-   * Coast Mode: When no signal is applied, the TalonFX will continue to freely
-   * spin to a halt.
-   * Brake Mode: When no signal is applied, the TalonFX will halt immediately. It
-   * does this by "shorting" the output terminals together.
-   * 
-   * For example, while driving in open loop control, you want the robot to
-   * "coast" if no inputs are supplied.
-   * Maybe for Autonomous, you want the robot to "brake" if no inputs are
-   * supplied.
-   */
-  public synchronized void setBrakeMode(boolean shouldEnable) {
-    if (mIsBrakeMode != shouldEnable) {
-      mIsBrakeMode = shouldEnable;
+		return mInstance;
+	}
 
-      // TODO: Add helper method to loop over all Talons
-      mLeftMaster1.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
-      mleftFollower2.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
-      mRightMaster1.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
-      mRightFollower2.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
-    }
-  }
+	/**
+	 * https://docs.ctre-phoenix.com/en/stable/ch13_MC.html#neutral-mode
+	 * https://firstwiki.github.io/wiki/talon-sr#:~:text=In%20'brake'%20mode%2C%20the,stops%20can%20cause%20tipping%20issues.
+	 * The Neutral Mode determines the TalonFX behavior when no signal is supplied.
+	 * 
+	 * Coast Mode: When no signal is applied, the TalonFX will continue to freely
+	 * spin to a halt.
+	 * Brake Mode: When no signal is applied, the TalonFX will halt immediately. It
+	 * does this by "shorting" the output terminals together.
+	 * 
+	 * For example, while driving in open loop control, you want the robot to
+	 * "coast" if no inputs are supplied.
+	 * Maybe for Autonomous, you want the robot to "brake" if no inputs are
+	 * supplied.
+	 */
+	public synchronized void setBrakeMode(boolean shouldEnable) {
+		if (mIsBrakeMode != shouldEnable) {
+			mIsBrakeMode = shouldEnable;
 
-  /**
-   * When the Talons are set to "coast", it should also have a minimum
-   * time to go from 0 to full throttle. This might prevent traction issues.
-   */
-  private void configureOpenTalon() {
-    setBrakeMode(false);
-    System.out.println("Switching Talons to Open Loop");
+			// TODO: Add helper method to loop over all Talons
+			mLeftMaster1.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+			mleftFollower2.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+			mRightMaster1.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+			mRightFollower2.setNeutralMode(mIsBrakeMode ? NeutralMode.Brake : NeutralMode.Coast);
+		}
+	}
 
-    mLeftMaster1.configOpenloopRamp(0.25);
-    mRightMaster1.configOpenloopRamp(0.25);
-    mTalonControlState = TalonControlState.OPEN;
-  }
+	/**
+	 * When the Talons are set to "coast", it should also have a minimum
+	 * time to go from 0 to full throttle. This might prevent traction issues.
+	 */
+	private void configureOpenTalon() {
+		setBrakeMode(false);
 
-  public synchronized void setOpenLoop(DriveSignal signal) {
-    if (mDriveControlState != DriveControlState.OPEN_LOOP) {
-      System.out.println("switching to open loop");
-      mDriveControlState = DriveControlState.OPEN_LOOP;
-    }
+		mLeftMaster1.configOpenloopRamp(0.25);
+		mRightMaster1.configOpenloopRamp(0.25);
+		mTalonControlState = TalonControlState.OPEN;
+	}
 
-    if (mTalonControlState != TalonControlState.OPEN) {
-      configureOpenTalon();
-    }
+	public synchronized void setOpenLoop(DriveSignal signal) {
+		if (mDriveControlState != DriveControlState.OPEN_LOOP) {
+			mDriveControlState = DriveControlState.OPEN_LOOP;
+		}
 
-    mPeriodicIO.left_demand = signal.getLeft();
-    mPeriodicIO.right_demand = signal.getRight();
-    mPeriodicIO.left_feedforward = 0.0;
-    mPeriodicIO.right_feedforward = 0.0;
-  }
+		if (mTalonControlState != TalonControlState.OPEN) {
+			configureOpenTalon();
+		}
 
-  @Override
-  public void readPeriodicInputs() {
-    // While enabled, gets information from sensors
-    double newLeftPositionMeters = nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition());
-    double newRightPositionMeters = nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition());
+		mPeriodicIO.left_demand = signal.getLeft();
+		mPeriodicIO.right_demand = signal.getRight();
+		mPeriodicIO.left_feedforward = 0.0;
+		mPeriodicIO.right_feedforward = 0.0;
+	}
 
-    m_odometry.update(m_gyro.getRotation2d(),
-        newLeftPositionMeters,
-        newRightPositionMeters);
+	@Override
+	public void readPeriodicInputs() {
+		// While enabled, gets information from sensors
+		double newLeftPositionMeters = nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition());
+		double newRightPositionMeters = nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition());
 
-    m_field.setRobotPose(m_odometry.getPoseMeters());
+		m_odometry.update(m_gyro.getRotation2d(),
+				newLeftPositionMeters,
+				newRightPositionMeters);
 
-  }
+		m_field.setRobotPose(m_odometry.getPoseMeters());
 
-  /**
-   * Handles writing internal state to the motors
-   */
-  @Override
-  public synchronized void writePeriodicOutputs() {
-    // In the open loop control, set demand on each of the talons as percent output
-    if (mDriveControlState == DriveControlState.OPEN_LOOP) {
-      mLeftSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.left_demand));
-      mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
+	}
 
-    }
-    SmartDashboard.putData("Field", m_field);
-  }
+	/**
+	 * Handles writing internal state to the motors
+	 */
+	@Override
+	public synchronized void writePeriodicOutputs() {
+		// In the open loop control, set demand on each of the talons as percent output
+		if (mDriveControlState == DriveControlState.OPEN_LOOP) {
+			mLeftSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.left_demand));
+			mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
 
-  @Override
-  public void onDisableLoop() {
-    // TODO set motors to 0
-  }
+		}
+		SmartDashboard.putData("Field", m_field);
+	}
 
-  @Override
-  public void onLoop(double timestamp) {
-  }
+	@Override
+	public void onDisableLoop() {
+		// TODO set motors to 0
+	}
 
-  public void onSimulationLoop() {
-    m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
-    m_driveSim.update(0.02);
+	@Override
+	public void onLoop(double timestamp) {
+	}
 
-    m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
-    m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));
-    m_rightDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getRightPositionMeters()));
-    m_rightDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getRightVelocityMetersPerSecond()));
+	public void onSimulationLoop() {
+		m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
+		m_driveSim.update(0.02);
 
-    m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
+		m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
+		m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));
+		m_rightDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getRightPositionMeters()));
+		m_rightDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getRightVelocityMetersPerSecond()));
 
-    m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
-    m_rightDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
-  }
+		m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
 
-  private int distanceToNativeUnits(double positionMeters) {
-    double wheelRotations = positionMeters / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-    double motorRotations = wheelRotations * kSensorGearRatio;
-    int sensorCounts = (int) (motorRotations * kCountsPerRev);
-    return sensorCounts;
-  }
+		m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+		m_rightDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+	}
 
-  private int velocityToNativeUnits(double velocityMetersPerSecond) {
-    double wheelRotationsPerSecond = velocityMetersPerSecond / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-    double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
-    double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
-    int sensorCountsPer100ms = (int) (motorRotationsPer100ms * kCountsPerRev);
-    return sensorCountsPer100ms;
-  }
+	private int distanceToNativeUnits(double positionMeters) {
+		double wheelRotations = positionMeters / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+		double motorRotations = wheelRotations * kSensorGearRatio;
+		int sensorCounts = (int) (motorRotations * kCountsPerRev);
+		return sensorCounts;
+	}
 
-  private double nativeUnitsToDistanceMeters(double sensorCounts) {
-    double motorRotations = (double) sensorCounts / kCountsPerRev;
-    double wheelRotations = motorRotations / kSensorGearRatio;
-    double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-    return positionMeters;
-  }
+	private int velocityToNativeUnits(double velocityMetersPerSecond) {
+		double wheelRotationsPerSecond = velocityMetersPerSecond / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+		double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
+		double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
+		int sensorCountsPer100ms = (int) (motorRotationsPer100ms * kCountsPerRev);
+		return sensorCountsPer100ms;
+	}
+
+	private double nativeUnitsToDistanceMeters(double sensorCounts) {
+		double motorRotations = (double) sensorCounts / kCountsPerRev;
+		double wheelRotations = motorRotations / kSensorGearRatio;
+		double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
+		return positionMeters;
+	}
 }

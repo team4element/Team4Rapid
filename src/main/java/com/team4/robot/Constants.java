@@ -1,6 +1,7 @@
 package com.team4.robot;
 
 public class Constants {
+		// TODO: What is this for?
     public static final int kCANTimeoutMs = 10;
     public static final int kLongCANTimeoutMs = 100;
 
@@ -25,6 +26,11 @@ public class Constants {
 
 		public static final int kClimberMaster1 = 13;
 		public static final int kClimberWinchMaster1 = 14;
+
+
+		public static final int kIntakeSolenoidLeft = 0;
+		public static final int kIntakeSolenoidRight = 1;
+
 
 
 		// Drivetrain Dynamics

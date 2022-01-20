@@ -17,4 +17,8 @@ public class DriverController {
     public double getTurn() {
         return mController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
+
+		public boolean getIsDeploy() {
+			return mController.getButton(XboxController.Button.A);
+		}
 }

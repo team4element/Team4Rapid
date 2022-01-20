@@ -1,11 +1,12 @@
 package com.team4.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import io.github.oblarg.oblog.Loggable;
 
 // Currently extending SubsystemBase because it handles adding the subsystem to the Scheduler.
 // Team 254 manages their own scheduler using a Notifier.
 // We will only add this complexity later if we really want it
-public abstract class Subsystem extends SubsystemBase {
+public abstract class Subsystem<T> extends SubsystemBase implements Loggable {
     // This is used to aggregate all reads in a single call
     public abstract void readPeriodicInputs();
     // This is used to aggregate all writes in a single call
@@ -18,4 +19,6 @@ public abstract class Subsystem extends SubsystemBase {
     public abstract void onDisableLoop();
     
     public void onSimulationLoop() {}
+
+		public T mPeriodicIO;
 }
