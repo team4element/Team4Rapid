@@ -16,7 +16,15 @@ public class Constants {
 		public static final int kShooterMaster1 = 5;
 		public static final int kShooterFollower2 = 6;
 		public static final int kIntakeMaster1 = 7;
+		// TODO: Are these Master/Slave?
+		public static final int kConveyorFirstStageRight = 8;
+		public static final int kConveyorFirstStageLeft = 9;
+		public static final int kHopperMaster = 10;
+		public static final int kConveyorFinalStageBottom = 11;
+		public static final int kConveyorFinalStageTop = 12;
 
+		public static final int kClimberMaster1 = 13;
+		public static final int kClimberWinchMaster1 = 14;
 
 
 		// Drivetrain Dynamics
