@@ -128,10 +128,10 @@ public class Drive extends Subsystem implements Loggable {
   /** Creates a new Drive. */
   private Drive() {
     // Starts all Talons in Coast Mode
-    mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kLeftMaster1);
+    mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
     configureTalonFX(mLeftMaster1, true, true);
 
-    mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kLeftFollower2, mLeftMaster1);
+    mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveLeftFollower2, mLeftMaster1);
     configureTalonFX(mleftFollower2, true, false);
 
     // This is a convenience method to act upon all the motors on the left side of
@@ -139,10 +139,10 @@ public class Drive extends Subsystem implements Loggable {
     mLeftSide.add(mLeftMaster1);
     mLeftSide.add(mleftFollower2);
 
-    mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kRightMaster1);
+    mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveRightMaster1);
     configureTalonFX(mRightMaster1, false, true);
 
-    mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kRightFollower2, mRightMaster1);
+    mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveRightFollower2, mRightMaster1);
     configureTalonFX(mRightFollower2, false, false);
 
     mRightSide.add(mRightMaster1);
