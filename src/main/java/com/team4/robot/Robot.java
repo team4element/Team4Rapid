@@ -9,11 +9,11 @@ import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Superstructure;
-import com.team4.robot.subsystems.Superstructure.SuperstructureState;
 
+import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * This is the root Robot class.
@@ -43,6 +43,7 @@ public class Robot extends TimedRobot {
 
   // Controllers
   DriverController mDriverController = new DriverController();
+	Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
   /**
    * Entered when the robot first starts up.
@@ -56,6 +57,8 @@ public class Robot extends TimedRobot {
 				mIntake,
 				mSuperstructure
     );
+
+		mCompressor.enableDigital();
   }
 
   /**
@@ -116,13 +119,27 @@ public class Robot extends TimedRobot {
     double throttle = mDriverController.getThrottle();
     double turn = mDriverController.getTurn();
 
-		boolean isDeploy = mDriverController.getIsDeploy();
+		boolean isIntakeDeployToggle = mDriverController.getIsDeployIntake();
+		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
-		if (isDeploy) {
-			mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
+
+		// Toggles the Intake Up/Down
+		if (isIntakeDeployToggle) {
+			mIntake.toggleDeploy();
 		}
 		
+		// Toggles the Compressor's Status
+		if (isCompressorToggle) {
+			if (mCompressor.enabled()) {
+				mCompressor.disable();
+			} else {
+				mCompressor.enableDigital();
+			}
+		}
+		
+		// mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
+
 
     // Run each subsystem's periodic function
     mSubsystemManager.onEnabledLoop();

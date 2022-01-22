@@ -62,8 +62,13 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mPeriodicIO.demand = demand;
 	}
 
+	// TODO: Which do we want?
 	public void setDeployed(boolean isDeployed) {
 		mPeriodicIO.isDeployed = isDeployed;
+	}
+
+	public void toggleDeploy() {
+		mPeriodicIO.isDeployed = !mPeriodicIO.isDeployed;
 	}
 
 	@Override

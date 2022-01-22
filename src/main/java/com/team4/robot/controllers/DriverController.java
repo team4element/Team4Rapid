@@ -21,4 +21,8 @@ public class DriverController {
 		public boolean getIsDeployIntake() {
 			return mController.getButtonClick(Button.A);
 		}
+
+		public boolean getIsCompressorToggle() {
+			return mController.getButtonClick(Button.LB);
+		}
 }
