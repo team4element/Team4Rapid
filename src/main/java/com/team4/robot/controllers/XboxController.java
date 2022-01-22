@@ -2,10 +2,15 @@ package com.team4.robot.controllers;
 
 // import com.team4.robot.constants.Constants;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+
+import java.util.HashMap;
+import java.util.Map;
+import com.team4.robot.controllers.utils.OnRiseEventHelper;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class XboxController {
     private final Joystick mController;
+		private final Map<Integer, OnRiseEventHelper> buttonClickMap = new HashMap<>();
 
     public enum Side {
         LEFT, RIGHT
@@ -48,6 +53,16 @@ public class XboxController {
     boolean getButton(Button button) {
         return mController.getRawButton(button.id);
     }
+
+		boolean getButtonClick(Button button) {
+			if (!buttonClickMap.containsKey(button.id)) {
+				buttonClickMap.put(button.id, new OnRiseEventHelper());
+			}
+
+			OnRiseEventHelper buttonState = buttonClickMap.getOrDefault(button.id, new OnRiseEventHelper());
+
+			return buttonState.getAndUpdate(mController.getRawButton(button.id));
+		}
 
     int getDPad() {
         return mController.getPOV();

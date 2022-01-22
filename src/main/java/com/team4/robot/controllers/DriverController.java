@@ -1,12 +1,12 @@
 package com.team4.robot.controllers;
 
 import com.team4.robot.Constants;
+import com.team4.robot.controllers.XboxController.Button;
 
 public class DriverController {
     private final XboxController mController;
 
     public DriverController() {
-        // TODO: Add Constant
         mController = new XboxController(Constants.kDriverControlSlot);
     }
 
@@ -18,7 +18,7 @@ public class DriverController {
         return mController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
-		public boolean getIsDeploy() {
-			return mController.getButton(XboxController.Button.A);
+		public boolean getIsDeployIntake() {
+			return mController.getButtonClick(Button.A);
 		}
 }
