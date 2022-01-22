@@ -44,4 +44,6 @@ public class Constants {
 		// Robot Dynamics
 		public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center
 		public static final double kRobotMass = 56; // Robot Mass (kg)
+
+		public static final double kJoystickThreshold = 0.04;
 }

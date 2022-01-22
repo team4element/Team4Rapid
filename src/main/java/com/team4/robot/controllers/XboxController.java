@@ -5,7 +5,10 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.team4.robot.Constants;
 import com.team4.robot.controllers.utils.OnRiseEventHelper;
+
 import edu.wpi.first.wpilibj.Joystick;
 
 public class XboxController {
@@ -35,9 +38,7 @@ public class XboxController {
     }
 
     double getJoystick(Side side, Axis axis) {
-        // TODO: Add constant joystick deadband
-        double deadband = 0;
-        // double deadband = Constants.kJoystickThreshold;
+        double deadband = Constants.kJoystickThreshold;
 
         boolean left = side == Side.LEFT;
         boolean y = axis == Axis.Y;
