@@ -10,7 +10,6 @@ import com.team4.robot.subsystems.Drive;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.oblarg.oblog.Logger;
-import io.github.oblarg.oblog.annotations.Log;
 
 /**
  * This is the root Robot class.
