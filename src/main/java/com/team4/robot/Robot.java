@@ -11,6 +11,7 @@ import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Superstructure;
 
 import edu.wpi.first.wpilibj.Compressor;
+import edu.wpi.first.wpilibj.CompressorConfigType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.oblarg.oblog.Logger;
@@ -119,27 +120,47 @@ public class Robot extends TimedRobot {
     double throttle = mDriverController.getThrottle();
     double turn = mDriverController.getTurn();
 
-		boolean isIntakeDeployToggle = mDriverController.getIsDeployIntake();
+		boolean isDeployIntake = mDriverController.getDeployIntake();
 		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
+		boolean isExhaust = mDriverController.getExhaust();
+		boolean isIntake = mDriverController.getIntake();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
-		// Toggles the Intake Up/Down
-		if (isIntakeDeployToggle) {
-			mIntake.toggleDeploy();
+		if (isDeployIntake) {
+			mIntake.deploy();
+		} else {
+			mIntake.stow();
 		}
 		
-		// Toggles the Compressor's Status
+		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
-			if (mCompressor.enabled()) {
-				mCompressor.disable();
-			} else {
+			CompressorConfigType compressorState =  mCompressor.getConfigType();
+
+			if (compressorState == CompressorConfigType.Disabled) {
 				mCompressor.enableDigital();
+			} else {
+				mCompressor.disable();
 			}
 		}
+
+		if (isIntake) {
+			mIntake.setWantedState(Intake.WantedState.INTAKE);
+		} else if (isExhaust) {
+			mIntake.setWantedState(Intake.WantedState.EXHAUST);
+		} else {
+			mIntake.setWantedState(Intake.WantedState.IDLE);
+		}
+
+		// if (mControlBoard.getExhaust()) {
+		// 	mIntake.setWantedState(Intake.WantedState.EXHAUST);
+		// } else if (mControlBoard.getIntake()) {
+		// 		mIntake.setWantedState(Intake.WantedState.INTAKE);
+		// } else {
+		// 		mIntake.setWantedState(Intake.WantedState.IDLE);
+		// }
 		
 		// mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
-
 
     // Run each subsystem's periodic function
     mSubsystemManager.onEnabledLoop();

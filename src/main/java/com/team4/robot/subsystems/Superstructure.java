@@ -1,12 +1,5 @@
 package com.team4.robot.subsystems;
 
-import com.team4.robot.subsystems.Intake.IntakeState;
-
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
-
 class SuperstructurePeriodicIO {
 
 }
@@ -34,20 +27,20 @@ public class Superstructure extends Subsystem<SuperstructurePeriodicIO> {
 
 	@Override
 	public void onLoop(double timestamp) {
-		switch(mCurrentState) {
-			case IDLE:
-				mIntake.setControlState(IntakeState.IDLE);
-				break;
-			case INTAKE_CONVEY:
-				// TODO: Add Conveyer
-				mIntake.setControlState(IntakeState.FWD);
-				break;
-			case REVERSE:
-				mIntake.setControlState(IntakeState.REVERSE);
-				break;
-			default:
-				System.out.println("Invalid Superstructure State reached");
-		}
+		// switch(mCurrentState) {
+		// 	case IDLE:
+		// 		mIntake.setControlState(IntakeState.IDLE);
+		// 		break;
+		// 	case INTAKE_CONVEY:
+		// 		// TODO: Add Conveyer
+		// 		mIntake.setControlState(IntakeState.FWD);
+		// 		break;
+		// 	case REVERSE:
+		// 		mIntake.setControlState(IntakeState.REVERSE);
+		// 		break;
+		// 	default:
+		// 		System.out.println("Invalid Superstructure State reached");
+		// }
 		// TODO Auto-generated method stub
 	}
 

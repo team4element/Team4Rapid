@@ -1,7 +1,6 @@
 package com.team4.robot.controllers;
 
 import com.team4.robot.Constants;
-import com.team4.robot.controllers.XboxController.Button;
 
 public class DriverController {
     private final XboxController mController;
@@ -18,11 +17,24 @@ public class DriverController {
         return mController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
     }
 
-		public boolean getIsDeployIntake() {
-			return mController.getButtonClick(Button.A);
+		public boolean getDeployIntake() {
+			return mController.getButton(XboxController.Button.B);
 		}
 
+		public boolean getRetractIntake() {
+			return mController.getButton(XboxController.Button.Y);
+		}
+
+		// TODO: Add 254 Function Key for button mapping overlays?
 		public boolean getIsCompressorToggle() {
-			return mController.getButtonClick(Button.LB);
+			return mController.getButtonClick(XboxController.Button.X);
+		}
+
+		public boolean getExhaust() {
+			return mController.getButton(XboxController.Button.LB);
+		}
+
+		public boolean getIntake() {
+			return mController.getButton(XboxController.Button.RB);
 		}
 }

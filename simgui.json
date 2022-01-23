@@ -1,6 +1,11 @@
 {
   "HALProvider": {
     "Other Devices": {
+      "Compressor[0]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX[1]": {
         "header": {
           "open": true
