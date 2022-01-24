@@ -1,8 +1,8 @@
 package com.team254.lib.util;
 
-import com.team254.lib.geometry.Twist2d;
-
 import java.util.ArrayList;
+
+import com.team254.lib.geometry.Twist2d;
 
 /**
  * Helper class for storing and calculating a moving average of the Twist2d class

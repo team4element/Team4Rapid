@@ -1,8 +1,8 @@
 package com.team254.lib.util;
 
-import com.team254.lib.geometry.Rotation2d;
-
 import java.util.List;
+
+import com.team254.lib.geometry.Rotation2d;
 
 /**
  * Contains basic functions that are used often.
