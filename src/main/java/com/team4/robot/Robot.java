@@ -61,7 +61,7 @@ public class Robot extends TimedRobot {
         mDrive,
 				mIntake,
 				mShooter,
-        mConveyor,
+        // mConveyor,
 				mSuperstructure
     );
 
@@ -127,10 +127,10 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
+		// boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
 		boolean isExhaust = mDriverController.getExhaust();
 		boolean isIntake = mDriverController.getIntake();
-		boolean desiredRPM = mDriverController.getShooterRPM();
+		boolean isShooterOn = mDriverController.getIsShooterOn();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -159,7 +159,7 @@ public class Robot extends TimedRobot {
 			mIntake.setWantedState(Intake.WantedState.IDLE);
 		}
 
-		if (desiredRPM) {
+		if (isShooterOn) {
 			mShooter.setRPM(1000);
 		} else {
 			mShooter.setRPM(0);

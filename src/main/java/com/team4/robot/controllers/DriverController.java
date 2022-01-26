@@ -1,8 +1,8 @@
 package com.team4.robot.controllers;
 
 import com.team4.robot.Constants;
-import com.team4.robot.controllers.XboxController.Axis;
-import com.team4.robot.controllers.XboxController.Side;
+
+import edu.wpi.first.wpilibj.XboxController;
 
 public class DriverController {
     private final XboxController mController;
@@ -12,35 +12,30 @@ public class DriverController {
     }
 
     public double getThrottle() {
-        return -1 * mController.getJoystick(XboxController.Side.LEFT, XboxController.Axis.Y);
+        return -1 * mController.getLeftY();
     }
 
     public double getTurn() {
-        return mController.getJoystick(XboxController.Side.RIGHT, XboxController.Axis.X);
+        return mController.getRightX();
     }
 
 		public boolean getDeployIntake() {
-			return mController.getButton(XboxController.Button.B);
+			return mController.getXButton();
 		}
 
-		public boolean getRetractIntake() {
-			return mController.getButton(XboxController.Button.Y);
-		}
-
-		// TODO: Add 254 Function Key for button mapping overlays?
 		public boolean getIsCompressorToggle() {
-			return mController.getButtonClick(XboxController.Button.X);
+			return mController.getStartButton();
 		}
 
 		public boolean getExhaust() {
-			return mController.getButton(XboxController.Button.LB);
+			return mController.getLeftBumper();
 		}
 
 		public boolean getIntake() {
-			return mController.getButton(XboxController.Button.RB);
+			return mController.getRightBumper();
 		}
 
-		public boolean getShooterRPM() {
-			return mController.getButton(XboxController.Button.X);
+		public boolean getIsShooterOn() {
+			return mController.getYButton();
 		}
 }
