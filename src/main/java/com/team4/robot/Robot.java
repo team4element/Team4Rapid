@@ -6,6 +6,7 @@ package com.team4.robot;
 
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
+import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
@@ -41,6 +42,7 @@ public class Robot extends TimedRobot {
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = Intake.getInstance();
 	Shooter mShooter = Shooter.getInstance();
+	Conveyor mConveyor = Conveyor.getInstance();
 	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
@@ -59,6 +61,7 @@ public class Robot extends TimedRobot {
         mDrive,
 				mIntake,
 				mShooter,
+        mConveyor,
 				mSuperstructure
     );
 
@@ -170,6 +173,9 @@ public class Robot extends TimedRobot {
 		// 		mIntake.setWantedState(Intake.WantedState.IDLE);
 		// }
 		
+      // TODO: The state of the conveyor makes it impossible to function
+      // This will cahnge when Superstructure is ready for testing
+
 		// mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
 
     // Run each subsystem's periodic function

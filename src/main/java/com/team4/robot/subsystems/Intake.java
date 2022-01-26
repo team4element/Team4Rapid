@@ -7,6 +7,7 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 
+import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -61,6 +62,7 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 
 	private Intake() {
 		mPeriodicIO = new IntakePeriodicIO();
+
 
 		mIntakeMotor1 = TalonFactory.createDefaultTalonFX(Constants.kIntakeMaster1);
 		mIntakeMotor1.setInverted(true);

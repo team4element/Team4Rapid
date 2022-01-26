@@ -1,7 +1,4 @@
 package com.team254.lib.util;
-
-import com.team254.lib.geometry.Rotation2d;
-
 import java.util.List;
 
 /**
@@ -73,13 +70,13 @@ public class Util {
         return result;
     }
 
-    public static double toTurretSafeAngleDegrees(Rotation2d rotation2d) {
-        double result = rotation2d.getDegrees() % 360.0;
-        if (result > 270) {
-            result -= 360;
-        } else if (result < -90) {
-            result += 360;
+    public static double handleDeadband(double value, double deadband) {
+        deadband = Math.abs(deadband);
+        if (deadband == 1) {
+            return 0;
         }
-        return result;
+        double scaledValue = (value + (value < 0 ? deadband : -deadband)) / (1 - deadband);
+        return (Math.abs(value) > Math.abs(deadband)) ? scaledValue : 0;
+
     }
 }
