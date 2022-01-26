@@ -41,9 +41,18 @@ public class Constants {
     public static final double kDriveTrackScrubFactor = 1.0;  // Tune me!
     public static final double kDriveGearRatio = 1/7.29; //On actual bot 12d / 48d, 7.71/1  1/7.71, .129701
 
+		// Shooter
+		// TODO
+		public static final double kShooterTicksPerRevolution = 2048; // based on gear reduction between encoder and output shaft, and encoder ppr
+
+		public static final double kShooterMomentOfInertia = 0.003440853333; // kg * m^2
+		public static final double kShooterGearRatio = 3.0; // >1 if flywheel geared down
+
 		// Robot Dynamics
 		public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center
 		public static final double kRobotMass = 56; // Robot Mass (kg)
 
 		public static final double kJoystickThreshold = 0.04;
+
+		public static final double kLoopTime = 0.020;
 }

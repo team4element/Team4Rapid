@@ -49,7 +49,9 @@ public class SubsystemManager {
 
     public void onEnabledStop() {}
 
-    public void onEnabledStart() {}
+    public void onEnabledStart() {
+			mAllSubsystems.forEach(Subsystem::onEnabledStart);
+		}
 
     public void onDisabledStart() {}
 

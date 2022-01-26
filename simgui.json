@@ -23,6 +23,7 @@
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Drive": "Subsystem",
       "/LiveWindow/Intake": "Subsystem",
+      "/LiveWindow/Shooter": "Subsystem",
       "/LiveWindow/Superstructure": "Subsystem",
       "/LiveWindow/Ungrouped/AnalogGyro[1]": "Gyro",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
@@ -60,6 +61,9 @@
         "open": true
       },
       "Robot": {
+        "open": true
+      },
+      "Shooter": {
         "open": true
       },
       "open": true

@@ -18,6 +18,7 @@ public abstract class Subsystem<T> extends SubsystemBase implements Loggable {
     // This is used to stop all motors on disable
     public abstract void onDisableLoop();
     
+		public void onEnabledStart() {};
     public void onSimulationLoop() {}
 
 		public T mPeriodicIO;

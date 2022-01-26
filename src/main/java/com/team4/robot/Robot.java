@@ -8,6 +8,7 @@ import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
+import com.team4.robot.subsystems.Shooter;
 import com.team4.robot.subsystems.Superstructure;
 
 import edu.wpi.first.wpilibj.Compressor;
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = Intake.getInstance();
+	Shooter mShooter = Shooter.getInstance();
 	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
@@ -56,6 +58,7 @@ public class Robot extends TimedRobot {
     mSubsystemManager.setSubsystems(
         mDrive,
 				mIntake,
+				mShooter,
 				mSuperstructure
     );
 
@@ -124,6 +127,7 @@ public class Robot extends TimedRobot {
 		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
 		boolean isExhaust = mDriverController.getExhaust();
 		boolean isIntake = mDriverController.getIntake();
+		boolean desiredRPM = mDriverController.getShooterRPM();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -150,6 +154,12 @@ public class Robot extends TimedRobot {
 			mIntake.setWantedState(Intake.WantedState.EXHAUST);
 		} else {
 			mIntake.setWantedState(Intake.WantedState.IDLE);
+		}
+
+		if (desiredRPM) {
+			mShooter.setRPM(1000);
+		} else {
+			mShooter.setRPM(0);
 		}
 
 		// if (mControlBoard.getExhaust()) {

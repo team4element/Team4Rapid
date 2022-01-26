@@ -293,7 +293,7 @@ public class Drive extends Subsystem<DrivePeriodicIO> {
 
 	public void onSimulationLoop() {
 		m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
-		m_driveSim.update(0.02);
+		m_driveSim.update(Constants.kLoopTime);
 
 		m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
 		m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));

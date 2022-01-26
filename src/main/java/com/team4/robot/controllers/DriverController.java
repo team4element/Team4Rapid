@@ -1,6 +1,8 @@
 package com.team4.robot.controllers;
 
 import com.team4.robot.Constants;
+import com.team4.robot.controllers.XboxController.Axis;
+import com.team4.robot.controllers.XboxController.Side;
 
 public class DriverController {
     private final XboxController mController;
@@ -36,5 +38,9 @@ public class DriverController {
 
 		public boolean getIntake() {
 			return mController.getButton(XboxController.Button.RB);
+		}
+
+		public boolean getShooterRPM() {
+			return mController.getButton(XboxController.Button.X);
 		}
 }
