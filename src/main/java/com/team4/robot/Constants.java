@@ -18,6 +18,9 @@ public class Constants {
 		public static final int kShooterFollower2 = 6;
 		public static final int kIntakeMaster1 = 7;
 		// TODO: Are these Master/Slave?
+
+
+		// TODO: figure the motor configuration for conveyor
 		public static final int kConveyorFirstStageRight = 8;
 		public static final int kConveyorFirstStageLeft = 9;
 		public static final int kHopperMaster = 10;

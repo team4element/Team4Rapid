@@ -74,6 +74,7 @@ public class Drive extends Subsystem<DrivePeriodicIO> {
 	private DriveControlState mDriveControlState;
 	private TalonControlState mTalonControlState;
 
+	@Log
 	private boolean mIsBrakeMode;
 
 	private DrivePeriodicIO mPeriodicIO;
