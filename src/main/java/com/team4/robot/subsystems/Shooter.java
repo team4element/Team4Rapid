@@ -1,10 +1,9 @@
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.team254.lib.drivers.TalonFXFactory;
+import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 import com.team4.robot.Robot;
 
@@ -18,15 +17,10 @@ import edu.wpi.first.math.system.LinearSystemLoop;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotController;
+import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 class ShooterPeriodicIO implements Loggable {
 	// Inputs
@@ -82,14 +76,14 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 	private Shooter() {
 		mPeriodicIO = new ShooterPeriodicIO();
 
-		mMasterMotor = TalonFXFactory.createDefaultTalon((Constants.kShooterMaster1));
+		mMasterMotor = TalonFactory.createDefaultTalonFX((Constants.kShooterMaster1));
 		mMasterMotor.setInverted(false);
 		// What is Voltage Compensation for?
 		mMasterMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
 		// This is set to false so we can set voltages directly from controller.
 		mMasterMotor.enableVoltageCompensation(false);
 
-		mSlaveMotor = TalonFXFactory.createPermanentSlaveTalon(Constants.kShooterFollower2, Constants.kShooterMaster1);
+		mSlaveMotor = TalonFactory.createPermanentSlaveTalonFX(Constants.kShooterFollower2, mMasterMotor);
 		mSlaveMotor.setInverted(true);
 		mSlaveMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
 		mSlaveMotor.enableVoltageCompensation(false);

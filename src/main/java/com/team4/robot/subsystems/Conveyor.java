@@ -36,7 +36,7 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
     private final WPI_TalonFX mHopper;
     private final WPI_TalonFX mFinalStageMaster, mFinalStageSlave; 
 
-    private final DigitalInput mBeamBreak;
+    // private final DigitalInput mBeamBreak;
 
     public enum WantedState {
         IDLE,
@@ -68,7 +68,7 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
         mHopper.setNeutralMode(NeutralMode.Coast);
         mFinalStageMaster.setNeutralMode(NeutralMode.Coast);
         
-        mBeamBreak = new DigitalInput(0);
+        // mBeamBreak = new DigitalInput(0);
 
     }
 
@@ -84,7 +84,7 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
 
     @Override
     public void readPeriodicInputs() {
-        mPeriodicIO.beamBreakTriggered = mBeamBreak.get();
+        // mPeriodicIO.beamBreakTriggered = mBeamBreak.get();
     }
 
     @Override
