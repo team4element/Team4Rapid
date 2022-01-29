@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
   // Controllers
   DriverController mDriverController = new DriverController();
-	Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+	// Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
   /**
    * Entered when the robot first starts up.
@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 				mSuperstructure
     );
 
-		mCompressor.enableDigital();
+		// mCompressor.enableDigital();
   }
 
   /**
@@ -142,13 +142,13 @@ public class Robot extends TimedRobot {
 		
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
-			CompressorConfigType compressorState =  mCompressor.getConfigType();
+			// CompressorConfigType compressorState =  mCompressor.getConfigType();
 
-			if (compressorState == CompressorConfigType.Disabled) {
-				mCompressor.enableDigital();
-			} else {
-				mCompressor.disable();
-			}
+			// if (compressorState == CompressorConfigType.Disabled) {
+			// 	mCompressor.enableDigital();
+			// } else {
+			// 	mCompressor.disable();
+			// }
 		}
 
 		if (isIntake) {

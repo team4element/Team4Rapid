@@ -7,7 +7,6 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 
-import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -31,8 +30,8 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 
 	// Hardware
 	private final WPI_TalonFX mIntakeMotor1;
-	private final Solenoid mLeftPiston;
-	private final Solenoid mRightPiston;
+	// private final Solenoid mLeftPiston;
+	// private final Solenoid mRightPiston;
 
 	// Performance Settings
 	private static final double kIntakePower = 0.75;
@@ -75,8 +74,8 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mIntakeMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
 		// TODO: Matthew: Is our PCM on the default module?
-		mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
-		mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
+		// mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
+		// mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
 	}
 
 	public void deploy() {
@@ -186,8 +185,8 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 	public synchronized void writePeriodicOutputs() {
 		mIntakeMotor1.set(ControlMode.PercentOutput, mPeriodicIO.demand);
 
-		mLeftPiston.set(mPeriodicIO.isStowed);
-		mRightPiston.set(mPeriodicIO.isStowed);
+		// mLeftPiston.set(mPeriodicIO.isStowed);
+		// mRightPiston.set(mPeriodicIO.isStowed);
 	}
 
 	public static Intake getInstance() {
