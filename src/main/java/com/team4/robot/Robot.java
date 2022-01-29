@@ -127,7 +127,7 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		// boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
+		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
 		boolean isExhaust = mDriverController.getExhaust();
 		boolean isIntake = mDriverController.getIntake();
 		boolean isShooterOn = mDriverController.getIsShooterOn();

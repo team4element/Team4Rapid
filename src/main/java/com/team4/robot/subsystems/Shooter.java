@@ -1,10 +1,8 @@
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.FeedbackDevice;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.team254.lib.drivers.TalonFXFactory;
 import com.team4.robot.Constants;
 import com.team4.robot.Robot;
 
@@ -20,13 +18,8 @@ import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.BatterySim;
-import edu.wpi.first.wpilibj.simulation.EncoderSim;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
-import edu.wpi.first.wpilibj.simulation.RoboRioSim;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 class ShooterPeriodicIO implements Loggable {
 	// Inputs
@@ -50,7 +43,6 @@ class ShooterPeriodicIO implements Loggable {
 public class Shooter extends Subsystem<ShooterPeriodicIO> {
 	private static Shooter mInstance = null;
 	private ShooterPeriodicIO mPeriodicIO;
-
 
 	private final WPI_TalonFX mMasterMotor, mSlaveMotor;
 
@@ -76,27 +68,26 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 	 */
 	private FlywheelSim mFlywheelSim;
 	private TalonFXSimCollection mMasterSim;
-	// private Encoder mEncoderHardware;
-	// private EncoderSim mEncoderSim;
 
 	private Shooter() {
 		mPeriodicIO = new ShooterPeriodicIO();
 
-		mMasterMotor = TalonFXFactory.createDefaultTalon((Constants.kShooterMaster1));
+		mMasterMotor = new WPI_TalonFX(Constants.kShooterMaster1);
 		mMasterMotor.setInverted(false);
 		// What is Voltage Compensation for?
 		mMasterMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
 		// This is set to false so we can set voltages directly from controller.
 		mMasterMotor.enableVoltageCompensation(false);
 
-		mSlaveMotor = TalonFXFactory.createPermanentSlaveTalon(Constants.kShooterFollower2, Constants.kShooterMaster1);
+		// TODO: Should follow?
+		mSlaveMotor = new WPI_TalonFX(Constants.kShooterFollower2);
 		mSlaveMotor.setInverted(true);
 		mSlaveMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
 		mSlaveMotor.enableVoltageCompensation(false);
 
 		
-		mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.0549, 0.0024487);
-		// mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
+		// mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.0549, 0.0024487);
+		mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
 		mObserver = new KalmanFilter<N1, N1, N1>(
 			Nat.N1(), // System State (1D) (rpm)
 			Nat.N1(), // Outputs (1D) (rpm)
@@ -162,11 +153,6 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 		return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
 	}
 
-	@Override
-	public void onEnabledStart() {
-		// TODO: What is this and how can I modify this for the actual robot
-		// mLoop.reset(VecBuilder.fill(mEncoderHardware.getRate()));
-	}
 	@Override
 	public void onLoop(double timestamp) {
 		// TODO Auto-generated method stub
