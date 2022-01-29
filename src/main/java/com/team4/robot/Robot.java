@@ -48,7 +48,7 @@ public class Robot extends TimedRobot {
 
   // Controllers
   DriverController mDriverController = new DriverController();
-	// Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+	Compressor mCompressor = new Compressor(1, PneumaticsModuleType.CTREPCM);
 
   /**
    * Entered when the robot first starts up.
