@@ -42,13 +42,13 @@ public class Robot extends TimedRobot {
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = Intake.getInstance();
 	Shooter mShooter = Shooter.getInstance();
-	Conveyor mConveyor = Conveyor.getInstance();
+	// Conveyor mConveyor = Conveyor.getInstance();
 	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
   DriverController mDriverController = new DriverController();
-	// Compressor mCompressor = new Compressor(PneumaticsModuleType.CTREPCM);
+	Compressor mCompressor = new Compressor(1, PneumaticsModuleType.CTREPCM);
 
   /**
    * Entered when the robot first starts up.
@@ -61,11 +61,11 @@ public class Robot extends TimedRobot {
         mDrive,
 				mIntake,
 				mShooter,
-        mConveyor,
+       // mConveyor,
 				mSuperstructure
     );
 
-		// mCompressor.enableDigital();
+		 mCompressor.enableDigital();
   }
 
   /**
@@ -142,14 +142,16 @@ public class Robot extends TimedRobot {
 		
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
-			// CompressorConfigType compressorState =  mCompressor.getConfigType();
+		//	CompressorConfigType compressorState =  mCompressor.getConfigType();
 
-			// if (compressorState == CompressorConfigType.Disabled) {
-			// 	mCompressor.enableDigital();
-			// } else {
-			// 	mCompressor.disable();
-			// }
-		}
+		//	if (compressorState == CompressorConfigType.Disabled) {
+			 	mCompressor.enableDigital();
+      //   mCompressor.start();
+			} else {
+			 	mCompressor.disable();
+      	 } 
+        
+		
 
 		if (isIntake) {
 			mIntake.setWantedState(Intake.WantedState.INTAKE);
