@@ -65,7 +65,7 @@ public class Robot extends TimedRobot {
 				mSuperstructure
     );
 
-		// mCompressor.enableDigital();
+		 mCompressor.enableDigital();
   }
 
   /**
@@ -142,14 +142,16 @@ public class Robot extends TimedRobot {
 		
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
-			// CompressorConfigType compressorState =  mCompressor.getConfigType();
+		//	CompressorConfigType compressorState =  mCompressor.getConfigType();
 
-			// if (compressorState == CompressorConfigType.Disabled) {
-			// 	mCompressor.enableDigital();
-			// } else {
-			// 	mCompressor.disable();
-			// }
-		}
+		//	if (compressorState == CompressorConfigType.Disabled) {
+			 	mCompressor.enableDigital();
+      //   mCompressor.start();
+			} else {
+			 	mCompressor.disable();
+      	 } 
+        
+		
 
 		if (isIntake) {
 			mIntake.setWantedState(Intake.WantedState.INTAKE);
