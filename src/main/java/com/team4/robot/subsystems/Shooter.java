@@ -2,6 +2,7 @@ package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.robot.Constants;
 import com.team4.robot.Robot;
@@ -17,10 +18,22 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.system.plant.LinearSystemId;
 import edu.wpi.first.math.util.Units;
 import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Config;
 import io.github.oblarg.oblog.annotations.Log;
 import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
+/**
+ * RPM
+ * RPM Target
+ * RPM Delta
+ * At RPM TARGET
+ * SET RPM TARGET
+ * SET MOTOR PERCENT
+ * FLYWHEEL PERCENT
+ * 
+ * 
+ */
 class ShooterPeriodicIO implements Loggable {
 	// Inputs
 	// These are in Motor Units
@@ -72,19 +85,16 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 	private Shooter() {
 		mPeriodicIO = new ShooterPeriodicIO();
 
+		TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
 		mMasterMotor = new WPI_TalonFX(Constants.kShooterMaster1);
-		mMasterMotor.setInverted(false);
-		// What is Voltage Compensation for?
-		mMasterMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
-		// This is set to false so we can set voltages directly from controller.
-		mMasterMotor.enableVoltageCompensation(false);
-
-		// TODO: Should follow?
 		mSlaveMotor = new WPI_TalonFX(Constants.kShooterFollower2);
-		mSlaveMotor.setInverted(true);
-		mSlaveMotor.configVoltageCompSaturation(12.0, Constants.kLongCANTimeoutMs);
-		mSlaveMotor.enableVoltageCompensation(false);
 
+		mMasterMotor.configAllSettings(motorConfig);
+		mSlaveMotor.configAllSettings(motorConfig);
+
+		mMasterMotor.setInverted(false);
+		mSlaveMotor.setInverted(true);
 		
 		// mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.0549, 0.0024487);
 		mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
@@ -106,7 +116,7 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 			mFlywheelPlant,
 			mController,
 			mObserver,
-			12.0, // Max Voltage that can be applied
+			12.0,
 			Constants.kLoopTime
 		);
 
@@ -147,22 +157,13 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 	public double getRadiansPerSecond() {
 		return (mMasterMotor.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kShooterTicksPerRevolution / Constants.kShooterGearRatio);
 	}
-	
-	@Log(rowIndex=1, columnIndex=0, width=2, height=1, name="RPM")
-	public double getRPM() {
-		return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
-	}
 
 	@Override
 	public void onLoop(double timestamp) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void onDisableLoop() {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
@@ -205,6 +206,40 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 
 		mMasterSim.setBusVoltage(RobotController.getBatteryVoltage());
 	}
+
+	@Log(rowIndex=1, columnIndex=0, width=2, height=1, name="RPM")
+	public double getRPM() {
+		return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
+	}
+
+	@Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "RPM Target")
+	public double getRPMTarget() {
+		return 0;
+	}
+
+	@Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "RPM Delta")
+	public double getRPMDelta() {
+		try {
+			return Math.abs(getRPM() - getRPMTarget());
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	@Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
+  private void set(double percent) {
+    mMasterMotor.set(percent);
+  }
+
+	@Log(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "Flywheel Percent")
+  public double getMotorPercent(){
+    return mMasterMotor.get();
+  }
+
+	@Config(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name="Set RPM Target", defaultValueNumeric = 0)
+  private void setRPMTarget(double setpoint){
+    System.out.println("Setting target to " + setpoint);
+  }
 
 	public static Shooter getInstance() {
 		if (mInstance == null) {
