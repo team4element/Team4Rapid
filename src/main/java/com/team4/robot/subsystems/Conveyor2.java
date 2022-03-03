@@ -1,26 +1,26 @@
 package com.team4.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 
-/*
-class IntakePeriodicIO implements Loggable {
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import io.github.oblarg.oblog.Loggable;
+import io.github.oblarg.oblog.annotations.Log;
+
+class Conveyor2PeriodicIO implements Loggable {
 	@Log
 	public double demand;
-	@Log
-	public boolean isStowed = true;
 }
-*/
 
-public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
+
+public class Conveyor2 extends Subsystem<Conveyor2PeriodicIO> {
 	// Internal State
 	private static Conveyor2 mInstance = null;
-	private ConveyorPeriodicIO mPeriodicIO;
-	WantedState mWantedState = WantedState.IDLE;
+	private Conveyor2PeriodicIO mPeriodicIO;
+	// @Log
+	// WantedState mWantedState = WantedState.IDLE;
+	// @Log
 	SystemState mSystemState = SystemState.IDLE;
 
 	// Hardware
@@ -46,7 +46,7 @@ public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 	}
 
 	private Conveyor2() {
-		mPeriodicIO = new ConveyorPeriodicIO();
+		mPeriodicIO = new Conveyor2PeriodicIO();
 
 
 		mConveyor = new WPI_TalonFX(Constants.kConveyor);
@@ -109,7 +109,14 @@ public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 	// Maybe I can maintain a counter when I notice this?
 	// Or Maybe I have a break sensor to know when a ball has entered the robot!
 	public synchronized void readPeriodicInputs() {
-
+		if (mSystemState == SystemState.INTAKING) {
+			SmartDashboard.putString("System State", "SPINNING");
+		}
+		else
+		{
+			SmartDashboard.putString("System State", "SPINNING");
+			
+		}
 	}
 
 	@Override

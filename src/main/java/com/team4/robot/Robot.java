@@ -6,7 +6,6 @@ package com.team4.robot;
 
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
-import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
@@ -170,10 +169,10 @@ public class Robot extends TimedRobot {
 
     
     if (isConveyor2) {
-			// mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
-      mConveyor2.outputOverride(.75);
+			mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
+		
 		} else {
-			mConveyor2.outputOverride(0d);
+			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
 		}
     
 
