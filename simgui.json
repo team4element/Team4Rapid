@@ -21,6 +21,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/Climber": "Subsystem",
       "/LiveWindow/Conveyor": "Subsystem",
       "/LiveWindow/Conveyor2": "Subsystem",
       "/LiveWindow/Drive": "Subsystem",

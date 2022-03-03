@@ -27,6 +27,7 @@ public class Climber extends Subsystem<ClimberPeriodicIO>{
 
     private final TalonFX mLeftMotor, mRightMotor;
     private ClimberControlState mControlState = ClimberControlState.IDLE;
+    private ClimberPeriodicIO mPeriodicIO = new ClimberPeriodicIO();
     public static Climber getInstance()
     {
         if (mInstance == null)
