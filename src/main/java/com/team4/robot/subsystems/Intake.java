@@ -3,7 +3,7 @@ package com.team4.robot.subsystems;
 import com.ctre.phoenix.motorcontrol.ControlFrame;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 
@@ -30,8 +30,8 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 
 	//CHANGE IN CODE
 	// Hardware
-	private final WPI_TalonFX mIntakeMotor1;
-	private final WPI_TalonFX mIntakeMotor2;
+	private final TalonSRX mIntakeMotor1;
+	private final TalonSRX mIntakeMotor2;
 	 private final Solenoid mLeftPiston;
 	 private final Solenoid mRightPiston;
 
@@ -65,8 +65,8 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mPeriodicIO = new IntakePeriodicIO();
 
 
-		mIntakeMotor1 = TalonFactory.createDefaultTalonFX(Constants.kIntakeMaster1);
-		mIntakeMotor2 = TalonFactory.createDefaultTalonFX(Constants.kIntakeLast);
+		mIntakeMotor1 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeMaster1);
+		mIntakeMotor2 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeLast);
 		mIntakeMotor1.setInverted(true);
 		//mIntakeMotor2.setInverted(true);
 

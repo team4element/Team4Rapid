@@ -68,7 +68,7 @@ public class Drive extends Subsystem<DrivePeriodicIO> {
 	private final Set<WPI_TalonFX> mRightSide = new HashSet<>();
 
 	private static enum DriveControlState {
-		OPEN_LOOP,
+		OPEN_LOOP
 	}
 
 	private DriveControlState mDriveControlState;

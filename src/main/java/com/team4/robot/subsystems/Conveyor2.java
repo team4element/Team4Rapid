@@ -27,7 +27,7 @@ public class Conveyor2 extends Subsystem<Conveyor2PeriodicIO> {
 	private final WPI_TalonFX mConveyor;
 	 
 	// Performance Settings
-	private static final double kIntakePower = 0.75;
+	private static final double kIntakePower = 0.5;
 	private static final double kIntakeExhaustPower = -0.25;
 	private static final double kLightIntakePower = 0.1;
 

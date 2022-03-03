@@ -17,7 +17,7 @@ public class OperatorController {
     }
 
     public boolean getExhaust() {
-        return mController.getLeftTriggerAxis() > 0d;
+        return mController.getLeftTriggerAxis() > 0.25;
     }
 
     public boolean getIsShooterOn() {

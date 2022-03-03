@@ -7,14 +7,15 @@ package com.team4.robot;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
+import com.team4.robot.subsystems.Climber;
 import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
 import com.team4.robot.subsystems.Superstructure;
+import com.team4.robot.subsystems.Climber.ClimberControlState;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.CompressorConfigType;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import io.github.oblarg.oblog.Logger;
@@ -45,13 +46,14 @@ public class Robot extends TimedRobot {
 	Shooter mShooter = Shooter.getInstance();
 	//Conveyor mConveyor = Conveyor.getInstance();
   Conveyor2 mConveyor2 = Conveyor2.getInstance();
+  Climber mClimber = Climber.getInstance();
 	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
   DriverController mDriverController = new DriverController();
   OperatorController mOperatorController = new OperatorController();
-	Compressor mCompressor = new Compressor(1, PneumaticsModuleType.CTREPCM);
+	Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
 
   /**
    * Entered when the robot first starts up.
@@ -66,6 +68,7 @@ public class Robot extends TimedRobot {
 				mShooter,
         //mConveyor,
         mConveyor2,
+        mClimber,
 				mSuperstructure
     );
 
@@ -131,7 +134,6 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		boolean isCompressorToggle = mOperatorController.getCompressorToggle();
 		boolean isExhaust = mOperatorController.getExhaust();
 		boolean isIntake = mOperatorController.getIntake();
 		boolean isShooterOn = mOperatorController.getIsShooterOn();
@@ -148,17 +150,11 @@ public class Robot extends TimedRobot {
 		
     // TODO: Fix Me
 		// Toggles the Compressor's Status. Only runs if pressure is needed
-		if (isCompressorToggle) {
-			CompressorConfigType compressorState =  mCompressor.getConfigType();
-
-			if (compressorState == CompressorConfigType.Disabled) {
-			 	mCompressor.enableDigital();
-         //mCompressor.start();
-			} else {
-			  mCompressor.disable();
-      	 } 
-        }  
-		
+		if (mOperatorController.getCompressorToggle()) {
+			mCompressor.enableDigital();
+		} else {
+			mCompressor.disable();
+    } 		
 
 		if (isIntake) {
 			mIntake.setWantedState(Intake.WantedState.INTAKE);
@@ -184,6 +180,19 @@ public class Robot extends TimedRobot {
 		} else {
 			mShooter.setRPM(0);
 		}
+
+    if (mDriverController.getClimbUp())
+    {
+      mClimber.setClimb(ClimberControlState.CLIMB_UP);
+    }
+    else if (mDriverController.getClimbDown())
+    {
+      mClimber.setClimb(ClimberControlState.CLIMB_DOWN);
+    }
+    else
+    {
+
+    }
 
 		// if (mControlBoard.getExhaust()) {
 		// 	mIntake.setWantedState(Intake.WantedState.EXHAUST);

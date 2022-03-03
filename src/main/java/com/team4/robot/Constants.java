@@ -35,9 +35,9 @@ public class Constants {
 
 
 
-		public static final int kClimberMaster1 = 13;
+		public static final int kClimberLeftMotor = 13;
 		//public static final int kClimberFollower1 = ;
-		public static final int kClimberWinchMaster1 = 14;
+		public static final int kClimberRightMotor = 14;
 		//public static final int kClimberWinchRight = ;
 
 
@@ -69,4 +69,6 @@ public class Constants {
 		public static final double kJoystickThreshold = 0.04;
 
 		public static final double kLoopTime = 0.020;
+
+		public static final int kCompressorID = 1;
 }
