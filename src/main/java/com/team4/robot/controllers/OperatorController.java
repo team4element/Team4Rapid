@@ -7,8 +7,34 @@ import edu.wpi.first.wpilibj.XboxController;
 public class OperatorController {
     private final XboxController mController;
 
-    private OperatorController() {
+    public OperatorController() {
         // TODO: Add Constant
         mController = new XboxController(Constants.kOperatorControlSlot);
+    }
+
+    public boolean getIntake() {
+        return mController.getLeftBumper();
+    }
+
+    public boolean getExhaust() {
+        return mController.getLeftTriggerAxis() > 0d;
+    }
+
+    public boolean getIsShooterOn() {
+        return mController.getAButton();
+    }
+
+    public boolean getConveyor() {
+        return mController.getRightBumper();
+    }
+
+    public boolean getConveyorReverse()
+    {
+        return mController.getRightTriggerAxis() > 0d;
+    }
+
+    public boolean getCompressorToggle()
+    {
+        return mController.getRightStickButtonPressed();
     }
 }

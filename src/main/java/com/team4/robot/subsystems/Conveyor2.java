@@ -114,7 +114,7 @@ public class Conveyor2 extends Subsystem<Conveyor2PeriodicIO> {
 		}
 		else
 		{
-			SmartDashboard.putString("System State", "SPINNING");
+			SmartDashboard.putString("System State", "not spinning");
 			
 		}
 	}

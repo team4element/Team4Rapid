@@ -21,28 +21,17 @@ public class DriverController {
     }
 
 		public boolean getDeployIntake() {
-			return mController.getXButton();
-		}
-
-		public boolean getIsCompressorToggle() {
-			//return mController.getStartButton();
-			return mController.getAButton();
-
-		}
-
-		public boolean getExhaust() {
-			return mController.getLeftBumper();
-		}
-
-		public boolean getIntake() {
 			return mController.getRightBumper();
 		}
 
-		public boolean getIsShooterOn() {
-			return mController.getYButton();
+		public boolean getClimbUp()
+		{
+			return mController.getPOV() == 90;
 		}
 
-		public boolean getConveyor() {
-			return mController.getBButton();
+		public boolean getClimbDown()
+		{
+			return mController.getPOV() == 270;
 		}
+		
 }

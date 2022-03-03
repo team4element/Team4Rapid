@@ -6,6 +6,7 @@ package com.team4.robot;
 
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
+import com.team4.robot.controllers.OperatorController;
 import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
@@ -49,6 +50,7 @@ public class Robot extends TimedRobot {
 
   // Controllers
   DriverController mDriverController = new DriverController();
+  OperatorController mOperatorController = new OperatorController();
 	Compressor mCompressor = new Compressor(1, PneumaticsModuleType.CTREPCM);
 
   /**
@@ -129,12 +131,12 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		boolean isCompressorToggle = mDriverController.getIsCompressorToggle();
-		boolean isExhaust = mDriverController.getExhaust();
-		boolean isIntake = mDriverController.getIntake();
-		boolean isShooterOn = mDriverController.getIsShooterOn();
+		boolean isCompressorToggle = mOperatorController.getCompressorToggle();
+		boolean isExhaust = mOperatorController.getExhaust();
+		boolean isIntake = mOperatorController.getIntake();
+		boolean isShooterOn = mOperatorController.getIsShooterOn();
     
-    boolean isConveyor2 = mDriverController.getConveyor();
+    boolean isConveyor2 = mOperatorController.getConveyor();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -144,6 +146,7 @@ public class Robot extends TimedRobot {
 			mIntake.stow();
 		}
 		
+    // TODO: Fix Me
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
 			CompressorConfigType compressorState =  mCompressor.getConfigType();
