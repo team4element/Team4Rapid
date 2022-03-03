@@ -160,7 +160,7 @@ public class Robot extends TimedRobot {
 
 		if (isIntake) {
 			mIntake.setWantedState(Intake.WantedState.INTAKE);
-      mConveyor2.setWantedState(Conveyor2.WantedState.INTAKE);
+      // mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
 
 		} else if (isExhaust) {
 			mIntake.setWantedState(Intake.WantedState.EXHAUST);
@@ -170,11 +170,11 @@ public class Robot extends TimedRobot {
 
     
     if (isConveyor2) {
-			mConveyor2.setWantedState(Conveyor2.WantedState.INTAKE);
-		} else if (isExhaust){
-			mConveyor2.setWantedState(Conveyor2.WantedState.EXHAUST);
+			mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
+		// } else if (isExhaust){
+			// mConveyor2.setWantedState(Conveyor2.SystemState.EXHAUSTING);
 		} else {
-			mConveyor2.setWantedState(Conveyor2.WantedState.IDLE);
+			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
 		}
     
 
