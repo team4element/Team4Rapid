@@ -30,7 +30,7 @@ public class OperatorController {
 
     public boolean getConveyorReverse()
     {
-        return mController.getRightTriggerAxis() > 0d;
+        return mController.getRightTriggerAxis() > 0.25;
     }
 
     public boolean getCompressorToggle()

@@ -121,7 +121,7 @@ public class Conveyor2 extends Subsystem<Conveyor2PeriodicIO> {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		// mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+		mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
 	}
 
 	public synchronized void outputOverride(double demand)
