@@ -22,6 +22,7 @@
     "types": {
       "/FMSInfo": "FMSInfo",
       "/LiveWindow/Conveyor": "Subsystem",
+      "/LiveWindow/Conveyor2": "Subsystem",
       "/LiveWindow/Drive": "Subsystem",
       "/LiveWindow/Intake": "Subsystem",
       "/LiveWindow/Shooter": "Subsystem",

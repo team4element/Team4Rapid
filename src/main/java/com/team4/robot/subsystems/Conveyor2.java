@@ -6,12 +6,6 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
-import com.team4.robot.subsystems.Conveyor.SystemState;
-
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
 /*
 class IntakePeriodicIO implements Loggable {
@@ -55,14 +49,14 @@ public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 		mPeriodicIO = new ConveyorPeriodicIO();
 
 
-		mConveyor = TalonFactory.createDefaultTalonFX(Constants.kConveyor);
+		mConveyor = new WPI_TalonFX(Constants.kConveyor);
 
 		// TODO: Document what these parameters mean
-		mConveyor.changeMotionControlFramePeriod(100);
-		mConveyor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		// mConveyor.changeMotionControlFramePeriod(100);
+		// mConveyor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		// TODO: Don't I need to add logging if failed?
-		mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		// mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		// mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
 	}
 
@@ -95,7 +89,7 @@ public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 				mPeriodicIO.demand = kIntakeExhaustPower;
 				break;
 			case LIGHT_INTAKE:
-				mPeriodicIO.demand = kLightIntakePower;
+				mPeriodicIO.demand = kIntakePower;
 				break;
 			default:
 				System.out.println("Unexpected Intake System State: " + mSystemState);
@@ -120,8 +114,12 @@ public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+		// mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+	}
 
+	public synchronized void outputOverride(double demand)
+	{
+		mConveyor.set(ControlMode.PercentOutput, demand);
 	}
 
 	public static Conveyor2 getInstance() {

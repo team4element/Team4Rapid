@@ -170,11 +170,10 @@ public class Robot extends TimedRobot {
 
     
     if (isConveyor2) {
-			mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
-		// } else if (isExhaust){
-			// mConveyor2.setWantedState(Conveyor2.SystemState.EXHAUSTING);
+			// mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
+      mConveyor2.outputOverride(.75);
 		} else {
-			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
+			mConveyor2.outputOverride(0d);
 		}
     
 
