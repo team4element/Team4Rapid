@@ -96,8 +96,8 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 		mMasterMotor.setInverted(false);
 		mSlaveMotor.setInverted(true);
 		
-		// mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.73336, 0.4564);
-		mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
+		mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.73336, 0.4564);
+		// mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
 		mObserver = new KalmanFilter<N1, N1, N1>(
 			Nat.N1(), // System State (1D) (rpm)
 			Nat.N1(), // Outputs (1D) (rpm)

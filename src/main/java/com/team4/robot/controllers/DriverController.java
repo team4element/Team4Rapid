@@ -15,8 +15,9 @@ public class DriverController {
         return -1 * mController.getLeftY();
     }
 
+	//CHANGE IN CODE: -1 *
     public double getTurn() {
-        return mController.getRightX();
+        return  -1 * mController.getRightX();
     }
 
 		public boolean getDeployIntake() {
@@ -24,7 +25,9 @@ public class DriverController {
 		}
 
 		public boolean getIsCompressorToggle() {
-			return mController.getStartButton();
+			//return mController.getStartButton();
+			return mController.getAButton();
+
 		}
 
 		public boolean getExhaust() {
@@ -37,5 +40,9 @@ public class DriverController {
 
 		public boolean getIsShooterOn() {
 			return mController.getYButton();
+		}
+
+		public boolean getConveyor() {
+			return mController.getBButton();
 		}
 }

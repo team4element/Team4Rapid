@@ -7,34 +7,30 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
 
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.Solenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
+/*
 class IntakePeriodicIO implements Loggable {
 	@Log
 	public double demand;
 	@Log
 	public boolean isStowed = true;
 }
+*/
 
-public class Intake extends Subsystem<IntakePeriodicIO> {
+public class Conveyor2 extends Subsystem<ConveyorPeriodicIO> {
 	// Internal State
-	private static Intake mInstance = null;
-	private IntakePeriodicIO mPeriodicIO;
+	private static Conveyor2 mInstance = null;
+	private ConveyorPeriodicIO mPeriodicIO;
 	WantedState mWantedState = WantedState.IDLE;
 	SystemState mSystemState = SystemState.IDLE;
 
-	//CHANGE IN CODE
 	// Hardware
-	private final WPI_TalonFX mIntakeMotor1;
-	private final WPI_TalonFX mIntakeMotor2;
-	 private final Solenoid mLeftPiston;
-	 private final Solenoid mRightPiston;
-
+	private final WPI_TalonFX mConveyor;
+	 
 	// Performance Settings
 	private static final double kIntakePower = 0.75;
 	private static final double kIntakeExhaustPower = -0.25;
@@ -61,29 +57,19 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		LIGHT_INTAKE,
 	}
 
-	private Intake() {
-		mPeriodicIO = new IntakePeriodicIO();
+	private Conveyor2() {
+		mPeriodicIO = new ConveyorPeriodicIO();
 
 
-		mIntakeMotor1 = TalonFactory.createDefaultTalonFX(Constants.kIntakeMaster1);
-		mIntakeMotor2 = TalonFactory.createDefaultTalonFX(Constants.kIntakeLast);
-		mIntakeMotor1.setInverted(true);
-		//mIntakeMotor2.setInverted(true);
+		mConveyor = TalonFactory.createDefaultTalonFX(Constants.kConveyor);
 
 		// TODO: Document what these parameters mean
-		mIntakeMotor1.changeMotionControlFramePeriod(100);
-		mIntakeMotor1.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		mIntakeMotor2.changeMotionControlFramePeriod(100);
-		mIntakeMotor2.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		mConveyor.changeMotionControlFramePeriod(100);
+		mConveyor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		// TODO: Don't I need to add logging if failed?
-		mIntakeMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mIntakeMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
-		mIntakeMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mIntakeMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
-		// TODO: Matthew: Is our PCM on the default module?
-		 mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
-		 mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
 	}
 
 	public void deploy() {
@@ -193,16 +179,13 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		mIntakeMotor1.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-		mIntakeMotor2.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+		mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
 
-		 mLeftPiston.set(mPeriodicIO.isStowed);
-		 mRightPiston.set(mPeriodicIO.isStowed);
 	}
 
-	public static Intake getInstance() {
+	public static Conveyor2 getInstance() {
 		if (mInstance == null) {
-			mInstance = new Intake();
+			mInstance = new Conveyor2();
 		}
 
 		return mInstance;

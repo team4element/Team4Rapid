@@ -7,6 +7,7 @@ package com.team4.robot;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.subsystems.Conveyor;
+import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
@@ -42,7 +43,8 @@ public class Robot extends TimedRobot {
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = Intake.getInstance();
 	Shooter mShooter = Shooter.getInstance();
-	// Conveyor mConveyor = Conveyor.getInstance();
+	//Conveyor mConveyor = Conveyor.getInstance();
+  Conveyor2 mConveyor2 = Conveyor2.getInstance();
 	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
@@ -61,11 +63,12 @@ public class Robot extends TimedRobot {
         mDrive,
 				mIntake,
 				mShooter,
-        // mConveyor,
+        //mConveyor,
+        mConveyor2,
 				mSuperstructure
     );
 
-		 mCompressor.enableDigital();
+		  mCompressor.enableDigital();
   }
 
   /**
@@ -131,6 +134,8 @@ public class Robot extends TimedRobot {
 		boolean isExhaust = mDriverController.getExhaust();
 		boolean isIntake = mDriverController.getIntake();
 		boolean isShooterOn = mDriverController.getIsShooterOn();
+    
+    boolean isConveyor2 = mDriverController.getConveyor();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -142,27 +147,39 @@ public class Robot extends TimedRobot {
 		
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (isCompressorToggle) {
-		//	CompressorConfigType compressorState =  mCompressor.getConfigType();
+			CompressorConfigType compressorState =  mCompressor.getConfigType();
 
-		//	if (compressorState == CompressorConfigType.Disabled) {
+			if (compressorState == CompressorConfigType.Disabled) {
 			 	mCompressor.enableDigital();
-      //   mCompressor.start();
+         //mCompressor.start();
 			} else {
-			 	mCompressor.disable();
+			  mCompressor.disable();
       	 } 
-        
+        }  
 		
 
 		if (isIntake) {
 			mIntake.setWantedState(Intake.WantedState.INTAKE);
+      mConveyor2.setWantedState(Conveyor2.WantedState.INTAKE);
+
 		} else if (isExhaust) {
 			mIntake.setWantedState(Intake.WantedState.EXHAUST);
 		} else {
 			mIntake.setWantedState(Intake.WantedState.IDLE);
 		}
 
+    
+    if (isConveyor2) {
+			mConveyor2.setWantedState(Conveyor2.WantedState.INTAKE);
+		} else if (isExhaust){
+			mConveyor2.setWantedState(Conveyor2.WantedState.EXHAUST);
+		} else {
+			mConveyor2.setWantedState(Conveyor2.WantedState.IDLE);
+		}
+    
+
 		if (isShooterOn) {
-			mShooter.setRPM(1000);
+			mShooter.setRPM(-1000);
 		} else {
 			mShooter.setRPM(0);
 		}
@@ -182,7 +199,8 @@ public class Robot extends TimedRobot {
 
     // Run each subsystem's periodic function
     mSubsystemManager.onEnabledLoop();
-  }
+    }
+  
 
   /**
    * This is run once when the robot is disabled.

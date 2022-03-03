@@ -18,6 +18,7 @@ class ConveyorPeriodicIO implements Loggable
     public boolean readyToShoot;
     @Log
     public boolean beamBreakTriggered;
+    public boolean isStowed;
 
 }
 
@@ -32,9 +33,9 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
     private final double kFeedDemand = .75;
 
     //TODO: Change to actual motor controllers
-    private final WPI_TalonFX mFirstStageMaster, mFirstStageSlave;
-    private final WPI_TalonFX mHopper;
-    private final WPI_TalonFX mFinalStageMaster, mFinalStageSlave; 
+    private final WPI_TalonFX mIntakeFirst;//, mFirstStageSlave;
+    private final WPI_TalonFX mConveyor;
+    private final WPI_TalonFX mIntakeLast;//, mFinalStageSlave; 
 
     // private final DigitalInput mBeamBreak;
 
@@ -56,17 +57,17 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
     private Conveyor()
     {
         // TODO: Add constants
-        mFirstStageMaster = TalonFactory.createDefaultTalonFX(Constants.kConveyorFirstStageLeft);
-        mFirstStageSlave = TalonFactory.createPermanentSlaveTalonFX(Constants.kConveyorFirstStageLeft, mFirstStageMaster);
+        mIntakeFirst = TalonFactory.createDefaultTalonFX(Constants.kIntakeFirst);
+        //mFirstStageSlave = TalonFactory.createPermanentSlaveTalonFX(Constants.kConveyorFirstStageLeft, mIntakeFirst);
         
-        mHopper = TalonFactory.createDefaultTalonFX(Constants.kHopperMaster);
+        mConveyor = TalonFactory.createDefaultTalonFX(Constants.kConveyor);
         
-        mFinalStageMaster = TalonFactory.createDefaultTalonFX(Constants.kConveyorFinalStageTop);
-        mFinalStageSlave = TalonFactory.createPermanentSlaveTalonFX(Constants.kConveyorFinalStageBottom, mFinalStageMaster);
+        mIntakeLast = TalonFactory.createDefaultTalonFX(Constants.kIntakeLast);
+        //mFinalStageSlave = TalonFactory.createPermanentSlaveTalonFX(Constants.kConveyorFinalStageBottom, mIntakeLast);
 
-        mFirstStageMaster.setNeutralMode(NeutralMode.Coast);
-        mHopper.setNeutralMode(NeutralMode.Coast);
-        mFinalStageMaster.setNeutralMode(NeutralMode.Coast);
+        mIntakeFirst.setNeutralMode(NeutralMode.Coast);
+        mConveyor.setNeutralMode(NeutralMode.Coast);
+        mIntakeLast.setNeutralMode(NeutralMode.Coast);
         
         // mBeamBreak = new DigitalInput(0);
 
@@ -93,23 +94,23 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
         
         if(mSystemState == SystemState.IDLE)
         {
-            mFinalStageMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-            mHopper.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-            mFirstStageMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mIntakeLast.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mIntakeFirst.set(ControlMode.PercentOutput, mPeriodicIO.demand);
         }
 
         if(mSystemState == SystemState.SERIALIZE)
         {
-            mFirstStageMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-            mHopper.set(ControlMode.PercentOutput, 0);
-            mFinalStageMaster.set(ControlMode.PercentOutput, 0);
+            mIntakeFirst.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mConveyor.set(ControlMode.PercentOutput, 0);
+            mIntakeLast.set(ControlMode.PercentOutput, 0);
         }
 
         if (mSystemState == SystemState.REBALANCING)
         {
-            mFirstStageMaster.set(ControlMode.PercentOutput, 0);
-            mHopper.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-            mFinalStageMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mIntakeFirst.set(ControlMode.PercentOutput, 0);
+            mConveyor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mIntakeLast.set(ControlMode.PercentOutput, mPeriodicIO.demand);
             
         }
         
@@ -117,9 +118,9 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
         {
             if(mPeriodicIO.readyToShoot)
             {
-                mFinalStageMaster.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+                mIntakeLast.set(ControlMode.PercentOutput, mPeriodicIO.demand);
             }
-            mFirstStageMaster.set(ControlMode.PercentOutput, 0);
+            mIntakeFirst.set(ControlMode.PercentOutput, 0);
         }      
     }
 
@@ -169,9 +170,9 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
     @Override
     public void onDisableLoop() {
         // TODO Auto-generated method stub
-        mFirstStageMaster.set(ControlMode.PercentOutput, 0);
-        mHopper.set(ControlMode.PercentOutput, 0);
-        mFinalStageMaster.set(ControlMode.PercentOutput, 0);
+        mIntakeFirst.set(ControlMode.PercentOutput, 0);
+        mConveyor.set(ControlMode.PercentOutput, 0);
+        mIntakeLast.set(ControlMode.PercentOutput, 0);
     }
 
     public void prepareToShoot()
@@ -196,5 +197,8 @@ public class Conveyor extends Subsystem<ConveyorPeriodicIO> {
     public void setReadyToShoot(boolean ready)
     {
         mPeriodicIO.readyToShoot = ready;
+    }
+
+    public void setWantedState(com.team4.robot.subsystems.Intake.WantedState idle) {
     }
 }

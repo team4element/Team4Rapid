@@ -9,11 +9,12 @@ public class Constants {
     public static final int kDriverControlSlot = 0;
     public static final int kOperatorControlSlot = 1;
 
+	//CHANGE IN CODE: ID #'s
     // Hardware
-    public static final int kDriveLeftMaster1 = 1;
-    public static final int kDriveLeftFollower2 = 2;
-    public static final int kDriveRightMaster1 = 3;
-    public static final int kDriveRightFollower2 = 4;
+    public static final int kDriveLeftMaster1 = 3;
+    public static final int kDriveLeftFollower2 = 1;
+    public static final int kDriveRightMaster1 = 4;
+    public static final int kDriveRightFollower2 = 2;
 		public static final int kShooterMaster1 = 5;
 		public static final int kShooterFollower2 = 6;
 		public static final int kIntakeMaster1 = 7;
@@ -21,14 +22,24 @@ public class Constants {
 
 
 		// TODO: figure the motor configuration for conveyor
-		public static final int kConveyorFirstStageRight = 8;
-		public static final int kConveyorFirstStageLeft = 9;
-		public static final int kHopperMaster = 10;
-		public static final int kConveyorFinalStageBottom = 11;
-		public static final int kConveyorFinalStageTop = 12;
+		//public static final int kConveyorFirstStageRight = 8;
+		//public static final int kConveyorFirstStageLeft = 9;
+		//public static final int kHopperMaster = 10;
+		//public static final int kConveyorFinalStageBottom = 11;
+		//public static final int kConveyorFinalStageTop = 12;
+
+		public static final int kIntakeFirst = 8;
+		public static final int kIntakeLast = 0;
+		public static final int kConveyor = 10;
+
+
+
 
 		public static final int kClimberMaster1 = 13;
+		//public static final int kClimberFollower1 = ;
 		public static final int kClimberWinchMaster1 = 14;
+		//public static final int kClimberWinchRight = ;
+
 
 
 		public static final int kIntakeSolenoidLeft = 0;
