@@ -8,12 +8,10 @@ import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
 import com.team4.robot.subsystems.Climber;
+import com.team4.robot.subsystems.Climber.ClimberControlState;
 import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
-import com.team4.robot.subsystems.Shooter;
-import com.team4.robot.subsystems.Superstructure;
-import com.team4.robot.subsystems.Climber.ClimberControlState;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -42,12 +40,11 @@ public class Robot extends TimedRobot {
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
   Drive mDrive = Drive.getInstance();
-	Intake mIntake = Intake.getInstance();
-	Shooter mShooter = Shooter.getInstance();
+	Intake mIntake = new Intake();
+	// Shooter mShooter = Shooter.getInstance();
 	//Conveyor mConveyor = Conveyor.getInstance();
   Conveyor2 mConveyor2 = Conveyor2.getInstance();
   Climber mClimber = Climber.getInstance();
-	Superstructure mSuperstructure = Superstructure.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
@@ -65,11 +62,10 @@ public class Robot extends TimedRobot {
     mSubsystemManager.setSubsystems(
         mDrive,
 				mIntake,
-				mShooter,
+				// mShooter,
         //mConveyor,
         mConveyor2,
-        mClimber,
-				mSuperstructure
+        mClimber
     );
 
 		  //mCompressor.enableDigital();
@@ -143,10 +139,8 @@ public class Robot extends TimedRobot {
 
 
 		if (isDeployIntake) {
-			mIntake.deploy();
-		} else {
-			mIntake.stow();
-		}
+			mIntake.moveArm();
+		} 
 		
     // TODO: Fix Me
 		// Toggles the Compressor's Status. Only runs if pressure is needed
@@ -159,11 +153,11 @@ public class Robot extends TimedRobot {
     } 		
 
 		if (mOperatorController.intakeForward()) {
-			  mIntake.state = FORWARD;
+			  mIntake.state = Intake.mState.FORWARD;
 		} else if (mOperatorController.intakeBackwards()) {
-        mIntake.state = REVERSE;
+        mIntake.state = Intake.mState.REVERSE;
 		} else {
-        mIntake.state = IDLE;
+        mIntake.state = Intake.mState.IDLE;
 		}
 
     
@@ -173,14 +167,9 @@ public class Robot extends TimedRobot {
 		} else {
 			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
 		}
+  
+
     
-
-		if (isShooterOn) {
-			mShooter.setRPM(-1000);
-		} else {
-			mShooter.setRPM(0);
-		}
-
     if (mDriverController.getClimbUp())
     {
       mClimber.setClimb(ClimberControlState.CLIMB_UP);

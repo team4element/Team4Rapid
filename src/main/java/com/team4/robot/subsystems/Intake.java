@@ -6,21 +6,12 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
-import com.team4.robot.controllers.OperatorController;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
-import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
 
 
 public class Intake extends Subsystem {
-	// Internal State
-	private static Intake mInstance = null;
-
-
 	//CHANGE IN CODE
 	// Hardware
 	private final TalonSRX mIntakeMotor1;
@@ -31,19 +22,18 @@ public class Intake extends Subsystem {
 	// Performance Settings
 	private static final double kIntakeForwardPower = 0.75;
 	private static final double kIntakeReversePower = -0.25;
+	private static final double kIntakeOff = 0d;
 	// private static final double kLightIntakePower = 0.1;
 
-	enum mState {
+	public enum mState {
 		FORWARD,
 		REVERSE,
 		IDLE
 	}
 
-	public mState state = IDLE;
+	public mState state = mState.IDLE;
 
-
-	private Intake() {
-		mPeriodicIO = new IntakePeriodicIO();
+	public Intake() {
 
 
 		mIntakeMotor1 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeMaster1);
@@ -81,14 +71,14 @@ public class Intake extends Subsystem {
 				motorsReverse();
 				break;
 			default:
-				state = IDLE;
+				state = mState.IDLE;
 				break;
 		}
 	}
 
 	@Override
 	public void onDisableLoop() {
-		state = IDLE;
+		state = mState.IDLE;
 		
 	}
 
@@ -99,23 +89,23 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		mIntakeMotor1.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-		mIntakeMotor2.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+	}
 
-		mLeftPiston.set(mPeriodicIO.isStowed);
-		mRightPiston.set(mPeriodicIO.isStowed);
+	public void moveArm()
+	{
+		mLeftPiston.toggle();;
+		mRightPiston.toggle();
 	}
 
 	private void motorsForward() {
-		mIntakeMotor1.set(kIntakeForwardPower);
+		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeForwardPower);
 	}
 
 	private void motorsReverse() {
-		mIntakeMotor1.set(kIntakeReversePower);
+		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeReversePower);
 	}
 
 	private void motorsOff(){
-		mIntakeMotor1.set(0);
-
+		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeOff);
 	}
 }
