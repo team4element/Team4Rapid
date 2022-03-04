@@ -72,7 +72,7 @@ public class Robot extends TimedRobot {
 				mSuperstructure
     );
 
-		  mCompressor.enableDigital();
+		  //mCompressor.enableDigital();
   }
 
   /**
@@ -142,6 +142,8 @@ public class Robot extends TimedRobot {
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
+
+
 		if (isDeployIntake) {
 			mIntake.deploy();
 		} else {
@@ -151,7 +153,9 @@ public class Robot extends TimedRobot {
     // TODO: Fix Me
 		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (mOperatorController.getCompressorToggle()) {
+
 			mCompressor.enableDigital();
+
 		} else {
 			mCompressor.disable();
     } 		

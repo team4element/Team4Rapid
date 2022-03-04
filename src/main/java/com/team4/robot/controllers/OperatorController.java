@@ -35,6 +35,6 @@ public class OperatorController {
 
     public boolean getCompressorToggle()
     {
-        return mController.getRightStickButtonPressed();
+        return mController.getBButton();
     }
 }
