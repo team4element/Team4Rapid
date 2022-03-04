@@ -161,7 +161,7 @@ public class Robot extends TimedRobot {
 
 
 
-    if(mOperatorController.intakeForward()){
+    if(mOperatorController.conveyorForward()){
       mConveyor.state = Conveyor.mState.FORWARD;
     } else if (mOperatorController.conveyorBackward()){
       mConveyor.state = Conveyor.mState.REVERSE;
