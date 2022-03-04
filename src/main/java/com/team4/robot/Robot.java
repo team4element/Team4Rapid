@@ -45,7 +45,7 @@ public class Robot extends TimedRobot {
 	Intake mIntake = new Intake();
 	Shooter mShooter = Shooter.getInstance();
   Conveyor mConveyor = new Conveyor();
-  Climber mClimber = Climber.getInstance();
+  Climber mClimber = new Climber();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
@@ -141,8 +141,6 @@ public class Robot extends TimedRobot {
 			mIntake.moveArm();
 		} 
 		
-    // TODO: Fix Me
-		// Toggles the Compressor's Status. Only runs if pressure is needed
 		if (mOperatorController.getCompressorToggle()) {
 
 			mCompressor.enableDigital();

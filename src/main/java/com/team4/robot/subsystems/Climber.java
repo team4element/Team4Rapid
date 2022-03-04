@@ -4,17 +4,6 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonFX;
 import com.team4.robot.Constants;
 
-import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Log;
-
-class ClimberPeriodicIO implements Loggable
-{
-    @Log
-    public double demand;
-}
-
-
-
 public class Climber extends Subsystem {
 
     public enum ClimberControlState{
@@ -23,32 +12,21 @@ public class Climber extends Subsystem {
         IDLE
     }
 
-    private static Climber mInstance = null;
-
     private final TalonFX mLeftMotor, mRightMotor;
     private ClimberControlState mControlState = ClimberControlState.IDLE;
-    private ClimberPeriodicIO mPeriodicIO = new ClimberPeriodicIO();
-    public static Climber getInstance()
-    {
-        if (mInstance == null)
-        {
-            mInstance = new Climber();
-        }
-    
-        return mInstance;
-    }
+    private static double kClimbPower = 1;
+    private static double kClimbOff = 0;
+   
 
-
-    private Climber()
+    public Climber()
     {
         mLeftMotor = new TalonFX(Constants.kClimberLeftMotor);
         mRightMotor = new TalonFX(Constants.kClimberRightMotor);
-        mRightMotor.follow(mLeftMotor);
+        mRightMotor.follow(mLeftMotor);  
     }
 
     @Override
     public void readPeriodicInputs() {
-        // TODO Auto-generated method stub
         
     }
 
@@ -59,30 +37,46 @@ public class Climber extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        mLeftMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+        System.out.println("Climb left pos:" + mLeftMotor.getSelectedSensorPosition(0) + "climb right pos: " + mRightMotor.getSelectedSensorPosition(0));
     }
 
     @Override
     public void onLoop(double timestamp) {
         switch(mControlState){
             case CLIMB_UP:
-                mPeriodicIO.demand = 1;
+                climbUp();
                 break;
             case CLIMB_DOWN:
-                mPeriodicIO.demand = -1;
+                climbDown();
                 break;
             case IDLE:
-                mPeriodicIO.demand = 0;
+                motorsOff();
                 break;
             default:
+                mControlState = ClimberControlState.IDLE;
                 break;
         }
     }
 
     @Override
     public void onDisableLoop() {
-        mControlState = ClimberControlState.IDLE;
-        
+        mControlState = ClimberControlState.IDLE;   
     }
-    
+
+    private void climbUp() {
+        mLeftMotor.set(ControlMode.PercentOutput, kClimbPower);
+    }
+
+    private void climbDown(){
+        mLeftMotor.set(ControlMode.PercentOutput, -kClimbPower);
+    }
+
+    private void motorsOff(){
+        mLeftMotor.set(ControlMode.PercentOutput, kClimbOff);
+    }
+
+    public void resetEncoders(){
+        mLeftMotor.setSelectedSensorPosition(0);
+        mRightMotor.setSelectedSensorPosition(0);
+    }
 }
