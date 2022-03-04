@@ -26,7 +26,8 @@ public class Climber extends Subsystem {
     {
         mLeftMotor = new TalonFX(Constants.kClimberLeftMotor);
         mRightMotor = new TalonFX(Constants.kClimberRightMotor);
-        mRightMotor.follow(mLeftMotor);  
+        mRightMotor.follow(mLeftMotor);
+        mLeftMotor.setInverted(true);  
         mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbLeftPiston);
 		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbRightPiston);
     }
@@ -60,7 +61,7 @@ public class Climber extends Subsystem {
                 break;
             case IDLE:
             if(mRightPiston.get() == true && mLeftPiston.get() == true){
-                unlockWinch();
+                lockWinch();
                 }  
                 motorsOff();
                 break;
