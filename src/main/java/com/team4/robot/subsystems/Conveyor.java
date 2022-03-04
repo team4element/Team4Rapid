@@ -29,17 +29,10 @@ public class Conveyor extends Subsystem {
 		mConveyor = new WPI_TalonFX(Constants.kConveyor);
 
 		// mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		// mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		
 
 	}
 
-	/**
-	 * If my mWantedState is:
-	 * INTAKE: If it is within kIntakeStowTime, then I'm going to IDLE.
-	 * EXHAUST: Return Exhaust
-	 * IDLE: If it is within the timeframe where I last stowed, I actually want to LIGHT_INTAKE
-	 * DEFAULT: IDLE
-	 */
 	@Override
 	public void onLoop(double timestamp) {
 		// now we have to act upon this new system state.
