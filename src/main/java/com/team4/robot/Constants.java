@@ -26,8 +26,8 @@ public class Constants {
 	public static final int kClimberLeftMotor = 13;
 	public static final int kClimberRightMotor = 14;
 	
-	public static final int kIntakeSolenoidLeft = 0;
-	public static final int kIntakeSolenoidRight = 1;
+	public static final int kIntakeSolenoidLeft = 7;
+	public static final int kIntakeSolenoidRight = 4;
 
 
 
