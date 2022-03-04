@@ -26,12 +26,12 @@ public class DriverController {
 
 		public boolean getClimbUp()
 		{
-			return mController.getPOV() == 90;
+			return mController.getPOV() == 0;
 		}
 
 		public boolean getClimbDown()
 		{
-			return mController.getPOV() == 270;
+			return mController.getPOV() == 180;
 		}
 		
 }
