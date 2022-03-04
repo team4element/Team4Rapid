@@ -12,6 +12,8 @@ import com.team4.robot.subsystems.Climber.ClimberControlState;
 import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
+import com.team4.robot.subsystems.Shooter;
+import com.team4.robot.subsystems.Shooter.ShooterControlState;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -41,7 +43,7 @@ public class Robot extends TimedRobot {
 
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = new Intake();
-	// Shooter mShooter = Shooter.getInstance();
+	Shooter mShooter = Shooter.getInstance();
 	//Conveyor mConveyor = Conveyor.getInstance();
   Conveyor2 mConveyor2 = Conveyor2.getInstance();
   Climber mClimber = Climber.getInstance();
@@ -167,7 +169,13 @@ public class Robot extends TimedRobot {
 		} else {
 			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
 		}
-  
+    
+
+		if (isShooterOn) {
+			mShooter.setControlState(ShooterControlState.VELOCITY);
+		} else {
+			mShooter.setControlState(ShooterControlState.IDLE);;
+		}
 
     
     if (mDriverController.getClimbUp())
@@ -180,7 +188,7 @@ public class Robot extends TimedRobot {
     }
     else
     {
-
+      mClimber.setClimb(ClimberControlState.IDLE);
     }
 
 		// if (mControlBoard.getExhaust()) {

@@ -57,7 +57,7 @@ class DrivePeriodicIO implements Loggable {
 	public double right_feedforward;
 }
 
-public class Drive extends Subsystem<DrivePeriodicIO> {
+public class Drive extends Subsystem {
 	private static Drive mInstance = null;
 
 	// Motors that controls wheels

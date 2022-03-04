@@ -15,7 +15,7 @@ class ClimberPeriodicIO implements Loggable
 
 
 
-public class Climber extends Subsystem<ClimberPeriodicIO>{
+public class Climber extends Subsystem {
 
     public enum ClimberControlState{
         CLIMB_UP,
