@@ -71,4 +71,12 @@ public class Constants {
 		public static final double kLoopTime = 0.020;
 
 		public static final int kCompressorID = 1;
+
+		public static final double kShooterKp = 1.1;
+		public static final double kShooterKi = 0.0;
+		public static final double kShooterKd = 1.25;
+		public static final double kShooterKf = .0725;
+		public static final int kShooterIZone = 0;
+		public static final double kShooterRampRate = 0.0;
+		public static final double kShooterEnconderPPR = 2048.0;
 }

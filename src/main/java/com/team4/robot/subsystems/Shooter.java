@@ -1,27 +1,20 @@
 package com.team4.robot.subsystems;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix.motorcontrol.ControlFrame;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.StatusFrame;
+import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
+import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
+import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.team4.lib.drivers.LazyTalonFX;
+import com.team4.lib.drivers.TalonUtil;
+import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
-import com.team4.robot.Robot;
 
-import edu.wpi.first.math.Nat;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.controller.LinearQuadraticRegulator;
-import edu.wpi.first.math.estimator.KalmanFilter;
-import edu.wpi.first.math.numbers.N1;
-import edu.wpi.first.math.system.LinearSystem;
-import edu.wpi.first.math.system.LinearSystemLoop;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.system.plant.LinearSystemId;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.Timer;
 import io.github.oblarg.oblog.Loggable;
-import io.github.oblarg.oblog.annotations.Config;
-import io.github.oblarg.oblog.annotations.Log;
-import edu.wpi.first.wpilibj.RobotController;
-import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 
 /**
  * RPM
@@ -37,209 +30,193 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
 class ShooterPeriodicIO implements Loggable {
 	// Inputs
 	// These are in Motor Units
-	public double master_rpm_ticks_per_100ms = 0.0;
-	public double slave_rpm_ticks_per_100ms = 0.0;
-
-	// These are in rpm units
-	public double master_velocity_rpm = 0.0;
-	public double slave_velocity_rpm = 0.0;
-
-	public double radiansPerSecond = 0.0;
-
-	// Outputs
-	/**
-	 * RPM
-	 */
-	public double demand = 0.0;
+	public double timestamp;
+        public double demand;
+        public double feedforward;
+        public double position_ticks;
+        public double accel;
+        public double velocity;
 }
 
-public class Shooter extends Subsystem<ShooterPeriodicIO> {
+public class Shooter extends Subsystem {
 	private static Shooter mInstance = null;
 	private ShooterPeriodicIO mPeriodicIO;
 
-	private final WPI_TalonFX mMasterMotor, mSlaveMotor;
+	private final LazyTalonFX mMasterMotor, mSlaveMotor;
 
 	private ShooterControlState mControlState = ShooterControlState.OPEN_LOOP;
 
 
-	/**
-	 * This is the Physics Based Controller used to power the flywheel.
-	 * It uses a State-Space Model of a spinning mass about an axis.
-	 * 
-	 * States: RPM of the flywheel.
-	 * Inputs: Voltage supplied to motors.
-	 * Outputs: RPM of the flywheel
-	 */
-	private final LinearSystem<N1, N1, N1> mFlywheelPlant;
-	private final KalmanFilter<N1, N1, N1> mObserver;
-	private final LinearQuadraticRegulator<N1, N1, N1> mController;
-	private final LinearSystemLoop<N1, N1, N1> mLoop;
+	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
+		talon.setInverted(!left);
+		// general
+		// This is a manual override to enable drivetrain simulation to work.
+		// Simulation will be very useful for debugging auton modes.
 
-	/**
-	 * Objects to simulate the flywheel
-	 * 
-	 */
-	private FlywheelSim mFlywheelSim;
-	private TalonFXSimCollection mMasterSim;
+		if (main_encoder_talon) {
+			// Talons are configured to perform different motor functions at different
+			// frequencies.
+			// These can be changed by calling setStatusFramePeriod().
+			// Status1 (10ms): Motor Output Refresh
+			// Status 2 (20ms): Sensor Updates
+			// Status 3 (>100ms): Quadrature Information
+			// Status 4 (>100ms): Analog Input/Supply Battery Voltage
+			// Full Documentation can be found here
+			// https://docs.ctre-phoenix.com/en/stable/ch18_CommonAPI.html#setting-status-frame-periods
+
+			TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
+					"could not set drive feedback frame");
+
+			// The Talon Motor Controller can have different feedback sensors.
+			// Integrated Sensor: built in encoder
+			// Other options are found here.
+			// https://docs.ctre-phoenix.com/en/stable/ch14_MCSensor.html?highlight=configSelectedFeedbackSensor#sensor-options
+			TalonUtil.checkError(
+					talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
+					"could not detect motor encoder"); // primary closed-loop, 100 ms timeout
+
+			// Used to ensure that positive sensor readings correspond to positive
+			// PercentOutput
+			talon.setSensorPhase(true);
+		}
+
+		// implement if desire current limit
+		// checkError(talon.configSupplyCurrentLimit(new
+		// SupplyCurrentLimitConfiguration(true, 40, 50, .5), kLongCANTimeoutMs), "Could
+		// not set supply current limits");
+		// checkError(talon.configStatorCurrentLimit(new
+		// StatorCurrentLimitConfiguration(true, 60, 60, 0.2), kLongCANTimeoutMs),
+		// "Could not set stator current limits");
+
+		// implement if desire voltage compensation
+		// checkError(talon.configVoltageCompSaturation(12.0, kLongCANTimeoutMs), "could
+		// not config voltage comp saturation");
+		// talon.enableVoltageCompensation(true);
+	}
+
 
 	private Shooter() {
 		mPeriodicIO = new ShooterPeriodicIO();
-
-		TalonFXConfiguration motorConfig = new TalonFXConfiguration();
-
-		mMasterMotor = new WPI_TalonFX(Constants.kShooterMaster1);
-		mSlaveMotor = new WPI_TalonFX(Constants.kShooterFollower2);
-
-		mMasterMotor.configAllSettings(motorConfig);
-		mSlaveMotor.configAllSettings(motorConfig);
-
-		mMasterMotor.setInverted(false);
-		mSlaveMotor.setInverted(true);
 		
-		mFlywheelPlant = LinearSystemId.identifyVelocitySystem(0.73336, 0.4564);
-		// mFlywheelPlant = LinearSystemId.createFlywheelSystem(DCMotor.getFalcon500(2), Constants.kShooterMomentOfInertia, Constants.kShooterGearRatio);
-		mObserver = new KalmanFilter<N1, N1, N1>(
-			Nat.N1(), // System State (1D) (rpm)
-			Nat.N1(), // Outputs (1D) (rpm)
-			mFlywheelPlant, // Plant (Physical Modal)
-			VecBuilder.fill(3.0), // Plant Deviation (Q in LQR)
-			VecBuilder.fill(0.01), // Measurement Deviation (R in LQR)
-			Constants.kLoopTime // Discrete Time Steps
-		);
-		mController = new LinearQuadraticRegulator<N1, N1, N1>(
-			mFlywheelPlant, // Plant
-			VecBuilder.fill(500.0), // State Error Tolerance (Q matrix in LQR)
-			VecBuilder.fill(12.0), // Measurement Error Tolerance (R matrix in LQR)
-			Constants.kLoopTime
-		);
-		mLoop = new LinearSystemLoop<N1, N1, N1>(
-			mFlywheelPlant,
-			mController,
-			mObserver,
-			12.0,
-			Constants.kLoopTime
-		);
+		mMasterMotor = new LazyTalonFX(Constants.kShooterMaster1);
+		
+		configureTalonFX(mMasterMotor, true, true);
+		
+		mMasterMotor.changeMotionControlFramePeriod(100);
+        mMasterMotor.setControlFramePeriod(ControlFrame.Control_3_General, 10);
+        mMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General,
+		10, Constants.kCANTimeoutMs);
+        mMasterMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0,
+		100, Constants.kCANTimeoutMs);
+		
+		
+        // mSlaveMotor = CANSpeedControllerFactory.createDefaultTalonFX(ShooterConstants.kSlaveMotorId);
+        mSlaveMotor = new LazyTalonFX(Constants.kShooterFollower2);
+		configureTalonFX(mMasterMotor, false, false);
+        mSlaveMotor.changeMotionControlFramePeriod(100);
+        mSlaveMotor.setControlFramePeriod(ControlFrame.Control_3_General, 10);
+        mSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General,
+                10, Constants.kCANTimeoutMs);
+        mSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0,
+                100, Constants.kCANTimeoutMs);
+
+        //TODO: test follow mode
+        mSlaveMotor.follow(mMasterMotor);
 
 
-		if (Robot.isSimulation()) {
-			mFlywheelSim = new FlywheelSim(
-				mFlywheelPlant,
-				DCMotor.getFalcon500(1),
-				Constants.kShooterGearRatio
-			);
-			
-			mMasterSim = mMasterMotor.getSimCollection();
-		}
+        mMasterMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        mSlaveMotor.setInverted(TalonFXInvertType.CounterClockwise);
+
+        setBrakeMode(false);
+		
+		reloadGains();
 	}
 
 	public enum ShooterControlState {
 		OPEN_LOOP,
-		VEOLOCITY,
+		VELOCITY,
+		IDLE
 	}
 
 	// Used to override shooter speed
-	public void setOpenLoop(double power) {
-		if (mControlState != ShooterControlState.OPEN_LOOP) {
-			mControlState = ShooterControlState.OPEN_LOOP;
-		}
+	public void setOpenLoop(double pow){
+        mPeriodicIO.demand = pow;
+    }
 
-		mPeriodicIO.demand = power;
-	}
-
-	public void setRPM(double desiredRPM) {
-		if (mControlState != ShooterControlState.VEOLOCITY) {
-			mControlState = ShooterControlState.VEOLOCITY;
-		}
-
-		mPeriodicIO.demand = desiredRPM;
-	}
-
-	public double getRadiansPerSecond() {
-		return (mMasterMotor.getSelectedSensorVelocity() * 10) * (2.0 * Math.PI / Constants.kShooterTicksPerRevolution / Constants.kShooterGearRatio);
+	public synchronized void setBrakeMode(boolean on) {
+            NeutralMode mode = on ? NeutralMode.Brake : NeutralMode.Coast;
+            mMasterMotor.setNeutralMode(mode);
+            mSlaveMotor.setNeutralMode(mode);
 	}
 
 	@Override
 	public void onLoop(double timestamp) {
+		synchronized(this){
+			switch (mControlState){
+				case OPEN_LOOP:
+					setOpenLoop(1);
+					break;
+				case VELOCITY:
+					// handleDistanceRPM(VisionTracker.getInstance().getTargetDistance());
+					setVelocity(3000, 0);
+					break;
+				case IDLE:
+					setOpenLoop(0);
+				default:
+					break;
+			}
+		}
 	}
 
 	@Override
 	public void onDisableLoop() {
+		mMasterMotor.set(TalonFXControlMode.PercentOutput, 0);
+        mSlaveMotor.set(TalonFXControlMode.PercentOutput, 0);    
 	}
 
 	@Override
 	public void readPeriodicInputs() {
-		mPeriodicIO.master_rpm_ticks_per_100ms = mMasterMotor.getSelectedSensorVelocity(0);
-		mPeriodicIO.slave_rpm_ticks_per_100ms = mSlaveMotor.getSelectedSensorVelocity(0);
-
-		mPeriodicIO.radiansPerSecond = getRadiansPerSecond();
+		mPeriodicIO.timestamp = Timer.getFPGATimestamp();
+        mPeriodicIO.position_ticks = mMasterMotor.getSelectedSensorPosition(0);
+       
+        mPeriodicIO.velocity = mMasterMotor.getSelectedSensorVelocity(0);
 	}
 
 	@Override
 	public void writePeriodicOutputs() {
-		if (mControlState == ShooterControlState.OPEN_LOOP) {
-			mMasterMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-			mSlaveMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
-		}
-
-		if (mControlState == ShooterControlState.VEOLOCITY) {
-			// System.out.println("Demand" + mPeriodicIO.demand);
-			mLoop.setNextR(VecBuilder.fill(Units.rotationsPerMinuteToRadiansPerSecond(mPeriodicIO.demand)));
-			mLoop.correct(VecBuilder.fill(getRadiansPerSecond()));
-			mLoop.predict(Constants.kLoopTime);
-			double nextVoltage = mLoop.getU(0);
-			mMasterMotor.setVoltage(mPeriodicIO.demand == 0 ? 0 : nextVoltage);
-			mSlaveMotor.setVoltage(mPeriodicIO.demand == 0 ? 0 : nextVoltage);
-		}
+		if(mControlState == ShooterControlState.OPEN_LOOP){
+            mMasterMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+            mSlaveMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+        }else if (mControlState == ShooterControlState.VELOCITY){
+            mMasterMotor.set(TalonFXControlMode.Velocity, mPeriodicIO.demand);
+            mSlaveMotor.set(TalonFXControlMode.Velocity, mPeriodicIO.demand);
+            
+        }else{ //force default Open Loop
+            mMasterMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+            mSlaveMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+        }
 	}
+
+	public void setVelocity(double demand, double ff){
+        if(mControlState != ShooterControlState.VELOCITY){
+            configureVelocityTalon();
+            mControlState = ShooterControlState.VELOCITY;
+        }
+
+
+
+        mPeriodicIO.demand = ElementMath.rpmToTicksPer100ms(demand, Constants.kShooterEnconderPPR);
+        mPeriodicIO.feedforward = ff;
+    }
 
 	@Override
 	public void onSimulationLoop() {
-		mFlywheelSim.setInput(mMasterMotor.get() * RobotController.getInputVoltage());
-		mFlywheelSim.update(Constants.kLoopTime);
-
-		double flywheelNativeVelocity = mFlywheelSim.getAngularVelocityRPM() * Constants.kShooterTicksPerRevolution / (60 * 10) * Constants.kShooterGearRatio;
-		// System.out.println("RPM: " + Units.radiansPerSecondToRotationsPerMinute(mFlywheelSim.getAngularVelocityRadPerSec()));
-		double flywheelNativePositionDelta = flywheelNativeVelocity * 10 * Constants.kLoopTime;
-
-		mMasterSim.setIntegratedSensorVelocity((int) flywheelNativeVelocity);
-		mMasterSim.addIntegratedSensorPosition((int) flywheelNativePositionDelta);
-
-		mMasterSim.setBusVoltage(RobotController.getBatteryVoltage());
 	}
 
-	@Log(rowIndex=1, columnIndex=0, width=2, height=1, name="RPM")
-	public double getRPM() {
-		return Units.radiansPerSecondToRotationsPerMinute(getRadiansPerSecond());
-	}
 
-	@Log(rowIndex = 0, columnIndex = 2, width = 2, height = 1, name = "RPM Target")
-	public double getRPMTarget() {
-		return 0;
-	}
-
-	@Log(rowIndex = 1, columnIndex = 2, width = 2, height = 1, name = "RPM Delta")
-	public double getRPMDelta() {
-		try {
-			return Math.abs(getRPM() - getRPMTarget());
-		} catch (Exception e) {
-			return -1;
-		}
-	}
-
-	@Config(rowIndex = 2, columnIndex = 0, width = 2, height = 1, name = "Set Motor Percent", defaultValueNumeric = 0)
-  private void set(double percent) {
-    mMasterMotor.set(percent);
-  }
-
-	@Log(rowIndex = 2, columnIndex = 2, width = 2, height = 1, name = "Flywheel Percent")
-  public double getMotorPercent(){
-    return mMasterMotor.get();
-  }
-
-	@Config(rowIndex = 3, columnIndex = 0, width = 2, height = 1, name="Set RPM Target", defaultValueNumeric = 0)
-  private void setRPMTarget(double setpoint){
-    System.out.println("Setting target to " + setpoint);
-  }
+	public void setControlState(ShooterControlState state){
+        mControlState = state;
+    }
 
 	public static Shooter getInstance() {
 		if (mInstance == null) {
@@ -248,4 +225,37 @@ public class Shooter extends Subsystem<ShooterPeriodicIO> {
 
 		return mInstance;
 	}
+
+	public void reloadGains(){
+        mMasterMotor.config_kP(0, Constants.kShooterKp);
+        mMasterMotor.config_kI(0, Constants.kShooterKi);
+        mMasterMotor.config_kD(0, Constants.kShooterKd);
+        mMasterMotor.config_kF(0, Constants.kShooterKf);
+
+        mSlaveMotor.config_kP(0, Constants.kShooterKp);
+        mSlaveMotor.config_kI(0, Constants.kShooterKi);
+        mSlaveMotor.config_kD(0, Constants.kShooterKd);
+        mSlaveMotor.config_kF(0, Constants.kShooterKf);
+    }
+
+	public void zeroSensors() {
+        resetEncoders();
+    }
+
+    public synchronized void resetEncoders() {
+        mMasterMotor.setSelectedSensorPosition(0, 0, 0);
+        mSlaveMotor.setSelectedSensorPosition(0, 0, 0);
+        mPeriodicIO = new ShooterPeriodicIO();
+    }
+
+	private void configureVelocityTalon(){
+
+        // mMasterMotor.setNeutralMode(NeutralMode.Brake);
+        mMasterMotor.selectProfileSlot(0, 0);
+    
+        mMasterMotor.configClosedloopRamp(0);
+    
+
+        System.out.println("Switching shooter to velocity");
+    }
 }

@@ -14,6 +14,7 @@ import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
 import com.team4.robot.subsystems.Superstructure;
 import com.team4.robot.subsystems.Climber.ClimberControlState;
+import com.team4.robot.subsystems.Shooter.ShooterControlState;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -176,9 +177,9 @@ public class Robot extends TimedRobot {
     
 
 		if (isShooterOn) {
-			mShooter.setRPM(-1000);
+			mShooter.setControlState(ShooterControlState.VELOCITY);
 		} else {
-			mShooter.setRPM(0);
+			mShooter.setControlState(ShooterControlState.IDLE);;
 		}
 
     if (mDriverController.getClimbUp())
@@ -191,7 +192,7 @@ public class Robot extends TimedRobot {
     }
     else
     {
-
+      mClimber.setClimb(ClimberControlState.IDLE);
     }
 
 		// if (mControlBoard.getExhaust()) {

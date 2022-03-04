@@ -21,7 +21,7 @@ class IntakePeriodicIO implements Loggable {
 	public boolean isStowed = true;
 }
 
-public class Intake extends Subsystem<IntakePeriodicIO> {
+public class Intake extends Subsystem {
 	// Internal State
 	private static Intake mInstance = null;
 	private IntakePeriodicIO mPeriodicIO;

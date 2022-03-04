@@ -4,7 +4,7 @@ class SuperstructurePeriodicIO {
 
 }
 
-public class Superstructure extends Subsystem<SuperstructurePeriodicIO> {
+public class Superstructure extends Subsystem {
 	private static Superstructure mInstance = null;
 	private SuperstructurePeriodicIO mPeriodicIO;
 	private SuperstructureState mCurrentState = SuperstructureState.IDLE;

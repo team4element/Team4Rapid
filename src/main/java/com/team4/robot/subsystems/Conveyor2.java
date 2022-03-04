@@ -14,7 +14,7 @@ class Conveyor2PeriodicIO implements Loggable {
 }
 
 
-public class Conveyor2 extends Subsystem<Conveyor2PeriodicIO> {
+public class Conveyor2 extends Subsystem {
 	// Internal State
 	private static Conveyor2 mInstance = null;
 	private Conveyor2PeriodicIO mPeriodicIO;
