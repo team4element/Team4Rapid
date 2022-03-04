@@ -33,5 +33,9 @@ public class DriverController {
 		{
 			return mController.getPOV() == 180;
 		}
+
+		public boolean changeWinch(){
+			return mController.getPOV() == 270 || mController.getPOV() == 90;
+		}
 		
 }

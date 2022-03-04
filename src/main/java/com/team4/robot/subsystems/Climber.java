@@ -51,18 +51,12 @@ public class Climber extends Subsystem {
     public void onLoop(double timestamp) {
         switch(mControlState){
             case CLIMB_UP:
-                if(mRightPiston.get() == false && mLeftPiston.get() == false){
-                    unlockWinch();
-                }
                 climbUp();
                 break;
             case CLIMB_DOWN:
                 climbDown();
                 break;
             case IDLE:
-            if(mRightPiston.get() == true && mLeftPiston.get() == true){
-                lockWinch();
-                }  
                 motorsOff();
                 break;
             default:
@@ -88,21 +82,10 @@ public class Climber extends Subsystem {
         mLeftMotor.set(ControlMode.PercentOutput, kClimbOff);
     }
 
-
-    private void unlockWinch(){
+    public void toggleWinch(){
         mLeftPiston.toggle();
         mRightPiston.toggle();
-        mRightPiston.set(true);
-        mLeftPiston.set(true);
     }
-    
-    private void lockWinch(){
-        mLeftPiston.toggle();
-        mRightPiston.toggle();
-        mRightPiston.set(false);
-        mLeftPiston.set(false);
-    }
-
 
     public void resetEncoders(){
         mLeftMotor.setSelectedSensorPosition(0);

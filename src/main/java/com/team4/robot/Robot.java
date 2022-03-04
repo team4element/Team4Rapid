@@ -115,6 +115,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
     System.out.println("Teleop Init!");
     mClimber.resetEncoders();
+    mClimber.toggleWinch();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
   }
@@ -158,8 +159,6 @@ public class Robot extends TimedRobot {
         mIntake.state = Intake.mState.IDLE;
 		}
 
-
-
     if(mOperatorController.conveyorForward()){
       mConveyor.state = Conveyor.mState.FORWARD;
     } else if (mOperatorController.conveyorBackward()){
@@ -168,14 +167,15 @@ public class Robot extends TimedRobot {
       mConveyor.state = Conveyor.mState.IDLE;
     }
 
-
-
 		if (isShooterOn) {
 			mShooter.setControlState(ShooterControlState.VELOCITY);
 		} else {
 			mShooter.setControlState(ShooterControlState.IDLE);;
 		}
 
+    if(mDriverController.changeWinch()){
+      mClimber.toggleWinch();
+    }
     
     if (mDriverController.getClimbUp())
     {
