@@ -54,8 +54,8 @@ public class Intake extends Subsystem {
 		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
 		// TODO: Matthew: Is our PCM on the default module?
-		mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
-		mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
+		mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
+		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
 	}
 
 	@Override
