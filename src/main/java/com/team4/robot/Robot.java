@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     mSubsystemManager.setSubsystems(
         mDrive,
 				mIntake,
-				// mShooter,
+				mShooter,
         mConveyor,
         mClimber
     );
