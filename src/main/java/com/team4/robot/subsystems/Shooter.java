@@ -34,26 +34,9 @@ import edu.wpi.first.wpilibj.simulation.FlywheelSim;
  * 
  * 
  */
-class ShooterPeriodicIO implements Loggable {
-	// Inputs
-	// These are in Motor Units
-	public double master_rpm_ticks_per_100ms = 0.0;
-	public double slave_rpm_ticks_per_100ms = 0.0;
 
-	// These are in rpm units
-	public double master_velocity_rpm = 0.0;
-	public double slave_velocity_rpm = 0.0;
 
-	public double radiansPerSecond = 0.0;
-
-	// Outputs
-	/**
-	 * RPM
-	 */
-	public double demand = 0.0;
-}
-
-public class Shooter extends Subsystem<ShooterPeriodicIO> {
+public class Shooter extends Subsystem {
 	private static Shooter mInstance = null;
 	private ShooterPeriodicIO mPeriodicIO;
 

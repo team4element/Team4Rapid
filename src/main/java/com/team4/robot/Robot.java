@@ -134,8 +134,6 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		boolean isExhaust = mOperatorController.getExhaust();
-		boolean isIntake = mOperatorController.getIntake();
 		boolean isShooterOn = mOperatorController.getIsShooterOn();
     
     boolean isConveyor2 = mOperatorController.getConveyor();
@@ -160,14 +158,12 @@ public class Robot extends TimedRobot {
 			mCompressor.disable();
     } 		
 
-		if (isIntake) {
-			mIntake.setWantedState(Intake.WantedState.INTAKE);
-      // mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
-
-		} else if (isExhaust) {
-			mIntake.setWantedState(Intake.WantedState.EXHAUST);
+		if (mOperatorController.intakeForward()) {
+			  mIntake.state = FORWARD;
+		} else if (mOperatorController.intakeBackwards()) {
+        mIntake.state = REVERSE;
 		} else {
-			mIntake.setWantedState(Intake.WantedState.IDLE);
+        mIntake.state = IDLE;
 		}
 
     

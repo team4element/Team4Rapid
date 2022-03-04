@@ -6,6 +6,7 @@ import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.robot.Constants;
+import com.team4.robot.controllers.OperatorController;
 
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -14,52 +15,32 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
-class IntakePeriodicIO implements Loggable {
-	@Log
-	public double demand;
-	@Log
-	public boolean isStowed = true;
-}
 
-public class Intake extends Subsystem<IntakePeriodicIO> {
+public class Intake extends Subsystem {
 	// Internal State
 	private static Intake mInstance = null;
-	private IntakePeriodicIO mPeriodicIO;
-	WantedState mWantedState = WantedState.IDLE;
-	SystemState mSystemState = SystemState.IDLE;
+
 
 	//CHANGE IN CODE
 	// Hardware
 	private final TalonSRX mIntakeMotor1;
 	private final TalonSRX mIntakeMotor2;
-	 private final Solenoid mLeftPiston;
-	 private final Solenoid mRightPiston;
+	private final Solenoid mLeftPiston;
+	private final Solenoid mRightPiston;
 
 	// Performance Settings
-	private static final double kIntakePower = 0.75;
-	private static final double kIntakeExhaustPower = -0.25;
-	private static final double kLightIntakePower = 0.1;
+	private static final double kIntakeForwardPower = 0.75;
+	private static final double kIntakeReversePower = -0.25;
+	// private static final double kLightIntakePower = 0.1;
 
-	private static final double kIntakeStowTime = 0.5; // seconds, time it takes to stow intake.
-	private static final double kLightIntakeTime = 1.0; // seconds. Time to run intake after stowing
-
-
-	// They run the intake for 1 second AFTER the intake was stowed at a light speed. For ball jamming issues prob.
-	private double mLastStowTime = 0.0;
-
-	
-	public static enum WantedState {
-		IDLE,
-		INTAKE,
-		EXHAUST, FEED,
+	enum mState {
+		FORWARD,
+		REVERSE,
+		IDLE
 	}
 
-	public static enum SystemState {
-		IDLE,
-		INTAKING,
-		EXHAUSTING,
-		LIGHT_INTAKE,
-	}
+	public mState state = IDLE;
+
 
 	private Intake() {
 		mPeriodicIO = new IntakePeriodicIO();
@@ -68,6 +49,7 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mIntakeMotor1 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeMaster1);
 		mIntakeMotor2 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeLast);
 		mIntakeMotor1.setInverted(true);
+		mIntakeMotor2.follow(mIntakeMotor1);
 		//mIntakeMotor2.setInverted(true);
 
 		// TODO: Document what these parameters mean
@@ -82,111 +64,35 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mIntakeMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
 		// TODO: Matthew: Is our PCM on the default module?
-		 mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
-		 mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
+		mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
+		mRightPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
 	}
 
-	public void deploy() {
-		mLastStowTime = 0.0;
-		mPeriodicIO.isStowed = false;
-	}
-
-	public void stow() {
-		if (!mPeriodicIO.isStowed) {
-			mLastStowTime = Timer.getFPGATimestamp();
-		}
-		mPeriodicIO.isStowed = true;
-		mPeriodicIO.demand = 0.0;
-	}
-
-	public void setWantedState(WantedState wantedState) {
-		mWantedState = wantedState;
-	}
-
-	/**
-	 * This method transforms the mWantedState into a mSystemState.
-	 * It overrides the mWantedState in two ways:
-	 * 1. A user cannot INTAKE and STOW simultaneously.
-	 * 2. The Intake will run at LIGHT_INTAKE after the intake is STOWED for a short duration.
-	 * 
-	 * @param timestamp
-	 * @return
-	 */
-	private SystemState getSystemStateFromWantedState(double timestamp) {
-		double timeSinceStowCommandIssued = timestamp - mLastStowTime; // Last time we stowed the intake
-		double timeAfterStowCompleted = timeSinceStowCommandIssued - kIntakeStowTime; // Time after stow finished
-		boolean isStowInProgress = timeAfterStowCompleted > 0;
-
-		switch (mWantedState) {
-			case INTAKE:
-			/*
-				 if (isStowInProgress) {
-				 	return SystemState.IDLE;
-				 }
-			*/
-				return SystemState.INTAKING;
-			case EXHAUST:
-				return SystemState.EXHAUSTING;
-			case IDLE:
-				if (!isStowInProgress && timeAfterStowCompleted < kLightIntakeTime) {
-					return SystemState.LIGHT_INTAKE;
-				}
-				return SystemState.IDLE;
-			default:
-				return SystemState.IDLE;
-		}
-	}
-	/**
-	 * If my mWantedState is:
-	 * INTAKE: If it is within kIntakeStowTime, then I'm going to IDLE.
-	 * EXHAUST: Return Exhaust
-	 * IDLE: If it is within the timeframe where I last stowed, I actually want to LIGHT_INTAKE
-	 * DEFAULT: IDLE
-	 */
 	@Override
 	public void onLoop(double timestamp) {
-		SmartDashboard.putString("WantedState", mWantedState.toString());
-		SmartDashboard.putString("SystemState", mSystemState.toString());
-		// Gets the current state of the robot. TODO??
-		SystemState newState = getSystemStateFromWantedState(timestamp);
-
-		if (newState != mSystemState) {
-			System.out.println("Intake Changing State!" + mSystemState + " -> " + newState);
-			mSystemState = newState;
-		}
-
-		// now we have to act upon this new system state.
-
-		switch (mSystemState) {
+		switch (state) {
 			case IDLE:
-				mPeriodicIO.demand = 0.0;
+				motorsOff();
 				break;
-			case INTAKING:
-				mPeriodicIO.demand = kIntakePower;
+			case FORWARD:
+				motorsForward();
 				break;
-			case EXHAUSTING:
-				mPeriodicIO.demand = kIntakeExhaustPower;
-				break;
-			case LIGHT_INTAKE:
-				mPeriodicIO.demand = kLightIntakePower;
+			case REVERSE:
+				motorsReverse();
 				break;
 			default:
-				System.out.println("Unexpected Intake System State: " + mSystemState);
+				state = IDLE;
 				break;
 		}
 	}
 
 	@Override
 	public void onDisableLoop() {
-		// Reset intake state to initial values
-		writePeriodicOutputs();
+		state = IDLE;
+		
 	}
 
 	@Override
-	// Maybe I can monitor current draw if a jam occurs? In that case, I can auto reject?
-	// Maybe I can monitor current draw. If there is a spike, I have intaken a ball!
-	// Maybe I can maintain a counter when I notice this?
-	// Or Maybe I have a break sensor to know when a ball has entered the robot!
 	public synchronized void readPeriodicInputs() {
 
 	}
@@ -196,15 +102,20 @@ public class Intake extends Subsystem<IntakePeriodicIO> {
 		mIntakeMotor1.set(ControlMode.PercentOutput, mPeriodicIO.demand);
 		mIntakeMotor2.set(ControlMode.PercentOutput, mPeriodicIO.demand);
 
-		 mLeftPiston.set(mPeriodicIO.isStowed);
-		 mRightPiston.set(mPeriodicIO.isStowed);
+		mLeftPiston.set(mPeriodicIO.isStowed);
+		mRightPiston.set(mPeriodicIO.isStowed);
 	}
 
-	public static Intake getInstance() {
-		if (mInstance == null) {
-			mInstance = new Intake();
-		}
+	private void motorsForward() {
+		mIntakeMotor1.set(kIntakeForwardPower);
+	}
 
-		return mInstance;
+	private void motorsReverse() {
+		mIntakeMotor1.set(kIntakeReversePower);
+	}
+
+	private void motorsOff(){
+		mIntakeMotor1.set(0);
+
 	}
 }

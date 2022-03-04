@@ -12,11 +12,11 @@ public class OperatorController {
         mController = new XboxController(Constants.kOperatorControlSlot);
     }
 
-    public boolean getIntake() {
+    public boolean intakeForward() {
         return mController.getLeftBumper();
     }
 
-    public boolean getExhaust() {
+    public boolean intakeBackwards() {
         return mController.getLeftTriggerAxis() > 0.25;
     }
 
