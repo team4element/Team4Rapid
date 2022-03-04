@@ -114,6 +114,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopInit() {
     System.out.println("Teleop Init!");
+    mClimber.resetEncoders();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
   }
