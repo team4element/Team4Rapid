@@ -84,7 +84,14 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void readPeriodicInputs() {
-
+		if(mLeftPiston.get())
+		{
+			System.out.println("Left Piston Present with id" + mLeftPiston.getChannel());
+		}
+		else if (mRightPiston.get())
+		{
+			System.out.println("Right Piston Present with id " + mRightPiston.getChannel());
+		}
 	}
 
 	@Override

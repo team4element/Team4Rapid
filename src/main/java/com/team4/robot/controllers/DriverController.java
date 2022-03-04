@@ -21,7 +21,7 @@ public class DriverController {
     }
 
 		public boolean getDeployIntake() {
-			return mController.getRightBumper();
+			return mController.getRightBumperPressed();
 		}
 
 		public boolean getClimbUp()
