@@ -29,7 +29,8 @@ public class Constants {
 	public static final int kIntakeSolenoidLeft = 7;
 	public static final int kIntakeSolenoidRight = 4;
 
-
+	public static int kClimbLeftPiston = 6;
+    public static int kClimbRightPiston = 5;
 
 	// Drivetrain Dynamics
     public static final double kDriveWheelTrackWidthInches = 32;
