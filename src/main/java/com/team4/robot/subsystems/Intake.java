@@ -22,7 +22,10 @@ public class Intake extends Subsystem {
 	private static final double kIntakeForwardPower = 0.75;
 	private static final double kIntakeReversePower = -0.75;
 	private static final double kIntakeOff = 0d;
-	// private static final double kLightIntakePower = 0.1;
+	
+	private static boolean mLeftPos = false;
+	private static boolean mRightPos = false;
+
 
 	public enum mState {
 		FORWARD,
@@ -33,26 +36,20 @@ public class Intake extends Subsystem {
 	public mState state = mState.IDLE;
 
 	public Intake() {
-
-
 		mRollerMotor = TalonFactory.createDefaultTalonSRX(Constants.kRollerMotorID);
 		mArmMotor = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorID);
 		mRollerMotor.setInverted(true);
-		// mArmMotor.follow(mRollerMotor);
-		//mArmMotor.setInverted(true);
-
-		// TODO: Document what these parameters mean
+		
 		mRollerMotor.changeMotionControlFramePeriod(100);
 		mRollerMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		mArmMotor.changeMotionControlFramePeriod(100);
 		mArmMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		// TODO: Don't I need to add logging if failed?
+		
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
-
-		// TODO: Matthew: Is our PCM on the default module?
+		
 		mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
 		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
 	}
@@ -78,23 +75,19 @@ public class Intake extends Subsystem {
 	@Override
 	public void onDisableLoop() {
 		state = mState.IDLE;
-		
+		mLeftPiston.set(mLeftPos);
+		mRightPiston.set(mRightPos);
 	}
 
 	@Override
 	public synchronized void readPeriodicInputs() {
-		if(mLeftPiston.get())
-		{
-			System.out.println("Left Piston Present with id" + mLeftPiston.getChannel());
-		}
-		else if (mRightPiston.get())
-		{
-			System.out.println("Right Piston Present with id " + mRightPiston.getChannel());
-		}
+
 	}
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
+		mLeftPos = mLeftPiston.get();
+		mRightPos = mRightPiston.get();
 	}
 
 	public void moveArm()
