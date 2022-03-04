@@ -17,7 +17,8 @@ public class Constants {
     public static final int kDriveRightFollower2 = 2;
 		public static final int kShooterMaster1 = 5;
 		public static final int kShooterFollower2 = 6;
-		public static final int kIntakeMaster1 = 7;
+		public static final int kRollerMotorID = 7;
+		public static final int kArmMotorID = 0;
 		// TODO: Are these Master/Slave?
 
 
@@ -29,7 +30,6 @@ public class Constants {
 		//public static final int kConveyorFinalStageTop = 12;
 
 		public static final int kIntakeFirst = 8;
-		public static final int kIntakeLast = 0;
 		public static final int kConveyor = 10;
 
 

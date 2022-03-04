@@ -1,12 +1,12 @@
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlFrame;
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.StatusFrameEnhanced;
 import com.ctre.phoenix.motorcontrol.TalonFXControlMode;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.TalonUtil;
@@ -121,11 +121,11 @@ public class Shooter extends Subsystem {
                 100, Constants.kCANTimeoutMs);
 
         //TODO: test follow mode
-        mSlaveMotor.follow(mMasterMotor);
+        // mSlaveMotor.follow(mMasterMotor);
 
 
-        mMasterMotor.setInverted(TalonFXInvertType.CounterClockwise);
-        mSlaveMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        // mMasterMotor.setInverted(TalonFXInvertType.CounterClockwise);
+        // mSlaveMotor.setInverted(TalonFXInvertType.CounterClockwise);
 
         setBrakeMode(false);
 		
@@ -186,15 +186,15 @@ public class Shooter extends Subsystem {
 	@Override
 	public void writePeriodicOutputs() {
 		if(mControlState == ShooterControlState.OPEN_LOOP){
-            mMasterMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
-            mSlaveMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+            mMasterMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mSlaveMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
         }else if (mControlState == ShooterControlState.VELOCITY){
-            mMasterMotor.set(TalonFXControlMode.Velocity, mPeriodicIO.demand);
-            mSlaveMotor.set(TalonFXControlMode.Velocity, mPeriodicIO.demand);
+            mMasterMotor.set(ControlMode.Velocity, mPeriodicIO.demand);
+            mSlaveMotor.set(ControlMode.Velocity, mPeriodicIO.demand);
             
         }else{ //force default Open Loop
-            mMasterMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
-            mSlaveMotor.set(TalonFXControlMode.PercentOutput, mPeriodicIO.demand);
+            mMasterMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
+            mSlaveMotor.set(ControlMode.PercentOutput, mPeriodicIO.demand);
         }
 	}
 
