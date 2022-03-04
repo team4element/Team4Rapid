@@ -52,6 +52,7 @@ public class Robot extends TimedRobot {
   DriverController mDriverController = new DriverController();
   OperatorController mOperatorController = new OperatorController();
 	Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
+  AutonExecute mAutonExecute= new AutonExecute();
 
   /**
    * Entered when the robot first starts up.
@@ -91,6 +92,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
+    mAutonExecute.start();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
   }
@@ -104,6 +106,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() { 
+    mAutonExecute.periodic();
     mSubsystemManager.onEnabledLoop();
   }
 
