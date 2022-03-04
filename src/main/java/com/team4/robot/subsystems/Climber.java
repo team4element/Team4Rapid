@@ -44,7 +44,7 @@ public class Climber extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        System.out.println("Climb left pos:" + mLeftMotor.getSelectedSensorPosition(0) + " climb right pos: " + mRightMotor.getSelectedSensorPosition(0));
+        //System.out.println("Climb left pos:" + mLeftMotor.getSelectedSensorPosition(0) + " climb right pos: " + mRightMotor.getSelectedSensorPosition(0));
     }
 
     @Override

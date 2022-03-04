@@ -58,8 +58,8 @@ public class Constants {
 
 	public static final double kShooterKp = 0.1;
 	public static final double kShooterKi = 0.0;
-	public static final double kShooterKd = 0;
-	public static final double kShooterKf = .0425;
+	public static final double kShooterKd = 0.2;
+	public static final double kShooterKf = .049;
 	public static final int kShooterIZone = 0;
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
