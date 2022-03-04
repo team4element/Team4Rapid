@@ -32,13 +32,18 @@ public class Constants {
 	public static int kClimbLeftPiston = 6;
     public static int kClimbRightPiston = 5;
 
+	public static final double kDriveKP = 0.0;
+	public static final double kDriveKI = 0.0;
+	public static final double kDriveKD = 0.0;
+	
+
 	// Drivetrain Dynamics
     public static final double kDriveWheelTrackWidthInches = 32;
     public static final double kDriveWheelDiameterInches = 6;
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
     public static final double kDriveTrackScrubFactor = 1.0; 
-    public static final double kDriveGearRatio = 1/7.29; //On actual bot 12d / 48d, 7.71/1  1/7.71, .129701
+    public static final double kDriveGearRatio = 1/6.43; //On actual bot 12d / 48d, 7.71/1  1/7.71, .129701
 
 	// Shooter
 	public static final double kShooterTicksPerRevolution = 2048; // based on gear reduction between encoder and output shaft, and encoder ppr
@@ -58,9 +63,11 @@ public class Constants {
 
 	public static final double kShooterKp = 0.1;
 	public static final double kShooterKi = 0.0;
-	public static final double kShooterKd = 0.2;
-	public static final double kShooterKf = .049;
+	public static final double kShooterKd = 0;
+	public static final double kShooterKf = .045;
 	public static final int kShooterIZone = 0;
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
+
+	public static final double kDriveEnconderPPR = 2048.0;
 }

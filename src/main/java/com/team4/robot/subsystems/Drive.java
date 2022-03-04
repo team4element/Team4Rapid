@@ -11,24 +11,17 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.TalonFXSimCollection;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
+import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
 import com.team4.robot.Robot;
 import com.team4.robot.subsystems.states.TalonControlState;
 
-import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogGyro;
-import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
-import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import io.github.oblarg.oblog.Loggable;
 import io.github.oblarg.oblog.annotations.Log;
 
@@ -78,24 +71,16 @@ public class Drive extends Subsystem {
 	private boolean mIsBrakeMode;
 
 	private DrivePeriodicIO mPeriodicIO;
-	private DifferentialDrivetrainSim m_driveSim;
-	private TalonFXSimCollection m_leftDriveSim;
-	private TalonFXSimCollection m_rightDriveSim;
+
 
 	// TODO: Need to switch to NavX. Might not have an easy Sim to use.
 	AnalogGyro m_gyro = new AnalogGyro(1);
 	AnalogGyroSim m_gyroSim = new AnalogGyroSim(m_gyro);
 
-	// TODO: Where did we find documentation of this?
-	final int kCountsPerRev = 4096;
-	final double kSensorGearRatio = 1;
-	final double kGearRatio = 10.71;
-	final double kWheelRadiusInches = 3;
-	final int k100msPerSecond = 10;
 
-	Field2d m_field;
-	DifferentialDriveOdometry m_odometry = new DifferentialDriveOdometry(m_gyro.getRotation2d());
-
+	double mLeftPositionInches = 0d;
+	double mRightPositionInches = 0d;
+	
 	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
 		talon.setInverted(!left);
 		// general
@@ -174,22 +159,6 @@ public class Drive extends Subsystem {
 		mIsBrakeMode = false;
 		setBrakeMode(false);
 
-
-		m_driveSim = new DifferentialDrivetrainSim(
-				DCMotor.getFalcon500(2),
-				kGearRatio,
-				Constants.kRobotMOI, // MOI of robot
-				Constants.kRobotMass, // Robot Mass
-				Units.inchesToMeters(Constants.kDriveWheelRadiusInches),
-				Units.inchesToMeters(Constants.kDriveWheelTrackWidthInches),
-				null // Measurement Noise
-		);
-		m_leftDriveSim = mLeftMaster1.getSimCollection();
-		m_rightDriveSim = mRightMaster1.getSimCollection();
-
-		m_field = new Field2d();
-
-		SmartDashboard.putData("Field", m_field);
 	}
 
 	// Singleton-pattern
@@ -258,14 +227,15 @@ public class Drive extends Subsystem {
 	@Override
 	public void readPeriodicInputs() {
 		// While enabled, gets information from sensors
-		double newLeftPositionMeters = nativeUnitsToDistanceMeters(mLeftMaster1.getSelectedSensorPosition());
-		double newRightPositionMeters = nativeUnitsToDistanceMeters(mRightMaster1.getSelectedSensorPosition());
-
-		m_odometry.update(m_gyro.getRotation2d(),
-				newLeftPositionMeters,
-				newRightPositionMeters);
-
-		m_field.setRobotPose(m_odometry.getPoseMeters());
+		mLeftPositionInches = ElementMath.rotationsToInches(ElementMath.ticksToRotations(mLeftMaster1.getSelectedSensorPosition(), 
+																	Constants.kDriveEnconderPPR), 
+																	Constants.kDriveWheelCircumferenceInches, 
+																	Constants.kDriveGearRatio);
+		
+		mRightPositionInches = ElementMath.rotationsToInches(ElementMath.ticksToRotations(mRightMaster1.getSelectedSensorPosition(), 
+																	Constants.kDriveEnconderPPR), 
+																	Constants.kDriveWheelCircumferenceInches,
+																	Constants.kDriveGearRatio);
 
 	}
 
@@ -280,7 +250,6 @@ public class Drive extends Subsystem {
 			mRightSide.forEach(t -> t.set(ControlMode.PercentOutput, mPeriodicIO.right_demand));
 
 		}
-		SmartDashboard.putData("Field", m_field);
 	}
 
 	@Override
@@ -293,39 +262,22 @@ public class Drive extends Subsystem {
 	}
 
 	public void onSimulationLoop() {
-		m_driveSim.setInputs(mLeftMaster1.getMotorOutputVoltage(), mRightMaster1.getMotorOutputVoltage());
-		m_driveSim.update(Constants.kLoopTime);
-
-		m_leftDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getLeftPositionMeters()));
-		m_leftDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getLeftVelocityMetersPerSecond()));
-		m_rightDriveSim.setIntegratedSensorRawPosition(distanceToNativeUnits(m_driveSim.getRightPositionMeters()));
-		m_rightDriveSim.setIntegratedSensorVelocity(velocityToNativeUnits(m_driveSim.getRightVelocityMetersPerSecond()));
-
-		m_gyroSim.setAngle(-m_driveSim.getHeading().getDegrees());
-
-		m_leftDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
-		m_rightDriveSim.setBusVoltage(RobotController.getBatteryVoltage());
+	
 	}
 
-	private int distanceToNativeUnits(double positionMeters) {
-		double wheelRotations = positionMeters / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-		double motorRotations = wheelRotations * kSensorGearRatio;
-		int sensorCounts = (int) (motorRotations * kCountsPerRev);
-		return sensorCounts;
+	public double getLeftDistanceInches()
+	{
+		return mLeftPositionInches;
 	}
 
-	private int velocityToNativeUnits(double velocityMetersPerSecond) {
-		double wheelRotationsPerSecond = velocityMetersPerSecond / (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-		double motorRotationsPerSecond = wheelRotationsPerSecond * kSensorGearRatio;
-		double motorRotationsPer100ms = motorRotationsPerSecond / k100msPerSecond;
-		int sensorCountsPer100ms = (int) (motorRotationsPer100ms * kCountsPerRev);
-		return sensorCountsPer100ms;
+	public double getRightDistanceInches()
+	{
+		return mRightPositionInches;
 	}
 
-	private double nativeUnitsToDistanceMeters(double sensorCounts) {
-		double motorRotations = (double) sensorCounts / kCountsPerRev;
-		double wheelRotations = motorRotations / kSensorGearRatio;
-		double positionMeters = wheelRotations * (2 * Math.PI * Units.inchesToMeters(kWheelRadiusInches));
-		return positionMeters;
+	public double getDistance()
+	{
+		return (getLeftDistanceInches() + getRightDistanceInches()) / 2;
 	}
+
 }

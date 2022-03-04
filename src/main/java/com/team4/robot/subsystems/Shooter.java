@@ -249,6 +249,11 @@ public class Shooter extends Subsystem {
         mPeriodicIO = new ShooterPeriodicIO();
     }
 
+	public double getVelocity()
+	{
+		return mPeriodicIO.velocity;
+	}
+
 	private void configureVelocityTalon(){
 
         // mMasterMotor.setNeutralMode(NeutralMode.Brake);
