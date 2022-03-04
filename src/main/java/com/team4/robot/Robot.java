@@ -8,8 +8,8 @@ import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
 import com.team4.robot.subsystems.Climber;
+import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Climber.ClimberControlState;
-import com.team4.robot.subsystems.Conveyor2;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
@@ -44,8 +44,7 @@ public class Robot extends TimedRobot {
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = new Intake();
 	Shooter mShooter = Shooter.getInstance();
-	//Conveyor mConveyor = Conveyor.getInstance();
-  Conveyor2 mConveyor2 = Conveyor2.getInstance();
+  Conveyor mConveyor = new Conveyor();
   Climber mClimber = Climber.getInstance();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
@@ -65,8 +64,7 @@ public class Robot extends TimedRobot {
         mDrive,
 				mIntake,
 				// mShooter,
-        //mConveyor,
-        mConveyor2,
+        mConveyor,
         mClimber
     );
 
@@ -134,7 +132,6 @@ public class Robot extends TimedRobot {
 		boolean isDeployIntake = mDriverController.getDeployIntake();
 		boolean isShooterOn = mOperatorController.getIsShooterOn();
     
-    boolean isConveyor2 = mOperatorController.getConveyor();
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -162,14 +159,17 @@ public class Robot extends TimedRobot {
         mIntake.state = Intake.mState.IDLE;
 		}
 
-    
-    if (isConveyor2) {
-			mConveyor2.setWantedState(Conveyor2.SystemState.INTAKING);
-		
-		} else {
-			mConveyor2.setWantedState(Conveyor2.SystemState.IDLE);
-		}
-    
+
+
+    if(mOperatorController.intakeForward()){
+      mConveyor.state = Conveyor.mState.FORWARD;
+    } else if (mOperatorController.conveyorBackward()){
+      mConveyor.state = Conveyor.mState.REVERSE;
+    }else{
+      mConveyor.state = Conveyor.mState.IDLE;
+    }
+
+
 
 		if (isShooterOn) {
 			mShooter.setControlState(ShooterControlState.VELOCITY);
@@ -191,18 +191,6 @@ public class Robot extends TimedRobot {
       mClimber.setClimb(ClimberControlState.IDLE);
     }
 
-		// if (mControlBoard.getExhaust()) {
-		// 	mIntake.setWantedState(Intake.WantedState.EXHAUST);
-		// } else if (mControlBoard.getIntake()) {
-		// 		mIntake.setWantedState(Intake.WantedState.INTAKE);
-		// } else {
-		// 		mIntake.setWantedState(Intake.WantedState.IDLE);
-		// }
-		
-      // TODO: The state of the conveyor makes it impossible to function
-      // This will cahnge when Superstructure is ready for testing
-
-		// mSuperstructure.setControlState(SuperstructureState.INTAKE_CONVEY);
 
     // Run each subsystem's periodic function
     mSubsystemManager.onEnabledLoop();

@@ -4,7 +4,9 @@ import com.team4.robot.Constants;
 
 import edu.wpi.first.wpilibj.XboxController;
 
+
 public class OperatorController {
+    private double triggerTolerance = .25;
     private final XboxController mController;
 
     public OperatorController() {
@@ -24,13 +26,17 @@ public class OperatorController {
         return mController.getAButton();
     }
 
-    public boolean getConveyor() {
+    public boolean conveyorForward() {
         return mController.getRightBumper();
+    }
+
+    public boolean conveyorBackward(){
+        return mController.getRightTriggerAxis() > triggerTolerance;
     }
 
     public boolean getConveyorReverse()
     {
-        return mController.getRightTriggerAxis() > 0.25;
+        return mController.getRightTriggerAxis() > triggerTolerance;
     }
 
     public boolean getCompressorToggle()
