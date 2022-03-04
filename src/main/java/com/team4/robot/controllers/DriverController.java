@@ -35,7 +35,7 @@ public class DriverController {
 		}
 
 		public boolean changeWinch(){
-			return mController.getYButton();
+			return mController.getYButtonPressed();
 		}
 		
 }
