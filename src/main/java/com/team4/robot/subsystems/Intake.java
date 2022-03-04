@@ -14,14 +14,14 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Intake extends Subsystem {
 	//CHANGE IN CODE
 	// Hardware
-	private final TalonSRX mIntakeMotor1;
-	private final TalonSRX mIntakeMotor2;
+	private final TalonSRX mRollerMotor;
+	private final TalonSRX mArmMotor;
 	private final Solenoid mLeftPiston;
 	private final Solenoid mRightPiston;
 
 	// Performance Settings
 	private static final double kIntakeForwardPower = 0.75;
-	private static final double kIntakeReversePower = -0.25;
+	private static final double kIntakeReversePower = -0.75;
 	private static final double kIntakeOff = 0d;
 	// private static final double kLightIntakePower = 0.1;
 
@@ -36,22 +36,22 @@ public class Intake extends Subsystem {
 	public Intake() {
 
 
-		mIntakeMotor1 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeMaster1);
-		mIntakeMotor2 = TalonFactory.createDefaultTalonSRX(Constants.kIntakeLast);
-		mIntakeMotor1.setInverted(true);
-		mIntakeMotor2.follow(mIntakeMotor1);
-		//mIntakeMotor2.setInverted(true);
+		mRollerMotor = TalonFactory.createDefaultTalonSRX(Constants.kRollerMotorID);
+		mArmMotor = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorID);
+		mRollerMotor.setInverted(true);
+		// mArmMotor.follow(mRollerMotor);
+		//mArmMotor.setInverted(true);
 
 		// TODO: Document what these parameters mean
-		mIntakeMotor1.changeMotionControlFramePeriod(100);
-		mIntakeMotor1.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		mIntakeMotor2.changeMotionControlFramePeriod(100);
-		mIntakeMotor2.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		mRollerMotor.changeMotionControlFramePeriod(100);
+		mRollerMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		mArmMotor.changeMotionControlFramePeriod(100);
+		mArmMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		// TODO: Don't I need to add logging if failed?
-		mIntakeMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mIntakeMotor1.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
-		mIntakeMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mIntakeMotor2.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 
 		// TODO: Matthew: Is our PCM on the default module?
 		mLeftPiston = new Solenoid(PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
@@ -98,14 +98,17 @@ public class Intake extends Subsystem {
 	}
 
 	private void motorsForward() {
-		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeForwardPower);
+		mRollerMotor.set(ControlMode.PercentOutput, kIntakeForwardPower);
+		mArmMotor.set(ControlMode.PercentOutput, kIntakeForwardPower);
 	}
 
 	private void motorsReverse() {
-		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeReversePower);
+		mRollerMotor.set(ControlMode.PercentOutput, kIntakeReversePower);
+		mArmMotor.set(ControlMode.PercentOutput, kIntakeReversePower);
 	}
 
 	private void motorsOff(){
-		mIntakeMotor1.set(ControlMode.PercentOutput, kIntakeOff);
+		mRollerMotor.set(ControlMode.PercentOutput, kIntakeOff);
+		mArmMotor.set(ControlMode.PercentOutput, kIntakeOff);
 	}
 }
