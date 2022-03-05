@@ -100,7 +100,7 @@ public class Shooter extends Subsystem {
 					setOpenLoop(1);
 					break;
 				case HIGH_VELOCITY:
-					setVelocity(kHighVelocity, 2700);
+					setVelocity(kHighVelocity, kHighVelocity - 200);
 					break;
 				case LOW_VELOCITY:
 					setVelocity(kLowVelocity, 1200);
@@ -135,8 +135,8 @@ public class Shooter extends Subsystem {
             state = mState.HIGH_VELOCITY;
         }
 
-		mMasterMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(frontVelocity, Constants.kShooterEnconderPPR));
-		mSlaveMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(backVelocity, Constants.kShooterEnconderPPR));
+		mMasterMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(backVelocity, Constants.kShooterEnconderPPR));
+		mSlaveMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(frontVelocity, Constants.kShooterEnconderPPR));
     }
 
 	@Override

@@ -14,8 +14,8 @@ public class Constants {
     public static final int kDriveLeftFollower2 = 1;
     public static final int kDriveRightMaster1 = 4;
     public static final int kDriveRightFollower2 = 2;
-	public static final int kShooterMaster1 = 5;
-	public static final int kShooterFollower2 = 6;
+	public static final int kShooterMaster1 = 6; // Bottom motor -> needs to be faster
+	public static final int kShooterFollower2 = 5; // Top motor -> needs to bottom
 	public static final int kRollerMotorID = 7;
 	public static final int kArmMotorID = 0;
 
