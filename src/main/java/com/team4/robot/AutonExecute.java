@@ -13,7 +13,7 @@ public class AutonExecute {
 
     private final double kDrivePower = 0.25;
     private final double mShootEnd = 3;
-    private final double mDriveEnd = 5;
+    private final double mDriveEnd = 4;
     
     private boolean isFirstTime = true; 
 
@@ -36,28 +36,28 @@ public class AutonExecute {
 
     public void periodic()
     {
-        if (Timer.getFPGATimestamp() - mStartTime <= mShootEnd)
+        if (Timer.getFPGATimestamp() <= mShootEnd)
         {
             mShooter.state = Shooter.mState.HIGH_VELOCITY;
-            if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 4){ // change when rpm setpoint becomes a constant
+            if(Timer.getFPGATimestamp() >= 2 || Timer.getFPGATimestamp() <= 5){ // change when rpm setpoint becomes a constant
                 mConveyor.state = Conveyor.mState.FORWARD; 
             }else{
                 mConveyor.state = Conveyor.mState.IDLE;
+                mShooter.state = Shooter.mState.IDLE;
             }
         }
         else
         {
+
+            mConveyor.state = Conveyor.mState.IDLE;
+            mShooter.state = Shooter.mState.IDLE;
+
             if(isFirstTime)
             {
                 System.out.println("Finished shooting");
                 start();
                 isFirstTime = false;
             }
-
-
-
-            mConveyor.state = Conveyor.mState.IDLE;
-            mShooter.state = Shooter.mState.IDLE;
             
             if (Timer.getFPGATimestamp() - mStartTime <= mDriveEnd)
             {
