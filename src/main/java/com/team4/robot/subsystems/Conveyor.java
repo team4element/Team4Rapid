@@ -7,6 +7,7 @@ import com.team4.robot.Constants;
 
 
 public class Conveyor extends Subsystem {
+	private static final Conveyor mInstance = new Conveyor();
 
 	// Hardware
 	private final WPI_TalonFX mConveyor;
@@ -23,6 +24,11 @@ public class Conveyor extends Subsystem {
 	}
 
 	public mState state = mState.IDLE;
+
+	public static Conveyor getInstance()
+	{
+		return mInstance;
+	}
 
 	public Conveyor() {
 
@@ -65,6 +71,19 @@ public class Conveyor extends Subsystem {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
+		if(state == mState.FORWARD)
+		{
+			System.out.println("Current demand " + kConveyorForwardPower);
+		}
+		else if(state == mState.REVERSE)
+		{
+			System.out.println("Current demand " + kConveyorReversePower);
+		}
+		else if(state == mState.IDLE)
+		{
+			System.out.println("Current demand " + kConveyorOff);
+		}
+				
 	}
 
 	private void motorOff(){

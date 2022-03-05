@@ -17,7 +17,7 @@ public class AutonExecute {
 
     private Drive mDrive = Drive.getInstance();
     private Shooter mShooter = Shooter.getInstance();
-    private Conveyor mConveyor = new Conveyor();
+    private Conveyor mConveyor = Robot.mConveyor;
 
 
     private SynchronousPIDF mDriveController;
@@ -39,7 +39,7 @@ public class AutonExecute {
         {
             mShooter.setControlState(ShooterControlState.VELOCITY);
             if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 4){ // change when rpm setpoint becomes a constant
-                mConveyor.state = Conveyor.mState.FORWARD;
+                mConveyor.state = Conveyor.mState.FORWARD; 
             }else{
                 mConveyor.state = Conveyor.mState.IDLE;
             }

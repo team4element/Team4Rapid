@@ -44,7 +44,7 @@ public class Robot extends TimedRobot {
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = new Intake();
 	Shooter mShooter = Shooter.getInstance();
-  Conveyor mConveyor = new Conveyor();
+  public static Conveyor mConveyor = new Conveyor();
   Climber mClimber = new Climber();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 

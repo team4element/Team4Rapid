@@ -182,7 +182,7 @@ public class Shooter extends Subsystem {
         mPeriodicIO.position_ticks = mMasterMotor.getSelectedSensorPosition(0);
        
         mPeriodicIO.velocity = ElementMath.tickPer100msToScaledRPM(mMasterMotor.getSelectedSensorVelocity(0), Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
-		System.out.println("Shooter Velocity: " + mPeriodicIO.velocity);
+		// System.out.println("Shooter Velocity: " + mPeriodicIO.velocity);
 	}
 
 	@Override
