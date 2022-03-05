@@ -18,7 +18,7 @@ public class AutonExecute {
     
     private boolean isFirstTime = true; 
 
-    private Drive mDrive = Drive.getInstance();
+    private Drive mDrive = Robot.mDrive;
     private Shooter mShooter = Shooter.getInstance();
     private Conveyor mConveyor = Robot.mConveyor;
 
