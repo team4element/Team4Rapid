@@ -1,17 +1,17 @@
 {
   "HALProvider": {
+    "Analog Inputs": {
+      "window": {
+        "visible": true
+      }
+    },
     "Other Devices": {
       "Compressor[0]": {
         "header": {
           "open": true
         }
       },
-      "Talon FX[1]": {
-        "header": {
-          "open": true
-        }
-      },
-      "Talon FX[1]/Integrated Sensor": {
+      "Talon FX[6]/Fwd Limit": {
         "header": {
           "open": true
         }
@@ -42,7 +42,6 @@
       },
       "/SmartDashboard/Field": {
         "height": 8.229599952697754,
-        "image": "C:\\Users\\Pixel\\Documents\\FRC\\Team4Rapid\\field\\2022-field.png",
         "width": 16.459199905395508,
         "window": {
           "name": "Robot",

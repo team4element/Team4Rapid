@@ -28,8 +28,13 @@ public class Climber extends Subsystem {
         mRightMotor = new TalonFX(Constants.kClimberRightMotor);
         mRightMotor.follow(mLeftMotor);
         mLeftMotor.setInverted(true);  
+        mRightMotor.configReverseSoftLimitThreshold(200); // maybe change this value
+        mRightMotor.configReverseSoftLimitEnable(true, 0);
+        
         mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbLeftPiston);
 		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbRightPiston);
+
+
     }
 
     @Override
