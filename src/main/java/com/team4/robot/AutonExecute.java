@@ -11,7 +11,9 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AutonExecute {
     private double mStartTime= 0;
+
     private final double mShootEnd = 3;
+
 
     private Drive mDrive = Drive.getInstance();
     private Shooter mShooter = Shooter.getInstance();
@@ -33,7 +35,7 @@ public class AutonExecute {
 
     public void periodic()
     {
-        if (mShootEnd - mStartTime >= 0.01)
+        if (Timer.getFPGATimestamp() - mStartTime <= mShootEnd)
         {
             mShooter.setControlState(ShooterControlState.VELOCITY);
             if(mShooter.getVelocity() >= 2500){ // change when rpm setpoint becomes a constant
@@ -47,7 +49,7 @@ public class AutonExecute {
             mConveyor.state = Conveyor.mState.IDLE;
             mShooter.setControlState(ShooterControlState.IDLE);
 
-            double demand = mDriveController.calculate(mDrive.getDistance());
+            double demand = 0/* mDriveController.calculate(mDrive.getDistance()) */;
             mDrive.setOpenLoop(new DriveSignal(demand, demand));       
         }
     }
