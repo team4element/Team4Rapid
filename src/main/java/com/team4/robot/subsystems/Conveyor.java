@@ -71,18 +71,18 @@ public class Conveyor extends Subsystem {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		if(state == mState.FORWARD)
-		{
-			System.out.println("Current demand " + kConveyorForwardPower);
-		}
-		else if(state == mState.REVERSE)
-		{
-			System.out.println("Current demand " + kConveyorReversePower);
-		}
-		else if(state == mState.IDLE)
-		{
-			System.out.println("Current demand " + kConveyorOff);
-		}
+		// if(state == mState.FORWARD)
+		// {
+		// 	System.out.println("Current demand " + kConveyorForwardPower);
+		// }
+		// else if(state == mState.REVERSE)
+		// {
+		// 	System.out.println("Current demand " + kConveyorReversePower);
+		// }
+		// else if(state == mState.IDLE)
+		// {
+		// 	System.out.println("Current demand " + kConveyorOff);
+		// }
 				
 	}
 

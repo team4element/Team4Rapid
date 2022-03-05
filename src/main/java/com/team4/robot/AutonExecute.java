@@ -12,13 +12,15 @@ import edu.wpi.first.wpilibj.Timer;
 public class AutonExecute {
     private double mStartTime= 0;
 
+    private final double kDrivePower = 0.25;
     private final double mShootEnd = 3;
-
+    private final double mDriveEnd = 5;
+    
+    private boolean isFirstTime = true; 
 
     private Drive mDrive = Drive.getInstance();
     private Shooter mShooter = Shooter.getInstance();
     private Conveyor mConveyor = Robot.mConveyor;
-
 
     private SynchronousPIDF mDriveController;
 
@@ -46,11 +48,31 @@ public class AutonExecute {
         }
         else
         {
+            if(isFirstTime)
+            {
+                System.out.println("Finished shooting");
+                start();
+                isFirstTime = false;
+            }
+
+
+
             mConveyor.state = Conveyor.mState.IDLE;
             mShooter.setControlState(ShooterControlState.IDLE);
+            
+            if (Timer.getFPGATimestamp() - mStartTime <= mDriveEnd)
+            {
+                
+                System.out.println("Running drive");
+                double demand = kDrivePower/* mDriveController.calculate(mDrive.getDistance()) */;
+                mDrive.setOpenLoop(new DriveSignal(demand, demand));       
+            }
+            else
+            {
+                System.out.println("Finished drive");
+                mDrive.setOpenLoop(new DriveSignal(0d, 0d));                       
+            }
 
-            double demand = 0/* mDriveController.calculate(mDrive.getDistance()) */;
-            mDrive.setOpenLoop(new DriveSignal(demand, demand));       
         }
     }
 }

@@ -44,7 +44,7 @@ public class Climber extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        System.out.println("Climb pos: " + getEncoders());
+        // System.out.println("Climb pos: " + getEncoders());
     }
 
     @Override
