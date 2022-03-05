@@ -44,7 +44,7 @@ public class Climber extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        //System.out.println("Climb left pos:" + mLeftMotor.getSelectedSensorPosition(0) + " climb right pos: " + mRightMotor.getSelectedSensorPosition(0));
+        System.out.println("Climb pos: " + getEncoders());
     }
 
     @Override
@@ -90,5 +90,11 @@ public class Climber extends Subsystem {
     public void resetEncoders(){
         mLeftMotor.setSelectedSensorPosition(0);
         mRightMotor.setSelectedSensorPosition(0);
+    }
+
+    public double getEncoders(){
+        return (mLeftMotor.getSelectedSensorPosition(0) + mRightMotor.getSelectedSensorPosition(0)) / 2;
+
+
     }
 }
