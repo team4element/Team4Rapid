@@ -27,6 +27,8 @@ import io.github.oblarg.oblog.Loggable;
  * 
  * 
  */
+
+
 class ShooterPeriodicIO implements Loggable {
 	// Inputs
 	// These are in Motor Units
@@ -41,7 +43,7 @@ class ShooterPeriodicIO implements Loggable {
 public class Shooter extends Subsystem {
 	private static Shooter mInstance = null;
 	private ShooterPeriodicIO mPeriodicIO;
-
+	public double kHighVelocity = 2900;
 	private final LazyTalonFX mMasterMotor, mSlaveMotor;
 
 	private ShooterControlState mControlState = ShooterControlState.OPEN_LOOP;
@@ -158,7 +160,7 @@ public class Shooter extends Subsystem {
 					break;
 				case VELOCITY:
 					// handleDistanceRPM(VisionTracker.getInstance().getTargetDistance());
-					setVelocity(2500, 0);
+					setVelocity(kHighVelocity, 0);
 					break;
 				case IDLE:
 					setOpenLoop(0);

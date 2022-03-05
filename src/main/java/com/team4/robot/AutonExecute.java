@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.Timer;
 
 public class AutonExecute {
     private double mStartTime= 0;
-    private final double mShootEnd = 0;
+    private final double mShootEnd = 3;
 
     private Drive mDrive = Drive.getInstance();
     private Shooter mShooter = Shooter.getInstance();
@@ -36,7 +36,7 @@ public class AutonExecute {
         if (mShootEnd - mStartTime >= 0.01)
         {
             mShooter.setControlState(ShooterControlState.VELOCITY);
-            if(mShooter.getVelocity() >= 2500 && 2500 != 0d){ // change when rpm setpoint becomes a constant
+            if(mShooter.getVelocity() >= 2500){ // change when rpm setpoint becomes a constant
                 mConveyor.state = Conveyor.mState.FORWARD;
             }else{
                 mConveyor.state = Conveyor.mState.IDLE;
