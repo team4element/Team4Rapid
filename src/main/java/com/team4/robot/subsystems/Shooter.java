@@ -65,7 +65,8 @@ public class Shooter extends Subsystem {
         mSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0,
                 100, Constants.kCANTimeoutMs);
 				
-		// mSlaveMotor.follow(mMasterMotor);
+		// mMasterMotor.setInverted(false); //bot motor
+		mSlaveMotor.setInverted(true); // top motor
 
 
         setBrakeMode(false);
@@ -100,10 +101,10 @@ public class Shooter extends Subsystem {
 					setOpenLoop(1);
 					break;
 				case HIGH_VELOCITY:
-					setVelocity(kHighVelocity, kHighVelocity - 200);
+					setVelocity(kHighVelocity, -(kHighVelocity - 200));
 					break;
 				case LOW_VELOCITY:
-					setVelocity(kLowVelocity, 1200);
+					setVelocity(kLowVelocity, -(1200));
 					break;
 				case IDLE:
 					setOpenLoop(0);

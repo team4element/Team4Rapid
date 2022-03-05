@@ -12,7 +12,7 @@ public class AutonExecute {
     private double mStartTime= 0;
 
     private final double kDrivePower = 0.25;
-    private final double mShootEnd = 3;
+    private final double mShootEnd = 2;
     private final double mDriveEnd = 5;
     
     private boolean isFirstTime = true; 
@@ -39,7 +39,7 @@ public class AutonExecute {
         if (Timer.getFPGATimestamp() - mStartTime <= mShootEnd)
         {
             mShooter.state = Shooter.mState.HIGH_VELOCITY;
-            if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 4){ // change when rpm setpoint becomes a constant
+            if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 3){ // change when rpm setpoint becomes a constant
                 mConveyor.state = Conveyor.mState.FORWARD; 
             }else{
                 mConveyor.state = Conveyor.mState.IDLE;
