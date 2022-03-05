@@ -65,7 +65,7 @@ public class Shooter extends Subsystem {
         mSlaveMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0,
                 100, Constants.kCANTimeoutMs);
 				
-		mSlaveMotor.follow(mMasterMotor);
+		// mSlaveMotor.follow(mMasterMotor);
 
 
         setBrakeMode(false);
@@ -100,10 +100,10 @@ public class Shooter extends Subsystem {
 					setOpenLoop(1);
 					break;
 				case HIGH_VELOCITY:
-					setVelocity(kHighVelocity);
+					setVelocity(kHighVelocity, 2700);
 					break;
 				case LOW_VELOCITY:
-					setVelocity(kLowVelocity);
+					setVelocity(kLowVelocity, 1200);
 					break;
 				case IDLE:
 					setOpenLoop(0);
@@ -129,14 +129,14 @@ public class Shooter extends Subsystem {
 	public void writePeriodicOutputs() {
 	}
 
-	public void setVelocity(double velocity){
+	public void setVelocity(double frontVelocity, double backVelocity){
         if(state != mState.HIGH_VELOCITY || state != mState.LOW_VELOCITY){
             configureVelocityTalon();
             state = mState.HIGH_VELOCITY;
         }
 
-		mMasterMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(velocity, Constants.kShooterEnconderPPR));
-		mSlaveMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(velocity, Constants.kShooterEnconderPPR));
+		mMasterMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(frontVelocity, Constants.kShooterEnconderPPR));
+		mSlaveMotor.set(ControlMode.Velocity, ElementMath.rpmToTicksPer100ms(backVelocity, Constants.kShooterEnconderPPR));
     }
 
 	@Override
