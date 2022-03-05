@@ -5,7 +5,6 @@ import com.team254.lib.util.SynchronousPIDF;
 import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Shooter;
-import com.team4.robot.subsystems.Shooter.ShooterControlState;
 
 import edu.wpi.first.wpilibj.Timer;
 
@@ -19,7 +18,7 @@ public class AutonExecute {
     private boolean isFirstTime = true; 
 
     private Drive mDrive = Robot.mDrive;
-    private Shooter mShooter = Shooter.getInstance();
+    private Shooter mShooter = Robot.mShooter;
     private Conveyor mConveyor = Robot.mConveyor;
 
     private SynchronousPIDF mDriveController;
@@ -39,7 +38,7 @@ public class AutonExecute {
     {
         if (Timer.getFPGATimestamp() - mStartTime <= mShootEnd)
         {
-            mShooter.setControlState(ShooterControlState.VELOCITY);
+            mShooter.state = Shooter.mState.HIGH_VELOCITY;
             if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 4){ // change when rpm setpoint becomes a constant
                 mConveyor.state = Conveyor.mState.FORWARD; 
             }else{
@@ -58,7 +57,7 @@ public class AutonExecute {
 
 
             mConveyor.state = Conveyor.mState.IDLE;
-            mShooter.setControlState(ShooterControlState.IDLE);
+            mShooter.state = Shooter.mState.IDLE;
             
             if (Timer.getFPGATimestamp() - mStartTime <= mDriveEnd)
             {
