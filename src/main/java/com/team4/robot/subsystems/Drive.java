@@ -78,13 +78,12 @@ public class Drive extends Subsystem {
 	}
 
 	public synchronized void setOpenLoop(DriveSignal signal) {
-		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
-		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
-
 		if (mTalonControlState != TalonControlState.OPEN) {
 			configureOpenTalon();
 		}
 
+		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
+		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
 	}
 
 	@Override

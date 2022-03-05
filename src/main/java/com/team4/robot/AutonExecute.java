@@ -64,7 +64,7 @@ public class AutonExecute {
                 
                 System.out.println("Running drive");
                 double demand = kDrivePower/* mDriveController.calculate(mDrive.getDistance()) */;
-                mDrive.setOpenLoop(new DriveSignal(demand, demand));       
+                mDrive.setOpenLoop(new DriveSignal(demand, demand)); // kDrivePower = noPidLoop, Calculate = PidLoop (tune values) 
             }
             else
             {
