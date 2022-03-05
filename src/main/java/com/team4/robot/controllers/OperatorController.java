@@ -22,8 +22,13 @@ public class OperatorController {
         return mController.getLeftTriggerAxis() > 0.25;
     }
 
-    public boolean getIsShooterOn() {
+    public boolean shooterHigh() {
         return mController.getAButton();
+    }
+
+    public boolean shooterLow()
+    {
+        return mController.getYButton();
     }
 
     public boolean conveyorForward() {

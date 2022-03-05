@@ -8,12 +8,11 @@ import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
 import com.team4.robot.subsystems.Climber;
-import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Climber.ClimberControlState;
+import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
-import com.team4.robot.subsystems.Shooter.ShooterControlState;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -43,7 +42,7 @@ public class Robot extends TimedRobot {
 
   Drive mDrive = Drive.getInstance();
 	Intake mIntake = new Intake();
-	Shooter mShooter = Shooter.getInstance();
+	public static Shooter mShooter = new Shooter();
   public static Conveyor mConveyor = new Conveyor();
   Climber mClimber = new Climber();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
@@ -135,8 +134,7 @@ public class Robot extends TimedRobot {
     double turn = mDriverController.getTurn();
 
 		boolean isDeployIntake = mDriverController.getDeployIntake();
-		boolean isShooterOn = mOperatorController.getIsShooterOn();
-    
+
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
 
@@ -170,10 +168,12 @@ public class Robot extends TimedRobot {
       mConveyor.state = Conveyor.mState.IDLE;
     }
 
-		if (isShooterOn) {
-			mShooter.setControlState(ShooterControlState.VELOCITY);
-		} else {
-			mShooter.setControlState(ShooterControlState.IDLE);;
+		if (mOperatorController.shooterHigh()) {
+			mShooter.state = Shooter.mState.HIGH_VELOCITY;
+		} else if (mOperatorController.shooterLow()) {
+      mShooter.state = Shooter.mState.LOW_VELOCITY;	
+    } else {
+			mShooter.state = Shooter.mState.IDLE;
 		}
 
     if(mDriverController.changeWinch()){
