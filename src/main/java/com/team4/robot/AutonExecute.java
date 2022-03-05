@@ -38,7 +38,7 @@ public class AutonExecute {
         if (Timer.getFPGATimestamp() - mStartTime <= mShootEnd)
         {
             mShooter.setControlState(ShooterControlState.VELOCITY);
-            if(mShooter.getVelocity() >= 2500){ // change when rpm setpoint becomes a constant
+            if(Timer.getFPGATimestamp() >= 1 || Timer.getFPGATimestamp() <= 4){ // change when rpm setpoint becomes a constant
                 mConveyor.state = Conveyor.mState.FORWARD;
             }else{
                 mConveyor.state = Conveyor.mState.IDLE;
