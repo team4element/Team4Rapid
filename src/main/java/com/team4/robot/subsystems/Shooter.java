@@ -101,7 +101,7 @@ public class Shooter extends Subsystem {
 					setOpenLoop(1);
 					break;
 				case HIGH_VELOCITY:
-					setVelocity(kHighVelocity, -(kHighVelocity - 200));
+					setVelocity(2000, -(2900));
 					break;
 				case LOW_VELOCITY:
 					setVelocity(kLowVelocity, -(1200));
