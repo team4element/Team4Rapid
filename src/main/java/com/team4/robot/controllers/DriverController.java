@@ -20,9 +20,11 @@ public class DriverController {
         return  -1 * mController.getRightX();
     }
 
+	/*
 		public boolean getDeployIntake() {
 			return mController.getRightBumperPressed();
 		}
+	*/
 
 		public boolean getClimbUp()
 		{

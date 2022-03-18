@@ -10,10 +10,12 @@ public class Conveyor extends Subsystem {
 	private static final Conveyor mInstance = new Conveyor();
 
 	// Hardware
-	private final WPI_TalonFX mConveyor;
+	private final WPI_TalonFX mConveyorLeft;
+	private final WPI_TalonFX mConveyorRight;
+
 	 
 	// Performance Settings
-	private static final double kConveyorForwardPower = 0.5;
+	private static final double kConveyorForwardPower = 0.7;
 	private static final double kConveyorReversePower = -0.35;
 	private static final double kConveyorOff = 0;
 
@@ -32,7 +34,11 @@ public class Conveyor extends Subsystem {
 
 	public Conveyor() {
 
-		mConveyor = new WPI_TalonFX(Constants.kConveyor);
+		mConveyorLeft = new WPI_TalonFX(Constants.kConveyorLeft);
+		mConveyorRight = new WPI_TalonFX(Constants.kConveyorRight);
+		mConveyorRight.setInverted(true);
+
+
 
 		// mConveyor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		
@@ -87,15 +93,21 @@ public class Conveyor extends Subsystem {
 	}
 
 	private void motorOff(){
-		mConveyor.set(ControlMode.PercentOutput, kConveyorOff);
+		mConveyorLeft.set(ControlMode.PercentOutput, kConveyorOff);
+		mConveyorRight.set(ControlMode.PercentOutput, kConveyorOff);
+
 	}
 
 	private void motorForward(){
-		mConveyor.set(ControlMode.PercentOutput, kConveyorForwardPower);
+		mConveyorLeft.set(ControlMode.PercentOutput, kConveyorForwardPower);
+		mConveyorRight.set(ControlMode.PercentOutput, kConveyorForwardPower);
+
 	}
 
 	private void motorReverse(){
-		mConveyor.set(ControlMode.PercentOutput, kConveyorReversePower);
+		mConveyorLeft.set(ControlMode.PercentOutput, kConveyorReversePower);
+		mConveyorRight.set(ControlMode.PercentOutput, kConveyorReversePower);
+
 	} 
 
 }

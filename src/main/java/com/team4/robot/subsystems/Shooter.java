@@ -12,6 +12,9 @@ import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
+import com.team4.robot.controllers.OperatorController;
+
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
 
@@ -26,6 +29,7 @@ public class Shooter extends Subsystem {
 	public mState state = mState.OPEN_LOOP;
 
 	private double mVelocity = 0d;
+	private double mTopVelocity = 0d;
 
 	public static void configureEncoder(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
 		talon.setInverted(!left);
@@ -101,7 +105,7 @@ public class Shooter extends Subsystem {
 					setOpenLoop(1);
 					break;
 				case HIGH_VELOCITY:
-					setVelocity(2000, -(2900));
+					setVelocity(2200, -(2500));
 					break;
 				case LOW_VELOCITY:
 					setVelocity(kLowVelocity, -(1200));
@@ -123,7 +127,12 @@ public class Shooter extends Subsystem {
 	@Override
 	public void readPeriodicInputs() {
         mVelocity = ElementMath.tickPer100msToScaledRPM(mMasterMotor.getSelectedSensorVelocity(0), Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
-		// System.out.println("Shooter Velocity: " + mPeriodicIO.velocity);
+		mTopVelocity = ElementMath.tickPer100msToScaledRPM(mSlaveMotor.getSelectedSensorVelocity(0), Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
+		//if (mVelocity == -2800){
+		//	OperatorController.setRumble(RumbleType.kRightRumble, 1);
+		//}
+		 System.out.println("Shooter Velocity bot: " + mVelocity + "__________" + "Shooter Velocity top: " + mTopVelocity);
+		 //System.out.println("Shooter Velocity top: " + mTopVelocity);
 	}
 
 	@Override
@@ -174,8 +183,9 @@ public class Shooter extends Subsystem {
 
         // mMasterMotor.setNeutralMode(NeutralMode.Brake);
         mMasterMotor.selectProfileSlot(0, 0);
-    
+		mSlaveMotor.selectProfileSlot(0, 0);
         mMasterMotor.configClosedloopRamp(0);
+		mSlaveMotor.configClosedloopRamp(0);
     
 
         System.out.println("Switching shooter to velocity");

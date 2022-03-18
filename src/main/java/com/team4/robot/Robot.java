@@ -133,7 +133,7 @@ public class Robot extends TimedRobot {
     double throttle = mDriverController.getThrottle();
     double turn = mDriverController.getTurn();
 
-		boolean isDeployIntake = mDriverController.getDeployIntake();
+		boolean isDeployIntake = mOperatorController.getDeployIntake();
 
 
     mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));

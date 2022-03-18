@@ -21,7 +21,9 @@ public class Constants {
 
 
 	public static final int kIntakeFirst = 8;
-	public static final int kConveyor = 10;
+	public static final int kConveyorLeft = 10;
+	public static final int kConveyorRight = 11;
+
 
 	public static final int kClimberLeftMotor = 13;
 	public static final int kClimberRightMotor = 14;
