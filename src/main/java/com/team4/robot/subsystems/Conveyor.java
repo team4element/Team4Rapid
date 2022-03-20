@@ -15,7 +15,8 @@ public class Conveyor extends Subsystem {
 
 	 
 	// Performance Settings
-	private static final double kConveyorForwardPower = 0.7;
+	private static final double kConveyorForwardPower = 0.3;
+	// changed from 0.7 to 0.4  so the ball would stop bouncing between the flywheels
 	private static final double kConveyorReversePower = -0.35;
 	private static final double kConveyorOff = 0;
 

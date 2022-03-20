@@ -17,12 +17,10 @@ import com.team4.robot.controllers.OperatorController;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
-
-
-
 public class Shooter extends Subsystem {
 
-	public double kHighVelocity = 2900;
+	public double kHighVelocity = 3200;
+	// Changed from 3100 to 3500 to ensure a sufficient height is always reached
 	public final double kLowVelocity = 1500; // Find me
 	private final LazyTalonFX mMasterMotor, mSlaveMotor;
 
@@ -184,6 +182,7 @@ public class Shooter extends Subsystem {
         // mMasterMotor.setNeutralMode(NeutralMode.Brake);
         mMasterMotor.selectProfileSlot(0, 0);
 		mSlaveMotor.selectProfileSlot(0, 0);
+
         mMasterMotor.configClosedloopRamp(0);
 		mSlaveMotor.configClosedloopRamp(0);
     
