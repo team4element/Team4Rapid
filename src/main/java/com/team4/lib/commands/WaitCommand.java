@@ -2,10 +2,10 @@ package com.team4.lib.commands;
 
 import edu.wpi.first.wpilibj.Timer;
 
-public class WaitAction extends CommandBase{
+public class WaitCommand extends CommandBase{
     private double mDuration, mStartTime;
 
-    public WaitAction(double duration)
+    public WaitCommand(double duration)
     {
         mDuration = duration;
     }

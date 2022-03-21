@@ -4,7 +4,9 @@
 
 package com.team4.robot;
 
+import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.DriveHelper;
+import com.team4.robot.automodes.ShootAndDriveMode;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
 import com.team4.robot.subsystems.Climber;
@@ -48,10 +50,10 @@ public class Robot extends TimedRobot {
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
-  DriverController mDriverController = new DriverController();
+  public static DriverController mDriverController = new DriverController();
   OperatorController mOperatorController = new OperatorController();
 	Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
-  AutonExecute mAutonExecute= new AutonExecute();
+  AutoExecutor mAutoExecutor = new AutoExecutor();
 
   /**
    * Entered when the robot first starts up.
@@ -91,7 +93,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousInit() {
-    mAutonExecute.start();
+    mAutoExecutor.start();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
   }
@@ -105,7 +107,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void autonomousPeriodic() { 
-    mAutonExecute.periodic();
     mSubsystemManager.onEnabledLoop();
   }
 
@@ -205,6 +206,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void disabledInit() {
+    mAutoExecutor.stop();
     mSubsystemManager.onEnabledStop();
     mSubsystemManager.onDisabledStart();
   }
@@ -216,6 +218,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     mSubsystemManager.onDisabledLoop();
+    mAutoExecutor.setAutoMode(new ShootAndDriveMode());
   }
 
   /**
