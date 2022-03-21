@@ -4,7 +4,7 @@ public abstract class CommandBase {
     
     public abstract void start();
 
-    public abstract void periodic();
+    public abstract void execute();
 
     public abstract boolean isFinished();
 

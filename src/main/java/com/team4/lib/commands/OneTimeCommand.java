@@ -8,7 +8,7 @@ public abstract class OneTimeCommand extends CommandBase{
     }
 
     @Override
-    public void periodic() {
+    public void execute() {
         // TODO Auto-generated method stub
         
     }
