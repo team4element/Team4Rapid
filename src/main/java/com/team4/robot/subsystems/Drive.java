@@ -1,7 +1,3 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
@@ -26,23 +22,6 @@ public class Drive extends Subsystem {
 	double mLeftPositionInches = 0d;
 	double mRightPositionInches = 0d;
 	
-	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
-		talon.setInverted(!left);
-
-		if (main_encoder_talon) {
-
-			TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
-					"could not set drive feedback frame");
-
-			TalonUtil.checkError(
-					talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
-					"could not detect motor encoder"); // primary closed-loop, 100 ms timeout
-
-			talon.setSensorPhase(true);
-		}
-	}
-
-	/** Creates a new Drive. */
 	public Drive() {
 		// Starts all Talons in Coast Mode
 		mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
@@ -60,11 +39,54 @@ public class Drive extends Subsystem {
 		setCoastMode();
 	}
 
+
+	@Override
+	public void readPeriodicInputs() {
+		mLeftPositionInches = ElementMath.rotationsToInches(
+			ElementMath.ticksToRotations(mLeftMaster1.getSelectedSensorPosition(), 
+			Constants.kDriveEnconderPPR), 
+			Constants.kDriveWheelCircumferenceInches, 
+			Constants.kDriveGearRatio);
+		
+		mRightPositionInches = ElementMath.rotationsToInches(
+			ElementMath.ticksToRotations(mRightMaster1.getSelectedSensorPosition(), 
+			Constants.kDriveEnconderPPR), 
+			Constants.kDriveWheelCircumferenceInches,
+			Constants.kDriveGearRatio);
+		
+	}
+
+	@Override
+	public synchronized void writePeriodicOutputs() {
+	}
+
+	@Override
+	public void onDisableLoop() {
+		setCoastMode();
+	}
+
+	@Override
+	public void onLoop(double timestamp) {
+	}
+
+	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
+		talon.setInverted(!left);
+
+		if (main_encoder_talon) {
+			TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
+					"could not set drive feedback frame");
+			TalonUtil.checkError(
+					talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
+					"could not detect motor encoder"); // primary closed-loop, 100 ms timeout
+			talon.setSensorPhase(true);
+		}
+	}
+	
 	public synchronized void setCoastMode() {
-			mLeftMaster1.setNeutralMode(NeutralMode.Coast);
-			mleftFollower2.setNeutralMode(NeutralMode.Coast);
-			mRightMaster1.setNeutralMode(NeutralMode.Coast);
-			mRightFollower2.setNeutralMode(NeutralMode.Coast);
+		mLeftMaster1.setNeutralMode(NeutralMode.Coast);
+		mleftFollower2.setNeutralMode(NeutralMode.Coast);
+		mRightMaster1.setNeutralMode(NeutralMode.Coast);
+		mRightFollower2.setNeutralMode(NeutralMode.Coast);
 	}
 
 	private void configureOpenTalon() {
@@ -82,34 +104,6 @@ public class Drive extends Subsystem {
 
 		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
 		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
-	}
-
-	@Override
-	public void readPeriodicInputs() {
-		// While enabled, gets information from sensors
-		mLeftPositionInches = ElementMath.rotationsToInches(ElementMath.ticksToRotations(mLeftMaster1.getSelectedSensorPosition(), 
-																	Constants.kDriveEnconderPPR), 
-																	Constants.kDriveWheelCircumferenceInches, 
-																	Constants.kDriveGearRatio);
-		
-		mRightPositionInches = ElementMath.rotationsToInches(ElementMath.ticksToRotations(mRightMaster1.getSelectedSensorPosition(), 
-																	Constants.kDriveEnconderPPR), 
-																	Constants.kDriveWheelCircumferenceInches,
-																	Constants.kDriveGearRatio);
-
-	}
-
-	@Override
-	public synchronized void writePeriodicOutputs() {
-	}
-
-	@Override
-	public void onDisableLoop() {
-		setCoastMode();
-	}
-
-	@Override
-	public void onLoop(double timestamp) {
 	}
 
 	public double getLeftDistanceInches()

@@ -27,6 +27,7 @@ public class ElementMath {
 
 		return (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
 	}
+	
 	public static boolean isWithinDeadband(double val, double deadband){
 		val = (Math.abs(val) > Math.abs(deadband)) ? val : 0.0;
 		boolean isTrue = false;
