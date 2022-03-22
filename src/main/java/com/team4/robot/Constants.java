@@ -56,10 +56,10 @@ public class Constants {
 	public static final double kDriveEnconderPPR = 2048.0;
 
 	// Shooter
-	public static final double kHighVelocityBottom = 2500;
-	public static final double kHighVelocityTop = 2200;
-	public static final double kLowVelocityBottom = 1500; 
-	public static final double kLowVelocityTop = 1200;
+	public static final double kHighVelocityBottom = 1400;
+	public static final double kHighVelocityTop = 1200;
+	public static final double kLowVelocityBottom = 600; 
+	public static final double kLowVelocityTop = 400;
 	public static final double kShooterTicksPerRevolution = 2048; 
 
 	public static final double kShooterMomentOfInertia = 0.003440853333; // kg * m^2
