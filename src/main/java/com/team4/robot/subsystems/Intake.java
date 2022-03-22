@@ -11,8 +11,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 
 public class Intake extends Subsystem {
-	//CHANGE IN CODE
-	// Hardware
+	// Motors
 	private final TalonSRX mRollerMotor;
 	private final TalonSRX mArmMotor;
 	private final Solenoid mLeftPiston;
@@ -26,6 +25,7 @@ public class Intake extends Subsystem {
 	private static boolean mLeftPos = false;
 	private static boolean mRightPos = false;
 
+	public mState state = mState.IDLE;
 
 	public enum mState {
 		FORWARD,
@@ -33,7 +33,7 @@ public class Intake extends Subsystem {
 		IDLE
 	}
 
-	public mState state = mState.IDLE;
+	
 
 	public Intake() {
 		mRollerMotor = TalonFactory.createDefaultTalonSRX(Constants.kRollerMotorID);

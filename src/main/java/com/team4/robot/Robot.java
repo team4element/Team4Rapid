@@ -1,9 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package com.team4.robot;
-
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.controllers.DriverController;
 import com.team4.robot.controllers.OperatorController;
@@ -13,45 +8,32 @@ import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
-
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import io.github.oblarg.oblog.Logger;
 
-/**
- * This is the root Robot class.
- * It is responsible for managing function calls on different Match States.
- * The possible Match States are as follows:
- * 1. Disabled
- * 2. Autonomous
- * 3. Teleop
- * 4. Test
- * 5. Simulation
- * 6. Robot
- * 
- * Each of these above states have associated enter/periodic methods.
- * 
- * For example, when entering Teleop, the `teleopInit` method is called.
- * When telop is running, the `teleopPeriodic` method is called each loop
- * (default 20ms refresh rate).
- */
 public class Robot extends TimedRobot {
-  // Subsystems
+  
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
+  //subsystems
   public static Drive mDrive = new Drive();
 	public static Intake mIntake = new Intake();
 	public static Shooter mShooter = new Shooter();
   public static Conveyor mConveyor = new Conveyor();
   public static Climber mClimber = new Climber();
-  DriveHelper mDriveHelper = DriveHelper.getInstance();
-
+  
   // Controllers
   DriverController mDriverController = new DriverController();
   OperatorController mOperatorController = new OperatorController();
-	Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
+
+  // Other objects
+  DriveHelper mDriveHelper = DriveHelper.getInstance();
+  Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
   AutonExecute mAutonExecute= new AutonExecute();
+
+  
+	
 
   /**
    * Entered when the robot first starts up.
@@ -59,7 +41,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-		Logger.configureLoggingAndConfig(this, false);
     mSubsystemManager.setSubsystems(
         mDrive,
 				mIntake,
@@ -67,8 +48,6 @@ public class Robot extends TimedRobot {
         mConveyor,
         mClimber
     );
-
-		  //mCompressor.enableDigital();
   }
 
   /**
@@ -79,16 +58,8 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-		Logger.updateEntries();
-    // Add try catch like 254 does.
   }
 
-  /**
-   * This is run once when Autonomous is entered.
-   * Example Usage: Picking the relevant autonomous mode using SendableChooser
-   * 
-   * TODO: Add autonomous mode selection
-   */
   @Override
   public void autonomousInit() {
     mAutonExecute.start();
