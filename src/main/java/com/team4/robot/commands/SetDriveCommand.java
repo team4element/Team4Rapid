@@ -3,6 +3,7 @@ package com.team4.robot.commands;
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.commands.CommandBase;
 import com.team4.robot.Robot;
+import com.team4.robot.subsystems.Shooter;
 
 public class SetDriveCommand extends CommandBase{
 
@@ -19,6 +20,7 @@ public class SetDriveCommand extends CommandBase{
 
     @Override
     public void execute() {
+        Robot.mShooter.state = Shooter.mState.IDLE;
         Robot.mDrive.setOpenLoop(new DriveSignal(mSpeed, mSpeed));
     }
 

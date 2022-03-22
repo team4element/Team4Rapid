@@ -26,7 +26,6 @@ public class Shooter extends Subsystem {
 			10, Constants.kCANTimeoutMs);
         mBottomMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0,
 			100, Constants.kCANTimeoutMs);
-
 		
 
 		//Top Motor
@@ -70,24 +69,15 @@ public class Shooter extends Subsystem {
 	@Override
 	public void readPeriodicInputs() {
         mBottomVelocity = ElementMath.tickPer100msToScaledRPM(mBottomMotor.getSelectedSensorVelocity(0),
-			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
+			Constants.kShooterEnconderPPR, Constants.kShooterBottomGearRatio);
 		mTopVelocity = ElementMath.tickPer100msToScaledRPM(mTopMotor.getSelectedSensorVelocity(0),
-			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
-		System.out.println("Shooter Velocity bot: " + mBottomVelocity + "__________" +
-			"Shooter Velocity top: " + mTopVelocity);
+			Constants.kShooterEnconderPPR, Constants.kShooterTopGearRatio);
+		System.out.println("Bottom velocity " + mBottomVelocity + "Top velocity: " + mTopVelocity);
 	}
 
 	@Override
 	public void writePeriodicOutputs() {
 	}
-
-	public void setVelocity(double bottomVelocity, double topVelocity){
-        configureVelocityTalon();
-		mBottomMotor.set(ControlMode.Velocity, 
-			ElementMath.rpmToTicksPer100ms(bottomVelocity, Constants.kShooterEnconderPPR));
-		mTopMotor.set(ControlMode.Velocity, 
-			ElementMath.rpmToTicksPer100ms(topVelocity, Constants.kShooterEnconderPPR));
-    }
 
 	@Override
 	public void onSimulationLoop() {
@@ -99,21 +89,33 @@ public class Shooter extends Subsystem {
 		IDLE
 	}
 
+
+	public void setVelocity(double bottomVelocity, double topVelocity){
+        configureVelocityTalon();
+		mBottomMotor.set(ControlMode.Velocity, 
+			ElementMath.scaleRPM(ElementMath.rpmToTicksPer100ms(bottomVelocity, Constants.kShooterEnconderPPR),
+								Constants.kShooterBottomGearRatio));
+		mTopMotor.set(ControlMode.Velocity, 
+			ElementMath.scaleRPM(ElementMath.rpmToTicksPer100ms(topVelocity, Constants.kShooterEnconderPPR),
+			Constants.kShooterTopGearRatio));
+			
+    }
+
 	private void stopMotors(){
         mBottomMotor.set(ControlMode.PercentOutput, 0);
         mTopMotor.set(ControlMode.PercentOutput, 0);
     }
 
 	public void reloadGains(){
-        mBottomMotor.config_kP(0, Constants.kShooterKp);
-        mBottomMotor.config_kI(0, Constants.kShooterKi);
-        mBottomMotor.config_kD(0, Constants.kShooterKd);
-        mBottomMotor.config_kF(0, Constants.kShooterKf);
+        mBottomMotor.config_kP(0, Constants.kShooterBottomKp);
+        mBottomMotor.config_kI(0, Constants.kShooterBottomKi);
+        mBottomMotor.config_kD(0, Constants.kShooterBottomKd);
+        mBottomMotor.config_kF(0, Constants.kShooterBottomKf);
 
-        mTopMotor.config_kP(0, Constants.kShooterKp);
-        mTopMotor.config_kI(0, Constants.kShooterKi);
-        mTopMotor.config_kD(0, Constants.kShooterKd);
-        mTopMotor.config_kF(0, Constants.kShooterKf);
+        mTopMotor.config_kP(0, Constants.kShooterTopKp);
+        mTopMotor.config_kI(0, Constants.kShooterTopKi);
+        mTopMotor.config_kD(0, Constants.kShooterTopKd);
+        mTopMotor.config_kF(0, Constants.kShooterTopKf);
     }
 
     public synchronized void resetEncoders() {
@@ -139,5 +141,9 @@ public class Shooter extends Subsystem {
 					"could not detect motor encoder"); 
 
 		talon.setSensorPhase(true);
+	}
+
+	public double getBottomVelocity(){
+		return mBottomVelocity;
 	}
 }

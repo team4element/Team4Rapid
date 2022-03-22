@@ -1,11 +1,10 @@
 package com.team4.robot.commands;
 
 import com.team4.lib.commands.CommandBase;
+import com.team4.robot.Constants;
 import com.team4.robot.Robot;
 import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Shooter;
-
-import edu.wpi.first.wpilibj.Timer;
 
 public class ShootAndConveyCommand extends CommandBase {
 
@@ -26,7 +25,7 @@ public class ShootAndConveyCommand extends CommandBase {
     @Override
     public void execute() {
         mShooter.state = Shooter.mState.HIGH_VELOCITY;
-        if(Timer.getFPGATimestamp() > 1 && Timer.getFPGATimestamp() < 3){
+        if(mShooter.getBottomVelocity() >= Constants.kHighVelocityBottom){
                 mConveyor.state = Conveyor.mState.FORWARD; 
         }else{
             mConveyor.state = Conveyor.mState.IDLE;
