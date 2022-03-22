@@ -18,20 +18,19 @@ public class OperatorController {
         return mController.getLeftBumper();
     }
 
-    public boolean intakeBackwards() {
+    public boolean intakeBackwards(){
         return mController.getLeftTriggerAxis() > 0.25;
     }
 
-    public boolean shooterHigh() {
+    public boolean shooterHigh(){
         return mController.getAButton();
     }
 
-    public boolean shooterLow()
-    {
+    public boolean shooterLow(){
         return mController.getYButton();
     }
 
-    public boolean conveyorForward() {
+    public boolean conveyorForward(){
         return mController.getRightBumper();
     }
 
@@ -39,20 +38,15 @@ public class OperatorController {
         return mController.getRightTriggerAxis() > triggerTolerance;
     }
 
-    public boolean getConveyorReverse()
-    {
+    public boolean getConveyorReverse(){
         return mController.getRightTriggerAxis() > triggerTolerance;
     }
 
-    public boolean getCompressorToggle()
-    {
+    public boolean getCompressorToggle(){
         return mController.getBButton();
     }
 
-    public boolean getDeployIntake() {
+    public boolean getDeployIntake(){
         return mController.getXButtonPressed();
     }
-
-    //public static void setRumble(RumbleType krightrumble, int i) {
-    //}
 }
