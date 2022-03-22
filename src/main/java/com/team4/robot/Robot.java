@@ -1,6 +1,7 @@
 package com.team4.robot;
 
 import com.team4.lib.auto.AutoExecutor;
+import com.team4.lib.util.FieldState;
 import com.team4.robot.automodes.DoNothingMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
@@ -8,6 +9,7 @@ import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
+import com.team4.robot.subsystems.StateEstimator;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
@@ -23,8 +25,11 @@ public class Robot extends TimedRobot {
 	public static Shooter mShooter = new Shooter();
   public static Conveyor mConveyor = new Conveyor();
   public static Climber mClimber = new Climber();
+  public static StateEstimator mStateEstimator = new StateEstimator();
   
+  // others
   public static Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
+  public static FieldState mFieldState = new FieldState();
   TeleopControls mTeleopControls = new TeleopControls();
   AutoExecutor mAutoExecutor = new AutoExecutor();
 
@@ -35,8 +40,11 @@ public class Robot extends TimedRobot {
 				mIntake,
 				mShooter,
         mConveyor,
-        mClimber
+        mClimber,
+        mStateEstimator
     );
+
+    mFieldState.reset();
   }
 
   @Override

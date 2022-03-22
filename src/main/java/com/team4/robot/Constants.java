@@ -95,5 +95,4 @@ public class Constants {
 	public static final int kShooterIZone = 0;
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
-
 }

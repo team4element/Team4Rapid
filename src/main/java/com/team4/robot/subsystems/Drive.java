@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.team254.lib.geometry.Rotation2d;
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.NavX;
@@ -23,7 +24,11 @@ public class Drive extends Subsystem {
 
 	double mLeftPositionInches = 0d;
 	double mRightPositionInches = 0d;
-	double mAngelDegrees = 0d;
+	double mAngleDegrees = 0d;
+	Rotation2d mAngle = null;
+
+	double mLeftVelocity = 0d;
+	double mRightVelocity = 0d;
 	
 	public Drive() {
 		// Starts all Talons in Coast Mode
@@ -62,7 +67,22 @@ public class Drive extends Subsystem {
 			Constants.kDriveGearRatio);
 		
 
-		mAngelDegrees = mNavX.getHeadingDegrees();
+		mAngleDegrees = mNavX.getHeadingDegrees();
+		mAngle = mNavX.getHeading();
+
+		mLeftVelocity = 
+			ElementMath.rotationsToInches(
+				ElementMath.tickPer100msToRPM(mLeftMaster1.getSelectedSensorVelocity(0), 
+											Constants.kDriveEnconderPPR), 
+				Constants.kDriveWheelCircumferenceInches, 
+				Constants.kDriveGearRatio) / 60.0;
+			
+		mRightVelocity = 
+				ElementMath.rotationsToInches(
+					ElementMath.tickPer100msToRPM(mRightMaster1.getSelectedSensorVelocity(0), 
+												Constants.kDriveEnconderPPR), 
+					Constants.kDriveWheelCircumferenceInches, 
+					Constants.kDriveGearRatio) / 60.0;
 	}
 
 	@Override
@@ -131,16 +151,32 @@ public class Drive extends Subsystem {
 		return (getLeftDistanceInches() + getRightDistanceInches()) / 2;
 	}
 
+	public double getLeftVelocity()
+	{
+		return mLeftVelocity;
+	}
+
+	public double getRightVelocity()
+	{
+		return mRightVelocity;
+	}
+
 	public double getAngleDegrees()
 	{
-		return mAngelDegrees;
+		return mAngleDegrees;
+	}
+
+	public Rotation2d getAngle()
+	{
+		return mAngle;
 	}
 
 	public void resetSensors()
 	{
 		mLeftPositionInches = 0;
 		mRightPositionInches = 0;
-		mAngelDegrees = 0;
+		mAngleDegrees = 0;
+		mAngle = Rotation2d.identity();
 
 		mLeftMaster1.setSelectedSensorPosition(0.0);
 		mRightMaster1.setSelectedSensorPosition(0.0);
