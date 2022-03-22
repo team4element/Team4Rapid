@@ -18,6 +18,7 @@ public class Intake extends Subsystem {
 	// State of pistons
 	private static boolean mLeftPos, mRightPos = false;
 
+	public mState state = mState.IDLE;
 
 	public enum mState {
 		FORWARD,
@@ -25,7 +26,7 @@ public class Intake extends Subsystem {
 		IDLE
 	}
 
-	public mState state = mState.IDLE;
+	
 
 	public Intake() {
 		mRollerMotor = TalonFactory.createDefaultTalonSRX(Constants.kRollerMotorID);

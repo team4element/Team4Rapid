@@ -15,17 +15,9 @@ public class DriverController {
         return -1 * mController.getLeftY();
     }
 
-	//CHANGE IN CODE: -1 *
     public double getTurn() {
         return  -1 * mController.getRightX();
     }
-
-	/*
-		public boolean getDeployIntake() {
-			return mController.getRightBumperPressed();
-		}
-	*/
-
 		public boolean getClimbUp()
 		{
 			return mController.getPOV() == 0;

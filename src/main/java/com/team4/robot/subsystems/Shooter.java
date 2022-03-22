@@ -12,22 +12,9 @@ import com.team4.robot.Constants;
 
 public class Shooter extends Subsystem {
 	private final LazyTalonFX mTopMotor, mBottomMotor;
-	private double mVelocity = 0d;
+	private double mBottomVelocity = 0d;
 	private double mTopVelocity = 0d;
 	public mState state = mState.IDLE;
-	
-	public static void configureEncoder(LazyTalonFX talon) {
-		TalonUtil.checkError(talon.setStatusFramePeriod(
-			StatusFrame.Status_2_Feedback0, 20, Constants.kLongCANTimeoutMs),
-			"could not set drive feedback frame");
-
-		TalonUtil.checkError(
-				talon.configSelectedFeedbackSensor(
-					TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
-					"could not detect motor encoder"); 
-
-			talon.setSensorPhase(true);
-		}
 
 	public Shooter() {
 		//Bottom Motor
@@ -82,11 +69,11 @@ public class Shooter extends Subsystem {
 
 	@Override
 	public void readPeriodicInputs() {
-        mVelocity = ElementMath.tickPer100msToScaledRPM(mBottomMotor.getSelectedSensorVelocity(0),
+        mBottomVelocity = ElementMath.tickPer100msToScaledRPM(mBottomMotor.getSelectedSensorVelocity(0),
 			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
 		mTopVelocity = ElementMath.tickPer100msToScaledRPM(mTopMotor.getSelectedSensorVelocity(0),
 			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
-		System.out.println("Shooter Velocity bot: " + mVelocity + "__________" +
+		System.out.println("Shooter Velocity bot: " + mBottomVelocity + "__________" +
 			"Shooter Velocity top: " + mTopVelocity);
 	}
 
@@ -106,7 +93,6 @@ public class Shooter extends Subsystem {
 	public void onSimulationLoop() {
 	}
 
-	
 	public enum mState {
 		HIGH_VELOCITY,
 		LOW_VELOCITY,
@@ -135,10 +121,6 @@ public class Shooter extends Subsystem {
         mTopMotor.setSelectedSensorPosition(0, 0, 0);
     }
 
-	public double getVelocity(){
-		return mVelocity;
-	}
-
 	private void configureVelocityTalon(){
         mBottomMotor.selectProfileSlot(0, 0);
 		mBottomMotor.configClosedloopRamp(0);
@@ -146,4 +128,16 @@ public class Shooter extends Subsystem {
 		mTopMotor.configClosedloopRamp(0);
     }
 
+	public static void configureEncoder(LazyTalonFX talon) {
+		TalonUtil.checkError(talon.setStatusFramePeriod(
+			StatusFrame.Status_2_Feedback0, 20, Constants.kLongCANTimeoutMs),
+			"could not set drive feedback frame");
+
+		TalonUtil.checkError(
+				talon.configSelectedFeedbackSensor(
+					TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
+					"could not detect motor encoder"); 
+
+		talon.setSensorPhase(true);
+	}
 }
