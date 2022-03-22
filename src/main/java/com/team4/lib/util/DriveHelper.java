@@ -10,20 +10,12 @@ import com.team254.lib.util.Util;
  * wave. It is changed to allow for turning in place versus only being able to turn while throttle is applied. 
  */
 public class DriveHelper{
-    private static DriveHelper instance = null;
-
-    public static DriveHelper getInstance(){
-        if(instance == null){
-            instance = new DriveHelper();
-        }
-        return instance;
-    }
 
     public DriveHelper(){
     }
 
     // TODO: Look at 2020 254 code updates for this
-    public DriveSignal elementDrive(double throttle, double wheel, boolean quickTurn) {
+    public static DriveSignal elementDrive(double throttle, double wheel, boolean quickTurn) {
         if (Util.epsilonEquals(throttle, 0.0, 0.04)) {
             throttle = 0.0;
         }

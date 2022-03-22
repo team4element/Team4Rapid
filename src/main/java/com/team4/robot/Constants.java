@@ -41,9 +41,15 @@ public class Constants {
 	public static final int kCompressorID = 1;
 
 	//Drive PID values
-	public static final double kDriveKP = 0.0;
-	public static final double kDriveKI = 0.0;
-	public static final double kDriveKD = 0.0;
+	public static final double kDriveDistanceKP = 0.0;
+	public static final double kDriveDistanceKI = 0.0;
+	public static final double kDriveDistanceKD = 0.0;
+	
+	public static final double kDriveAngleKP = 0.0;
+	public static final double kDriveAngleKI = 0.0;
+	public static final double kDriveAngleKD = 0.0;
+
+	public static final double kDistancePidTolerance = 1.0;
 	
 
 	// Drivetrain Dynamics

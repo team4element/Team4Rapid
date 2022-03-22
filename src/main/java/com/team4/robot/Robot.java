@@ -1,7 +1,6 @@
 package com.team4.robot;
 
 import com.team4.lib.auto.AutoExecutor;
-import com.team4.lib.util.DriveHelper;
 import com.team4.robot.automodes.DoNothingMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
@@ -9,6 +8,7 @@ import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
 import com.team4.robot.subsystems.Shooter;
+
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
@@ -25,7 +25,6 @@ public class Robot extends TimedRobot {
   public static Climber mClimber = new Climber();
   
   public static Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
-  DriveHelper mDriveHelper = DriveHelper.getInstance();
   TeleopControls mTeleopControls = new TeleopControls();
   AutoExecutor mAutoExecutor = new AutoExecutor();
 

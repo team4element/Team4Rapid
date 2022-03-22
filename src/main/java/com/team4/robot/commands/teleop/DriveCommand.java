@@ -12,7 +12,6 @@ import com.team4.robot.controllers.TeleopControls;
 public class DriveCommand extends CommandBase{
 
     DriverController mDriverController = TeleopControls.mDriverController;
-    DriveHelper mDriveHelper = DriveHelper.getInstance();
 
     @Override
     public void start() {
@@ -21,7 +20,7 @@ public class DriveCommand extends CommandBase{
     @Override
     public void execute() {
         Robot.mDrive.setOpenLoop(
-            mDriveHelper.elementDrive(
+            DriveHelper.elementDrive(
             ElementMath.handleDeadband(mDriverController.getThrottle(), Constants.kJoystickThreshold),
             ElementMath.handleDeadband(mDriverController.getTurn(), Constants.kJoystickThreshold),
             false));
