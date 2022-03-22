@@ -31,8 +31,8 @@ public class Climber extends Subsystem {
         // mRightMotor.configReverseSoftLimitThreshold(0); // maybe change this value
         // mRightMotor.configReverseSoftLimitEnable(true, 0);
         
-        mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbLeftPiston);
-		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbRightPiston);
+        mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidLeft);
+		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidRight);
 
 
     }

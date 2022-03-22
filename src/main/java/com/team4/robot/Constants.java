@@ -33,11 +33,12 @@ public class Constants {
 	public static final int kClimberRightMotor = 14;
 	
 
-	//Pistons and Solenoids
+	//Pnuematics
 	public static final int kIntakeSolenoidLeft = 7;
 	public static final int kIntakeSolenoidRight = 4;
-	public static final int kClimbLeftPiston = 6;
-    public static final int kClimbRightPiston = 5;
+	public static final int kClimbSolenoidLeft = 6;
+    public static final int kClimbSolenoidRight = 5;
+	public static final int kCompressorID = 1;
 
 	//Drive PID values
 	public static final double kDriveKP = 0.0;
@@ -51,7 +52,8 @@ public class Constants {
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
     public static final double kDriveTrackScrubFactor = 1.0; 
-    public static final double kDriveGearRatio = 1/6.43; 
+    public static final double kDriveGearRatio = 1/6.43;
+	public static final double kDriveEnconderPPR = 2048.0;
 
 	// Shooter
 	public static final double kHighVelocityBottom = 2500;
@@ -76,13 +78,10 @@ public class Constants {
 	// Robot Dynamics
 	public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center
 	public static final double kRobotMass = 56; // Robot Mass (kg)
-
 	public static final double kJoystickThreshold = 0.1;
-
 	public static final double kLoopTime = 0.020;
 
-	public static final int kCompressorID = 1;
-
+	//Shooter PID
 	public static final double kShooterKp = 0.1;
 	public static final double kShooterKi = 0.0;
 	public static final double kShooterKd = 0;
@@ -91,5 +90,4 @@ public class Constants {
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
 
-	public static final double kDriveEnconderPPR = 2048.0;
 }
