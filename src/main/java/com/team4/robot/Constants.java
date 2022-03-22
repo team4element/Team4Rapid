@@ -36,8 +36,8 @@ public class Constants {
 	//Pistons and Solenoids
 	public static final int kIntakeSolenoidLeft = 7;
 	public static final int kIntakeSolenoidRight = 4;
-	public static int kClimbLeftPiston = 6;
-    public static int kClimbRightPiston = 5;
+	public static final int kClimbLeftPiston = 6;
+    public static final int kClimbRightPiston = 5;
 
 	//Drive PID values
 	public static final double kDriveKP = 0.0;
@@ -51,21 +51,17 @@ public class Constants {
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
     public static final double kDriveTrackScrubFactor = 1.0; 
-    public static final double kDriveGearRatio = 1/6.43; //On actual bot 12d / 48d, 7.71/1  1/7.71, .129701
+    public static final double kDriveGearRatio = 1/6.43; 
 
 	// Shooter
 	public static final double kHighVelocityBottom = 2500;
 	public static final double kHighVelocityTop = 2200;
-	public static final double kLowVelocityBottom = 1500; // Find me
+	public static final double kLowVelocityBottom = 1500; 
 	public static final double kLowVelocityTop = 1200;
-	public static final double kShooterTicksPerRevolution = 2048; // based on gear reduction between encoder and output shaft, and encoder ppr
+	public static final double kShooterTicksPerRevolution = 2048; 
 
 	public static final double kShooterMomentOfInertia = 0.003440853333; // kg * m^2
-	public static final double kShooterGearRatio = 1.78; // >1 if flywheel geared down
-	//changed the ratio from 1.0 to 1.6 to achieve the right angle
-
-	/*Ava comment: changed kShooterGearRatio to 1.78 */
-
+	public static final double kShooterGearRatio = 1.78; 
 
 	// Intake
 	public static final double kIntakeForwardPower = 0.75;
