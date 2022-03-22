@@ -4,8 +4,9 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
-import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team254.lib.util.DriveSignal;
+import com.team4.lib.drivers.LazyTalonFX;
+import com.team4.lib.drivers.NavX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.util.ElementMath;
@@ -14,13 +15,15 @@ import com.team4.robot.Constants;
 public class Drive extends Subsystem {
 
 	// Motors that controls wheels
-	private final WPI_TalonFX mLeftMaster1, mleftFollower2;
-	private final WPI_TalonFX mRightMaster1, mRightFollower2;
+	private final LazyTalonFX mLeftMaster1, mleftFollower2;
+	private final LazyTalonFX mRightMaster1, mRightFollower2;
+	private NavX mNavX;
 
 	private driveState state;
 
 	double mLeftPositionInches = 0d;
 	double mRightPositionInches = 0d;
+	double mAngelDegrees = 0d;
 	
 	public Drive() {
 		// Starts all Talons in Coast Mode
@@ -38,6 +41,7 @@ public class Drive extends Subsystem {
 			Constants.kDriveRightFollower2, mRightMaster1);
 		configureTalonFX(mRightFollower2, false, false);
 
+		mNavX = new NavX();
 		setCoastMode();
 	}
 
@@ -56,6 +60,8 @@ public class Drive extends Subsystem {
 			Constants.kDriveWheelCircumferenceInches,
 			Constants.kDriveGearRatio);
 		
+
+		mAngelDegrees = mNavX.getFusedHeading();
 	}
 
 	@Override
@@ -71,7 +77,7 @@ public class Drive extends Subsystem {
 	public void onLoop(double timestamp) {
 	}
 
-	public static void configureTalonFX(WPI_TalonFX talon, boolean left, boolean main_encoder_talon) {
+	public static void configureTalonFX(LazyTalonFX talon, boolean left, boolean main_encoder_talon) {
 		talon.setInverted(!left);
 
 		if (main_encoder_talon) {
@@ -121,6 +127,11 @@ public class Drive extends Subsystem {
 	public double getDistance()
 	{
 		return (getLeftDistanceInches() + getRightDistanceInches()) / 2;
+	}
+
+	public double getAngleDegrees()
+	{
+		return mAngelDegrees;
 	}
 
 	public enum driveState{
