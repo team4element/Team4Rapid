@@ -1,4 +1,4 @@
-package com.team4.robot.commands;
+package com.team4.robot.commands.teleop;
 
 import com.team4.lib.commands.CommandBase;
 import com.team4.robot.Robot;

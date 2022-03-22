@@ -11,21 +11,14 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 
 public class Intake extends Subsystem {
-	//CHANGE IN CODE
 	// Hardware
-	private final TalonSRX mRollerMotor;
-	private final TalonSRX mArmMotor;
-	private final Solenoid mLeftPiston;
-	private final Solenoid mRightPiston;
+	private final TalonSRX mRollerMotor, mArmMotor;
+	private final Solenoid mLeftPiston, mRightPiston;
 
-	// Performance Settings
-	private static final double kIntakeForwardPower = 0.75;
-	private static final double kIntakeReversePower = -0.75;
-	private static final double kIntakeOff = 0d;
-	
-	private static boolean mLeftPos = false;
-	private static boolean mRightPos = false;
+	// State of pistons
+	private static boolean mLeftPos, mRightPos = false;
 
+	public mState state = mState.IDLE;
 
 	public enum mState {
 		FORWARD,
@@ -33,22 +26,22 @@ public class Intake extends Subsystem {
 		IDLE
 	}
 
-	public mState state = mState.IDLE;
+	
 
 	public Intake() {
 		mRollerMotor = TalonFactory.createDefaultTalonSRX(Constants.kRollerMotorID);
-		mArmMotor = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorID);
-		mRollerMotor.setInverted(true);
-		
 		mRollerMotor.changeMotionControlFramePeriod(100);
 		mRollerMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		mArmMotor.changeMotionControlFramePeriod(100);
-		mArmMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		mRollerMotor.setInverted(true);
+		
+		mArmMotor = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorID);
+		mArmMotor.changeMotionControlFramePeriod(100);
+		mArmMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		
 		
 		mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
 		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
@@ -97,17 +90,17 @@ public class Intake extends Subsystem {
 	}
 
 	private void motorsForward() {
-		mRollerMotor.set(ControlMode.PercentOutput, kIntakeForwardPower);
-		mArmMotor.set(ControlMode.PercentOutput, kIntakeForwardPower);
+		mRollerMotor.set(ControlMode.PercentOutput, Constants.kDriveEnconderPPR);
+		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
 	}
 
 	private void motorsReverse() {
-		mRollerMotor.set(ControlMode.PercentOutput, kIntakeReversePower);
-		mArmMotor.set(ControlMode.PercentOutput, kIntakeReversePower);
+		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
+		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
 	}
 
 	private void motorsOff(){
-		mRollerMotor.set(ControlMode.PercentOutput, kIntakeOff);
-		mArmMotor.set(ControlMode.PercentOutput, kIntakeOff);
+		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeOff);
+		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeOff);
 	}
 }
