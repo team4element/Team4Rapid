@@ -41,10 +41,10 @@ public class Robot extends TimedRobot {
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
   public static Drive mDrive = new Drive();
-	Intake mIntake = new Intake();
+	public static Intake mIntake = new Intake();
 	public static Shooter mShooter = new Shooter();
   public static Conveyor mConveyor = new Conveyor();
-  Climber mClimber = new Climber();
+  public static Climber mClimber = new Climber();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
   // Controllers
