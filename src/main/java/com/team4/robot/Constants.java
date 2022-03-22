@@ -68,6 +68,10 @@ public class Constants {
 	public static final double kIntakeReversePower = -0.75;
 	public static final double kIntakeOff = 0d;
 	
+	// Conveyor
+	public static final double kConveyorForwardPower = 0.3;
+	public static final double kConveyorReversePower = -0.35;
+	public static final double kConveyorOff = 0;
 
 	// Robot Dynamics
 	public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center

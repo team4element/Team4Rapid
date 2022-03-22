@@ -43,5 +43,4 @@ public class ShootAndConveyCommand extends CommandBase {
         mConveyor.state = Conveyor.mState.IDLE;
         mShooter.state = Shooter.mState.IDLE;
     }
-    
 }

@@ -9,7 +9,4 @@ public class MoveArmCommand extends OneTimeCommand {
     public void runOnce() {
         Robot.mIntake.moveArm();
     }
-
-    
-    
 }

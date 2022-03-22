@@ -31,5 +31,4 @@ public class SetDriveCommand extends CommandBase{
     public void stop() {
         Robot.mDrive.setOpenLoop(new DriveSignal(0d, 0d));
     }
-    
 }
