@@ -67,6 +67,13 @@ public class Constants {
 	/*Ava comment: the perfect point at the top worked with a kShooterGearRatio 
 	of 1.6 and a */
 
+
+	// Intake
+	public static final double kIntakeForwardPower = 0.75;
+	public static final double kIntakeReversePower = -0.75;
+	public static final double kIntakeOff = 0d;
+	
+
 	// Robot Dynamics
 	public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center
 	public static final double kRobotMass = 56; // Robot Mass (kg)
