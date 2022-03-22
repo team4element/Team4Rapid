@@ -27,13 +27,15 @@ public class Drive extends Subsystem {
 		mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
 		configureTalonFX(mLeftMaster1, true, true);
 
-		mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveLeftFollower2, mLeftMaster1);
+		mleftFollower2 = TalonFactory.createPermanentSlaveTalonFX(
+			Constants.kDriveLeftFollower2, mLeftMaster1);
 		configureTalonFX(mleftFollower2, true, false);
 
 		mRightMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveRightMaster1);
 		configureTalonFX(mRightMaster1, false, true);
 
-		mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(Constants.kDriveRightFollower2, mRightMaster1);
+		mRightFollower2 = TalonFactory.createPermanentSlaveTalonFX(
+			Constants.kDriveRightFollower2, mRightMaster1);
 		configureTalonFX(mRightFollower2, false, false);
 
 		setCoastMode();
@@ -73,11 +75,13 @@ public class Drive extends Subsystem {
 		talon.setInverted(!left);
 
 		if (main_encoder_talon) {
-			TalonUtil.checkError(talon.setStatusFramePeriod(StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
+			TalonUtil.checkError(talon.setStatusFramePeriod(
+				StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
 					"could not set drive feedback frame");
 			TalonUtil.checkError(
-					talon.configSelectedFeedbackSensor(TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
-					"could not detect motor encoder"); // primary closed-loop, 100 ms timeout
+					talon.configSelectedFeedbackSensor(
+						TalonFXFeedbackDevice.IntegratedSensor, 0, Constants.kLongCANTimeoutMs),
+					"could not detect motor encoder");
 			talon.setSensorPhase(true);
 		}
 	}
@@ -91,7 +95,6 @@ public class Drive extends Subsystem {
 
 	private void configureOpenTalon() {
 		setCoastMode();
-
 		mLeftMaster1.configOpenloopRamp(0.25);
 		mRightMaster1.configOpenloopRamp(0.25);
 		state = driveState.OPEN;
@@ -101,7 +104,6 @@ public class Drive extends Subsystem {
 		if (state != driveState.OPEN) {
 			configureOpenTalon();
 		}
-
 		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
 		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
 	}
