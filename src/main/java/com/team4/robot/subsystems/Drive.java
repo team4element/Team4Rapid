@@ -14,8 +14,6 @@ import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
-import com.team4.robot.subsystems.states.TalonControlState;
-
 
 public class Drive extends Subsystem {
 
@@ -23,7 +21,7 @@ public class Drive extends Subsystem {
 	private final WPI_TalonFX mLeftMaster1, mleftFollower2;
 	private final WPI_TalonFX mRightMaster1, mRightFollower2;
 
-	private TalonControlState mTalonControlState;
+	private driveState state;
 
 	double mLeftPositionInches = 0d;
 	double mRightPositionInches = 0d;
@@ -74,11 +72,11 @@ public class Drive extends Subsystem {
 
 		mLeftMaster1.configOpenloopRamp(0.25);
 		mRightMaster1.configOpenloopRamp(0.25);
-		mTalonControlState = TalonControlState.OPEN;
+		state = driveState.OPEN;
 	}
 
 	public synchronized void setOpenLoop(DriveSignal signal) {
-		if (mTalonControlState != TalonControlState.OPEN) {
+		if (state != driveState.OPEN) {
 			configureOpenTalon();
 		}
 
@@ -129,4 +127,10 @@ public class Drive extends Subsystem {
 		return (getLeftDistanceInches() + getRightDistanceInches()) / 2;
 	}
 
+	public enum driveState{
+        OPEN,
+        VELOCITY,       
+        MOTION_MAGIC,
+        POSITION
+    }
 }
