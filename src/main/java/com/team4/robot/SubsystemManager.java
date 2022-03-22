@@ -28,12 +28,6 @@ public class SubsystemManager {
         mAllSubsystems = Arrays.asList(allSubsystems);
     }
 
-    /**
-     * This represents the generalized way that a Subsystem should operate.
-     * 1. Read all sensor inputs
-     * 2. Run the subsystem's calculations
-     * 3. Write all outputs to the actuators
-     */
     public void onEnabledLoop() {
         mAllSubsystems.forEach(Subsystem::readPeriodicInputs);
         mAllSubsystems.forEach(l -> l.onLoop(Timer.getFPGATimestamp()));
