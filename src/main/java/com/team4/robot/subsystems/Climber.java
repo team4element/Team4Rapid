@@ -15,7 +15,6 @@ public class Climber extends Subsystem {
     private final Solenoid mLeftPiston;
 	private final Solenoid mRightPiston;
 
-
     public enum ClimberControlState{
         CLIMB_UP,
         CLIMB_DOWN,
@@ -26,20 +25,16 @@ public class Climber extends Subsystem {
     {
         mLeftMotor = new TalonFX(Constants.kClimberLeftMotor);
         mRightMotor = new TalonFX(Constants.kClimberRightMotor);
+        
         mRightMotor.follow(mLeftMotor);
         mLeftMotor.setInverted(true);  
-        // mRightMotor.configReverseSoftLimitThreshold(0); // maybe change this value
-        // mRightMotor.configReverseSoftLimitEnable(true, 0);
         
         mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidLeft);
 		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidRight);
-
-
     }
 
     @Override
     public void readPeriodicInputs() {
-        
     }
 
     public void setClimb(ClimberControlState controlState)
@@ -49,7 +44,6 @@ public class Climber extends Subsystem {
 
     @Override
     public void writePeriodicOutputs() {
-        // System.out.println("Climb pos: " + getEncoders());
     }
 
     @Override
@@ -98,8 +92,7 @@ public class Climber extends Subsystem {
     }
 
     public double getEncoders(){
-        return (mLeftMotor.getSelectedSensorPosition(0) + mRightMotor.getSelectedSensorPosition(0)) / 2;
-
-
+        return (mLeftMotor.getSelectedSensorPosition(0) +
+            mRightMotor.getSelectedSensorPosition(0)) / 2;
     }
 }
