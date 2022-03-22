@@ -43,6 +43,7 @@ public class Drive extends Subsystem {
 
 		mNavX = new NavX();
 		setCoastMode();
+		resetSensors();
 	}
 
 
@@ -61,11 +62,12 @@ public class Drive extends Subsystem {
 			Constants.kDriveGearRatio);
 		
 
-		mAngelDegrees = mNavX.getFusedHeading();
+		mAngelDegrees = mNavX.getHeadingDegrees();
 	}
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
+		System.out.println("Current Angle: " + getAngleDegrees());
 	}
 
 	@Override
@@ -132,6 +134,17 @@ public class Drive extends Subsystem {
 	public double getAngleDegrees()
 	{
 		return mAngelDegrees;
+	}
+
+	public void resetSensors()
+	{
+		mLeftPositionInches = 0;
+		mRightPositionInches = 0;
+		mAngelDegrees = 0;
+
+		mLeftMaster1.setSelectedSensorPosition(0.0);
+		mRightMaster1.setSelectedSensorPosition(0.0);
+		mNavX.reset();		
 	}
 
 	public enum driveState{

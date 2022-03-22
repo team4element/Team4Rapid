@@ -1,14 +1,12 @@
 package com.team4.lib.drivers;
 
+import com.team254.lib.geometry.Rotation2d;
+
 public interface IMU {
 
-	double getFusedHeading();
+	double getHeadingDegrees();
 
-	double getRawYawDegrees();
-
-	double getPitch();
-
-	double getRoll();
+	Rotation2d getHeading();
 
 	boolean isPresent();
 
