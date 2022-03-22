@@ -7,11 +7,8 @@ package com.team4.robot;
 import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.automodes.DoNothingMode;
-import com.team4.robot.automodes.ShootAndDriveMode;
-import com.team4.robot.controllers.DriverController;
-import com.team4.robot.controllers.OperatorController;
+import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
-import com.team4.robot.subsystems.Climber.ClimberControlState;
 import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Drive;
 import com.team4.robot.subsystems.Intake;
@@ -44,16 +41,17 @@ public class Robot extends TimedRobot {
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
 
   public static Drive mDrive = new Drive();
-	Intake mIntake = new Intake();
+	public static Intake mIntake = new Intake();
 	public static Shooter mShooter = new Shooter();
   public static Conveyor mConveyor = new Conveyor();
-  Climber mClimber = new Climber();
+  public static Climber mClimber = new Climber();
   DriveHelper mDriveHelper = DriveHelper.getInstance();
 
+  TeleopControls mTeleopControls = new TeleopControls();
+
   // Controllers
-  public static DriverController mDriverController = new DriverController();
-  OperatorController mOperatorController = new OperatorController();
-	Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
+
+	public static Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
   AutoExecutor mAutoExecutor = new AutoExecutor();
 
   /**
@@ -132,71 +130,7 @@ public class Robot extends TimedRobot {
   @Override
   public void teleopPeriodic() {
     // Controller Inputs
-    double throttle = mDriverController.getThrottle();
-    double turn = mDriverController.getTurn();
-
-		boolean isDeployIntake = mOperatorController.getDeployIntake();
-
-
-    mDrive.setOpenLoop(mDriveHelper.elementDrive(throttle, turn, false));
-
-
-
-		if (isDeployIntake) {
-			mIntake.moveArm();
-		} 
-		
-		if (mOperatorController.getCompressorToggle()) {
-
-			mCompressor.enableDigital();
-
-		} else {
-			mCompressor.disable();
-    } 		
-
-		if (mOperatorController.intakeForward()) {
-			  mIntake.state = Intake.mState.FORWARD;
-		} else if (mOperatorController.intakeBackwards()) {
-        mIntake.state = Intake.mState.REVERSE;
-		} else {
-        mIntake.state = Intake.mState.IDLE;
-		}
-
-    if(mOperatorController.conveyorForward()){
-      mConveyor.state = Conveyor.mState.FORWARD;
-    } else if (mOperatorController.conveyorBackward()){
-      mConveyor.state = Conveyor.mState.REVERSE;
-    }else{
-      mConveyor.state = Conveyor.mState.IDLE;
-    }
-
-		if (mOperatorController.shooterHigh()) {
-			mShooter.state = Shooter.mState.HIGH_VELOCITY;
-		} else if (mOperatorController.shooterLow()) {
-      mShooter.state = Shooter.mState.LOW_VELOCITY;	
-    } else {
-			mShooter.state = Shooter.mState.IDLE;
-		}
-
-    if(mDriverController.changeWinch()){
-      mClimber.toggleWinch();
-    }
-    
-    if (mDriverController.getClimbUp())
-    {
-      mClimber.setClimb(ClimberControlState.CLIMB_UP);
-    }
-    else if (mDriverController.getClimbDown())
-    {
-      mClimber.setClimb(ClimberControlState.CLIMB_DOWN);
-    }
-    else
-    {
-      mClimber.setClimb(ClimberControlState.IDLE);
-    }
-
-
-    // Run each subsystem's periodic function
+    mTeleopControls.runTeleop();
     mSubsystemManager.onEnabledLoop();
     }
   

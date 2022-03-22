@@ -3,7 +3,6 @@ package com.team4.robot.controllers;
 import com.team4.robot.Constants;
 
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
 public class OperatorController {

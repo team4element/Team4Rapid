@@ -2,13 +2,15 @@ package com.team4.robot.commands;
 
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.commands.CommandBase;
+import com.team4.lib.commands.TeleopCommandRunner;
 import com.team4.lib.util.DriveHelper;
 import com.team4.robot.Robot;
 import com.team4.robot.controllers.DriverController;
+import com.team4.robot.controllers.TeleopControls;
 
 public class DriveCommand extends CommandBase{
 
-    DriverController mDriverController = Robot.mDriverController;
+    DriverController mDriverController = TeleopControls.mDriverController;
     DriveHelper mDriveHelper = DriveHelper.getInstance();
 
 

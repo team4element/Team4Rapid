@@ -54,8 +54,7 @@ public class Constants {
 	public static final double kShooterGearRatio = 1.78; // >1 if flywheel geared down
 	//changed the ratio from 1.0 to 1.6 to achieve the right angle
 
-	/*Ava comment: the perfect point at the top worked with a kShooterGearRatio 
-	of 1.6 and a */
+	/*Ava comment: changed kShooterGearRatio to 1.78 */
 
 	// Robot Dynamics
 	public static final double kRobotMOI = 6; // Moment of inertia of the robot around the center

@@ -12,15 +12,12 @@ import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
-import com.team4.robot.controllers.OperatorController;
-
-import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 
 
 public class Shooter extends Subsystem {
 
 	public double kHighVelocity = 3200;
-	// Changed from 3100 to 3500 to ensure a sufficient height is always reached
+	// Ava comment: Changed from 3100 to 3200 to ensure a sufficient height is always reached
 	public final double kLowVelocity = 1500; // Find me
 	private final LazyTalonFX mMasterMotor, mSlaveMotor;
 
