@@ -2,7 +2,7 @@ package com.team4.robot;
 
 import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.FieldState;
-import com.team4.robot.automodes.DoNothingMode;
+import com.team4.robot.automodes.ShootAndDriveMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
 import com.team4.robot.subsystems.Conveyor;
@@ -92,7 +92,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     mSubsystemManager.onDisabledLoop();
-    mAutoExecutor.setAutoMode(new DoNothingMode());
+    mAutoExecutor.setAutoMode(new ShootAndDriveMode());
   }
 
   @Override

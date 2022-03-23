@@ -62,14 +62,15 @@ public class Constants {
 	public static final double kDriveEnconderPPR = 2048.0;
 
 	// Shooter
-	public static final double kHighVelocityBottom = 1400;
-	public static final double kHighVelocityTop = 1200;
+	public static final double kHighVelocityBottom = 3700;
+	public static final double kHighVelocityTop = 3500;
 	public static final double kLowVelocityBottom = 600; 
 	public static final double kLowVelocityTop = 400;
 	public static final double kShooterTicksPerRevolution = 2048; 
 
 	public static final double kShooterMomentOfInertia = 0.003440853333; // kg * m^2
-	public static final double kShooterGearRatio = 1.78; 
+	public static final double kShooterBottomGearRatio = 48.0/32.0; 
+	public static final double kShooterTopGearRatio = 50.0/30.0;
 
 	// Intake
 	public static final double kIntakeForwardPower = 0.75;
@@ -88,11 +89,19 @@ public class Constants {
 	public static final double kLoopTime = 0.020;
 
 	//Shooter PID
-	public static final double kShooterKp = 0.1;
-	public static final double kShooterKi = 0.0;
-	public static final double kShooterKd = 0;
-	public static final double kShooterKf = .045;
+	public static final double kShooterBottomKp = 0.115;
+	public static final double kShooterBottomKi = 0.0;
+	public static final double kShooterBottomKd = 5.5;
+	public static final double kShooterBottomKf = .046;
+
+	public static final double kShooterTopKp = 0.115;
+	public static final double kShooterTopKi = 0.0;
+	public static final double kShooterTopKd = 5.5;
+	public static final double kShooterTopKf = .046;
+
+
 	public static final int kShooterIZone = 0;
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
+
 }
