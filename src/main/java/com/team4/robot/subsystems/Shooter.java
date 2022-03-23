@@ -73,8 +73,8 @@ public class Shooter extends Subsystem {
 			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
 		mTopVelocity = ElementMath.tickPer100msToScaledRPM(mTopMotor.getSelectedSensorVelocity(0),
 			Constants.kShooterEnconderPPR, Constants.kShooterGearRatio);
-		System.out.println("Shooter Velocity bot: " + mBottomVelocity + "__________" +
-			"Shooter Velocity top: " + mTopVelocity);
+		// System.out.println("Shooter Velocity bot: " + mBottomVelocity + "__________" +
+			// "Shooter Velocity top: " + mTopVelocity);
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 public class Robot extends TimedRobot {
   
   private final SubsystemManager mSubsystemManager = SubsystemManager.getInstance();
+  public static FieldState mFieldState = new FieldState();
 
   //subsystems
   public static Drive mDrive = new Drive();
@@ -29,7 +30,6 @@ public class Robot extends TimedRobot {
   
   // others
   public static Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
-  public static FieldState mFieldState = new FieldState();
   TeleopControls mTeleopControls = new TeleopControls();
   AutoExecutor mAutoExecutor = new AutoExecutor();
 
@@ -44,6 +44,7 @@ public class Robot extends TimedRobot {
         mStateEstimator
     );
 
+    mDrive.resetSensors();
     mFieldState.reset();
   }
 
@@ -70,6 +71,8 @@ public class Robot extends TimedRobot {
     mClimber.toggleWinch();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
+
+    mDrive.resetSensors();
   }
 
   @Override

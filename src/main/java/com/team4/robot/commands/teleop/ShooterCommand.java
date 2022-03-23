@@ -18,9 +18,10 @@ public class ShooterCommand extends CommandBase {
     @Override
     public void execute() {
         if (mOperatorController.shooterHigh()) {
-            Robot.mShooter.state = Shooter.mState.HIGH_VELOCITY;
+            // Robot.mShooter.state = Shooter.mState.HIGH_VELOCITY;
+            Robot.mDrive.resetSensors();
         } else if (mOperatorController.shooterLow()) {
-            Robot.mShooter.state = Shooter.mState.LOW_VELOCITY;	
+            // Robot.mShooter.state = Shooter.mState.LOW_VELOCITY;	
         } else {
             Robot.mShooter.state = Shooter.mState.IDLE;
         }

@@ -54,6 +54,8 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void readPeriodicInputs() {
+		System.out.println("Current Angle: " + getAngleDegrees());
+
 		mLeftPositionInches = ElementMath.rotationsToInches(
 			ElementMath.ticksToRotations(mLeftMaster1.getSelectedSensorPosition(), 
 			Constants.kDriveEnconderPPR), 
@@ -87,7 +89,6 @@ public class Drive extends Subsystem {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		System.out.println("Current Angle: " + getAngleDegrees());
 	}
 
 	@Override
@@ -175,12 +176,12 @@ public class Drive extends Subsystem {
 	{
 		mLeftPositionInches = 0;
 		mRightPositionInches = 0;
-		mAngleDegrees = 0;
 		mAngle = Rotation2d.identity();
-
+		
 		mLeftMaster1.setSelectedSensorPosition(0.0);
 		mRightMaster1.setSelectedSensorPosition(0.0);
 		mNavX.reset();		
+		mAngleDegrees = 0;
 	}
 
 	public enum driveState{
