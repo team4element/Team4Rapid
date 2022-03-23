@@ -68,11 +68,11 @@ public class Shooter extends Subsystem {
 
 	@Override
 	public void readPeriodicInputs() {
-        mBottomVelocity = ElementMath.tickPer100msToScaledRPM(mBottomMotor.getSelectedSensorVelocity(0),
-			Constants.kShooterEnconderPPR, Constants.kShooterBottomGearRatio);
-		mTopVelocity = ElementMath.tickPer100msToScaledRPM(mTopMotor.getSelectedSensorVelocity(0),
-			Constants.kShooterEnconderPPR, Constants.kShooterTopGearRatio);
-		System.out.println("Bottom velocity " + mBottomVelocity + "Top velocity: " + mTopVelocity);
+        mBottomVelocity = ElementMath.unscaleRPM(ElementMath.tickPer100msToRPM(mBottomMotor.getSelectedSensorVelocity(0),
+			Constants.kShooterEnconderPPR), Constants.kShooterBottomGearRatio);
+        mTopVelocity = ElementMath.unscaleRPM(ElementMath.tickPer100msToRPM(mTopMotor.getSelectedSensorVelocity(0),
+			Constants.kShooterEnconderPPR), Constants.kShooterTopGearRatio);
+		System.out.println("Bottom velocity " + mBottomVelocity + " Top velocity: " + mTopVelocity);
 	}
 
 	@Override
