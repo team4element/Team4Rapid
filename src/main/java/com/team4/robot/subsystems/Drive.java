@@ -11,8 +11,11 @@ import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.NavX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
+import com.team4.lib.trajectory.DrivePathPlanner;
+import com.team4.lib.util.DriveSpeed;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
+import com.team4.robot.Robot;
 
 public class Drive extends Subsystem {
 
@@ -30,6 +33,8 @@ public class Drive extends Subsystem {
 
 	double mLeftVelocity = 0d;
 	double mRightVelocity = 0d;
+
+	DrivePathPlanner mPathPlanner;
 	
 	public Drive() {
 		// Starts all Talons in Coast Mode
@@ -48,6 +53,9 @@ public class Drive extends Subsystem {
 		configureTalonFX(mRightFollower2, false, false);
 
 		mNavX = new NavX();
+
+		mPathPlanner = new DrivePathPlanner();
+
 		setCoastMode();
 		resetSensors();
 
@@ -159,12 +167,22 @@ public class Drive extends Subsystem {
 		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
 	}
 
-	public synchronized void setVelocity(DriveSignal signal, DriveSignal ff) {
+	public synchronized void setVelocity(DriveSignal velocity, DriveSignal ff) {
 		if (state != driveState.OPEN) {
 			configureVelocityTalon();
 		}
-		mLeftMaster1.set(ControlMode.Velocity, signal.getLeft(), DemandType.ArbitraryFeedForward, ff.getLeft());
-		mRightMaster1.set(ControlMode.Velocity, signal.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
+		mLeftMaster1.set(ControlMode.Velocity, velocity.getLeft(), DemandType.ArbitraryFeedForward, ff.getLeft());
+		mRightMaster1.set(ControlMode.Velocity, velocity.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
+	}
+
+	public void updatePathFollower(double timestamp)
+	{
+		DriveSpeed output = mPathPlanner.update(timestamp, Robot.mFieldState.getFieldToVehicle(timestamp));
+
+		DriveSignal velocity = output.getVelocity();
+		DriveSignal ff = output.getFeedForward();
+		
+		setVelocity(velocity, ff);
 	}
 
 	public double getLeftDistanceInches()
