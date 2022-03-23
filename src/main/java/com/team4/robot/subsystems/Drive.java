@@ -1,6 +1,7 @@
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -49,7 +50,7 @@ public class Drive extends Subsystem {
 		mNavX = new NavX();
 		setCoastMode();
 		resetSensors();
-		
+
 		reloadGains();
 	}
 
@@ -128,6 +129,13 @@ public class Drive extends Subsystem {
 		mRightFollower2.setNeutralMode(NeutralMode.Coast);
 	}
 
+	public synchronized void setBrakeMode() {
+		mLeftMaster1.setNeutralMode(NeutralMode.Brake);
+		mleftFollower2.setNeutralMode(NeutralMode.Brake);
+		mRightMaster1.setNeutralMode(NeutralMode.Brake);
+		mRightFollower2.setNeutralMode(NeutralMode.Brake);
+	}
+
 	private void configureOpenTalon() {
 		setCoastMode();
 		mLeftMaster1.configOpenloopRamp(0.25);
@@ -135,12 +143,28 @@ public class Drive extends Subsystem {
 		state = driveState.OPEN;
 	}
 
+	private void configureVelocityTalon() {
+		setCoastMode();
+		mLeftMaster1.configOpenloopRamp(0.0);
+		mRightMaster1.configOpenloopRamp(0.0);
+		state = driveState.VELOCITY;
+	}
+
+
 	public synchronized void setOpenLoop(DriveSignal signal) {
 		if (state != driveState.OPEN) {
 			configureOpenTalon();
 		}
 		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
 		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
+	}
+
+	public synchronized void setVelocity(DriveSignal signal, DriveSignal ff) {
+		if (state != driveState.OPEN) {
+			configureVelocityTalon();
+		}
+		mLeftMaster1.set(ControlMode.Velocity, signal.getLeft(), DemandType.ArbitraryFeedForward, ff.getLeft());
+		mRightMaster1.set(ControlMode.Velocity, signal.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
 	}
 
 	public double getLeftDistanceInches()
