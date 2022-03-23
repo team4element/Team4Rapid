@@ -36,15 +36,6 @@ public class Constants {
 	
 	public static final double kDistancePidTolerance = 1.0;
 	
-	// Shooter Motors
-	public static final int kShooterBottom = 6; 
-	public static final int kShooterTop = 5; 
-	
-	// Intake Motors
-	public static final int kRollerMotorID = 7;
-	public static final int kArmMotorID = 0;
-	public static final int kIntakeFirst = 8;
-	
 	// Conveyor Motors
 	public static final int kConveyorLeft = 10;
 	public static final int kConveyorRight = 11;
@@ -61,6 +52,10 @@ public class Constants {
 	public static final int kCompressorID = 1;
 	
 	// Intake
+	public static final int kRollerMotorID = 7;
+	public static final int kArmMotorID = 0;
+	public static final int kIntakeFirst = 8;
+
 	public static final double kIntakeForwardPower = 0.75;
 	public static final double kIntakeReversePower = -0.75;
 	public static final double kIntakeOff = 0d;
@@ -71,16 +66,14 @@ public class Constants {
 	public static final double kConveyorOff = 0;
 
 	// Shooter
+	public static final int kShooterBottom = 6; 
+	public static final int kShooterTop = 5; 
+
 	public static final double kHighVelocityBottom = 1400;
 	public static final double kHighVelocityTop = 1200;
 	public static final double kLowVelocityBottom = 600; 
 	public static final double kLowVelocityTop = 400;
-	public static final double kShooterTicksPerRevolution = 2048; 
 	
-	public static final double kShooterMomentOfInertia = 0.003440853333; // kg * m^2
-	public static final double kShooterGearRatio = 1.78; 
-
-	//Shooter PID
 	public static final double kShooterKp = 0.1;
 	public static final double kShooterKi = 0.0;
 	public static final double kShooterKd = 0;
@@ -88,4 +81,5 @@ public class Constants {
 	public static final int kShooterIZone = 0;
 	public static final double kShooterRampRate = 0.0;
 	public static final double kShooterEnconderPPR = 2048.0;
+	public static final double kShooterGearRatio = 1.78; 
 }
