@@ -12,8 +12,6 @@ import com.team4.robot.Constants;
 
 public class Shooter extends Subsystem {
 	private final LazyTalonFX mTopMotor, mBottomMotor;
-	private double mBottomVelocity = 0d;
-	private double mTopVelocity = 0d;
 	public mState state = mState.IDLE;
 
 	public Shooter() {
