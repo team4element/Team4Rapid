@@ -26,6 +26,11 @@ public class Constants {
     public static final double kDriveEnconderPPR = 2048.0;
 
     // Drive PID values
+    public static final double kDriveVelocityKP = 0.0;
+    public static final double kDriveVelocityKI = 0.0;
+    public static final double kDriveVelocityKD = 0.0;
+    public static final double kDriveVelocityKF = 0.0;    
+
     public static final double kDriveDistanceKP = 0.025;
     public static final double kDriveDistanceKI = 0.0;
     public static final double kDriveDistanceKD = 0.0;

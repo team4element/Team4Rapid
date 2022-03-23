@@ -49,6 +49,8 @@ public class Drive extends Subsystem {
 		mNavX = new NavX();
 		setCoastMode();
 		resetSensors();
+		
+		reloadGains();
 	}
 
 
@@ -186,6 +188,19 @@ public class Drive extends Subsystem {
 		mRightMaster1.setSelectedSensorPosition(0.0);
 		mNavX.reset();		
 		mAngleDegrees = 0;
+	}
+
+	public void reloadGains()
+	{
+		mLeftMaster1.config_kP(0, Constants.kDriveVelocityKP);
+		mLeftMaster1.config_kI(0, Constants.kDriveVelocityKI);
+		mLeftMaster1.config_kD(0, Constants.kDriveVelocityKD);
+		mLeftMaster1.config_kF(0, Constants.kDriveVelocityKF);
+
+		mRightMaster1.config_kP(0, Constants.kDriveVelocityKP);
+		mRightMaster1.config_kI(0, Constants.kDriveVelocityKI);
+		mRightMaster1.config_kD(0, Constants.kDriveVelocityKD);
+		mRightMaster1.config_kF(0, Constants.kDriveVelocityKF);
 	}
 
 	public enum driveState{
