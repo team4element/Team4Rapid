@@ -123,6 +123,16 @@ public class Shooter extends Subsystem {
         mTopMotor.setSelectedSensorPosition(0, 0, 0);
     }
 
+	public synchronized double getBottomVelocity()
+	{
+		return mBottomVelocity;
+	}
+
+	public synchronized double getTopVelocity()
+	{
+		return mTopVelocity;
+	}
+
 	private void configureVelocityTalon(){
         mBottomMotor.selectProfileSlot(0, 0);
 		mBottomMotor.configClosedloopRamp(0);
@@ -141,9 +151,5 @@ public class Shooter extends Subsystem {
 					"could not detect motor encoder"); 
 
 		talon.setSensorPhase(true);
-	}
-
-	public double getBottomVelocity(){
-		return mBottomVelocity;
 	}
 }
