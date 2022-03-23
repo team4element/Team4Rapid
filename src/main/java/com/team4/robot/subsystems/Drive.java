@@ -12,6 +12,7 @@ import com.team4.lib.drivers.NavX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.trajectory.DrivePathPlanner;
+import com.team4.lib.trajectory.SimpleTrajectory;
 import com.team4.lib.util.DriveSpeed;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
@@ -35,7 +36,9 @@ public class Drive extends Subsystem {
 	double mRightVelocity = 0d;
 
 	DrivePathPlanner mPathPlanner;
-	
+	SimpleTrajectory mCurrentTrajectory;
+
+
 	public Drive() {
 		// Starts all Talons in Coast Mode
 		mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
@@ -54,7 +57,7 @@ public class Drive extends Subsystem {
 
 		mNavX = new NavX();
 
-		mPathPlanner = new DrivePathPlanner();
+		mPathPlanner = new DrivePathPlanner(Constants.kDriveModel);
 
 		setCoastMode();
 		resetSensors();
@@ -168,22 +171,34 @@ public class Drive extends Subsystem {
 	}
 
 	public synchronized void setVelocity(DriveSignal velocity, DriveSignal ff) {
-		if (state != driveState.OPEN) {
+		if (state != driveState.VELOCITY) {
 			configureVelocityTalon();
 		}
 		mLeftMaster1.set(ControlMode.Velocity, velocity.getLeft(), DemandType.ArbitraryFeedForward, ff.getLeft());
 		mRightMaster1.set(ControlMode.Velocity, velocity.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
 	}
 
+	public synchronized void setPath(SimpleTrajectory trajectory)
+	{
+		if (mPathPlanner != null) {
+            mPathPlanner.reset();
+            mPathPlanner.setTrajectory(trajectory.getIteratingTrajectory(Constants.kDriveModel));
+        }
+	}
+
 	public void updatePathFollower(double timestamp)
 	{
-		DriveSpeed output = mPathPlanner.update(timestamp, Robot.mFieldState.getFieldToVehicle(timestamp));
+		DriveSpeed output = mPathPlanner.calculate(timestamp, Robot.mFieldState.getFieldToVehicle(timestamp));
 
 		DriveSignal velocity = output.getVelocity();
 		DriveSignal ff = output.getFeedForward();
 		
 		setVelocity(velocity, ff);
 	}
+
+	public boolean isDoneWithTrajectory() {
+        return mPathPlanner.isDone();
+    }
 
 	public double getLeftDistanceInches()
 	{

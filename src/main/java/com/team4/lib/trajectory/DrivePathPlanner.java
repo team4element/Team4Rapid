@@ -122,4 +122,7 @@ public class DrivePathPlanner {
         return new DriveSpeed(dynamics.wheel_velocity.left, dynamics.wheel_velocity.right, feedforward_voltages.left, feedforward_voltages.right);
     }
 
+    public boolean isDone() {
+        return mCurrentTrajectory != null && mCurrentTrajectory.isDone();
+    }
 }
