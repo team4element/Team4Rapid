@@ -54,8 +54,8 @@ public class Shooter extends Subsystem {
 					break;
 				case IDLE:
 					stopMotors();
-				default:
-					break;
+				default: 
+					state = mState.IDLE;
 			}
 		}
 	}
