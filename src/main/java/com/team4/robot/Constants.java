@@ -18,15 +18,15 @@ public class Constants {
 
 	// Drivetrain Dynamics
     public static final double kDriveWheelTrackWidthInches = 32;
-    public static final double kDriveWheelDiameterInches = 6;
+    public static final double kDriveWheelDiameterInches = 4;
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
     public static final double kDriveTrackScrubFactor = 1.0; 
-    public static final double kDriveGearRatio = 1/6.43;
+    public static final double kDriveGearRatio = 504.0 / (3240.0);
     public static final double kDriveEnconderPPR = 2048.0;
 
     // Drive PID values
-    public static final double kDriveDistanceKP = 0.0;
+    public static final double kDriveDistanceKP = 0.025;
     public static final double kDriveDistanceKI = 0.0;
     public static final double kDriveDistanceKD = 0.0;
 		

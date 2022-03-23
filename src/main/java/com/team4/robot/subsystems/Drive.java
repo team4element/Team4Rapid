@@ -54,7 +54,9 @@ public class Drive extends Subsystem {
 
 	@Override
 	public void readPeriodicInputs() {
-		System.out.println("Current Angle: " + getAngleDegrees());
+		// System.out.println("Current Angle: " + getAngleDegrees());
+
+
 
 		mLeftPositionInches = ElementMath.rotationsToInches(
 			ElementMath.ticksToRotations(mLeftMaster1.getSelectedSensorPosition(), 
@@ -85,6 +87,8 @@ public class Drive extends Subsystem {
 												Constants.kDriveEnconderPPR), 
 					Constants.kDriveWheelCircumferenceInches, 
 					Constants.kDriveGearRatio) / 60.0;
+
+		System.out.println("Left Distance:  " + mLeftPositionInches + " Right Distance: " + mRightPositionInches);
 	}
 
 	@Override
