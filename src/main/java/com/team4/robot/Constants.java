@@ -56,8 +56,8 @@ public class Constants {
 	public static final double kDriveEnconderPPR = 2048.0;
 
 	// Shooter
-	public static final double kHighVelocityBottom = 4000;
-	public static final double kHighVelocityTop = 3800;
+	public static final double kHighVelocityBottom = 3700;
+	public static final double kHighVelocityTop = 3500;
 	public static final double kLowVelocityBottom = 600; 
 	public static final double kLowVelocityTop = 400;
 	public static final double kShooterTicksPerRevolution = 2048; 
