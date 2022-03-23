@@ -9,6 +9,11 @@ public class DriveSpeed {
     double mLeftFeedForward;
     double mRightFeedForward;
     
+    public DriveSpeed()
+    {
+        this(0.0, 0.0, 0.0, 0.0);
+    }
+
     public DriveSpeed(double leftVel, double rightVel, double leftFF, double rightFF)
     {
         mLeftVelocity = leftVel;
