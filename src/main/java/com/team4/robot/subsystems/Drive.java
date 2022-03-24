@@ -1,6 +1,7 @@
 package com.team4.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
@@ -10,8 +11,12 @@ import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.NavX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
+import com.team4.lib.trajectory.DrivePathPlanner;
+import com.team4.lib.trajectory.SimpleTrajectory;
+import com.team4.lib.util.DriveSpeed;
 import com.team4.lib.util.ElementMath;
 import com.team4.robot.Constants;
+import com.team4.robot.Robot;
 
 public class Drive extends Subsystem {
 
@@ -29,7 +34,11 @@ public class Drive extends Subsystem {
 
 	double mLeftVelocity = 0d;
 	double mRightVelocity = 0d;
-	
+
+	DrivePathPlanner mPathPlanner;
+	SimpleTrajectory mCurrentTrajectory;
+
+
 	public Drive() {
 		// Starts all Talons in Coast Mode
 		mLeftMaster1 = TalonFactory.createDefaultTalonFX(Constants.kDriveLeftMaster1);
@@ -47,8 +56,13 @@ public class Drive extends Subsystem {
 		configureTalonFX(mRightFollower2, false, false);
 
 		mNavX = new NavX();
+
+		mPathPlanner = new DrivePathPlanner(Constants.kDriveModel);
+
 		setCoastMode();
 		resetSensors();
+
+		reloadGains();
 	}
 
 
@@ -126,12 +140,27 @@ public class Drive extends Subsystem {
 		mRightFollower2.setNeutralMode(NeutralMode.Coast);
 	}
 
+	public synchronized void setBrakeMode() {
+		mLeftMaster1.setNeutralMode(NeutralMode.Brake);
+		mleftFollower2.setNeutralMode(NeutralMode.Brake);
+		mRightMaster1.setNeutralMode(NeutralMode.Brake);
+		mRightFollower2.setNeutralMode(NeutralMode.Brake);
+	}
+
 	private void configureOpenTalon() {
 		setCoastMode();
 		mLeftMaster1.configOpenloopRamp(0.25);
 		mRightMaster1.configOpenloopRamp(0.25);
 		state = driveState.OPEN;
 	}
+
+	private void configureVelocityTalon() {
+		setCoastMode();
+		mLeftMaster1.configOpenloopRamp(0.0);
+		mRightMaster1.configOpenloopRamp(0.0);
+		state = driveState.VELOCITY;
+	}
+
 
 	public synchronized void setOpenLoop(DriveSignal signal) {
 		if (state != driveState.OPEN) {
@@ -140,6 +169,36 @@ public class Drive extends Subsystem {
 		mLeftMaster1.set(ControlMode.PercentOutput, signal.getLeft());
 		mRightMaster1.set(ControlMode.PercentOutput, signal.getRight());
 	}
+
+	public synchronized void setVelocity(DriveSignal velocity, DriveSignal ff) {
+		if (state != driveState.VELOCITY) {
+			configureVelocityTalon();
+		}
+		mLeftMaster1.set(ControlMode.Velocity, velocity.getLeft(), DemandType.ArbitraryFeedForward, ff.getLeft());
+		mRightMaster1.set(ControlMode.Velocity, velocity.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
+	}
+
+	public synchronized void setPath(SimpleTrajectory trajectory)
+	{
+		if (mPathPlanner != null) {
+            mPathPlanner.reset();
+            mPathPlanner.setTrajectory(trajectory.getIteratingTrajectory(Constants.kDriveModel));
+        }
+	}
+
+	public void updatePathFollower(double timestamp)
+	{
+		DriveSpeed output = mPathPlanner.calculate(timestamp, Robot.mFieldState.getFieldToVehicle(timestamp));
+
+		DriveSignal velocity = output.getVelocity();
+		DriveSignal ff = output.getFeedForward();
+		
+		setVelocity(velocity, ff);
+	}
+
+	public boolean isDoneWithTrajectory() {
+        return mPathPlanner.isDone();
+    }
 
 	public double getLeftDistanceInches()
 	{
@@ -186,6 +245,19 @@ public class Drive extends Subsystem {
 		mRightMaster1.setSelectedSensorPosition(0.0);
 		mNavX.reset();		
 		mAngleDegrees = 0;
+	}
+
+	public void reloadGains()
+	{
+		mLeftMaster1.config_kP(0, Constants.kDriveVelocityKP);
+		mLeftMaster1.config_kI(0, Constants.kDriveVelocityKI);
+		mLeftMaster1.config_kD(0, Constants.kDriveVelocityKD);
+		mLeftMaster1.config_kF(0, Constants.kDriveVelocityKF);
+
+		mRightMaster1.config_kP(0, Constants.kDriveVelocityKP);
+		mRightMaster1.config_kI(0, Constants.kDriveVelocityKI);
+		mRightMaster1.config_kD(0, Constants.kDriveVelocityKD);
+		mRightMaster1.config_kF(0, Constants.kDriveVelocityKF);
 	}
 
 	public enum driveState{
