@@ -56,8 +56,8 @@ public class Constants {
     public static final int kArmMotorID = 0;
     public static final int kIntakeFirst = 8;
 
-    public static final double kIntakeForwardPower = 0.75;
-    public static final double kIntakeReversePower = -0.75;
+    public static final double kIntakeForwardPower = 0.6;
+    public static final double kIntakeReversePower = -0.6;
     public static final double kIntakeOff = 0d;
 	
     // Conveyor
