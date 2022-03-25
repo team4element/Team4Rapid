@@ -33,23 +33,23 @@ public class Constants {
     public static final double kDriveAssumedTorqueEff = 1.0; // Ask B and maybe characterize
     // Characterize drive for the following
     public static final double kDriveVIntercept = 0.0;
-    public static final double kDriveKV = 0.0; 
+    public static final double kDriveKV = 0.03439; 
     public static final double kDriveLinearInertia = 65.0; //find actual value 
     public static final double kDriveLinearKA = 12.0 / (((1.0 / kDriveGearRatio) * kFalconStallTorque * kDriveAssumedTorqueEff * 6) / (kDriveLinearInertia * Math.pow(Units.inchesToMeters(kDriveWheelRadiusInches), 2))); //purely theoretical characterize to find actual 
-    public static final double kDriveAngularKA = 0.0; 
+    public static final double kDriveAngularKA = 0.08189; 
     public static final double kDriveAngularInertia = kDriveAngularKA / kDriveLinearKA * Math.pow(Units.inchesToMeters(kDriveWheelTrackWidthInches / 2.0), 2)* kDriveLinearInertia;
-    public static final double kDriveAngularDrag = 0.0; // characterize or ask b  
+    public static final double kDriveAngularDrag = 15.0; // characterize or ask b  
     
     // Drive PID values
-    public static final double kDriveVelocityKP = 0.0;
+    public static final double kDriveVelocityKP = 0.01;
     public static final double kDriveVelocityKI = 0.0;
-    public static final double kDriveVelocityKD = 0.0;
-    public static final double kDriveVelocityKF = 0.0;    
+    public static final double kDriveVelocityKD = 5.0;
+    public static final double kDriveVelocityKF = 0.049;    
 
     public static final double kDriveDistanceKP = 0.025;
     public static final double kDriveDistanceKI = 0.0;
     public static final double kDriveDistanceKD = 0.0;
-		
+
     public static final double kDriveAngleKP = 0.0;
     public static final double kDriveAngleKI = 0.0;
     public static final double kDriveAngleKD = 0.0;

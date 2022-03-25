@@ -102,7 +102,7 @@ public class Drive extends Subsystem {
 					Constants.kDriveWheelCircumferenceInches, 
 					Constants.kDriveGearRatio) / 60.0;
 
-		System.out.println("Left Distance:  " + mLeftPositionInches + " Right Distance: " + mRightPositionInches);
+		// System.out.println("Left Velocity:  " + mLeftVelocity + " Right Velocity: " + mRightVelocity);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class Drive extends Subsystem {
 
 		if (main_encoder_talon) {
 			TalonUtil.checkError(talon.setStatusFramePeriod(
-				StatusFrame.Status_2_Feedback0, 10, Constants.kLongCANTimeoutMs),
+				StatusFrame.Status_2_Feedback0, 20, Constants.kLongCANTimeoutMs),
 					"could not set drive feedback frame");
 			TalonUtil.checkError(
 					talon.configSelectedFeedbackSensor(
@@ -245,6 +245,8 @@ public class Drive extends Subsystem {
 		mRightMaster1.setSelectedSensorPosition(0.0);
 		mNavX.reset();		
 		mAngleDegrees = 0;
+
+		
 	}
 
 	public void reloadGains()
