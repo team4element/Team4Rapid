@@ -14,8 +14,8 @@ public class TestStraightPath extends SimpleTrajectory {
     public Waypoint points() {
         List<Pose2d> points = new ArrayList<>();
         points.add(new Pose2d(0.0, 0.0, Rotation2d.fromDegrees(0.0)));
-        points.add(new Pose2d(80.0, 0.0, Rotation2d.fromDegrees(0.0)));
-        points.add(new Pose2d(160.0, 0.0, Rotation2d.fromDegrees(0.0)));        
+        // points.add(new Pose2d(20.0, 0.0, Rotation2d.fromDegrees(0.0)));
+        points.add(new Pose2d(80.0, 0.0, Rotation2d.fromDegrees(0.0)));        
 
         return Waypoint.createWaypointFromPoints(false, points);
     }

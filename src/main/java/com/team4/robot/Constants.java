@@ -22,7 +22,7 @@ public class Constants {
     public static final int kDriveRightFollower2 = 2;
 
 	// Drivetrain Dynamics
-    public static final double kDriveWheelTrackWidthInches = 32;
+    public static final double kDriveWheelTrackWidthInches = 21;
     public static final double kDriveWheelDiameterInches = 4;
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
@@ -30,15 +30,15 @@ public class Constants {
     public static final double kDriveGearRatio = 504.0 / (3240.0);
     public static final double kDriveEnconderPPR = 2048.0;
     public static final double kFalconStallTorque = 4.69; // documentation
-    public static final double kDriveAssumedTorqueEff = 1.0; // Ask B and maybe characterize
+    public static final double kDriveAssumedTorqueEff = 0.75; // Ask B and maybe characterize
     // Characterize drive for the following
     public static final double kDriveVIntercept = 0.0;
-    public static final double kDriveKV = 0.03439; 
+    public static final double kDriveKV = 0.0338 / 2.0 * kDriveWheelDiameterInches; 
     public static final double kDriveLinearInertia = 65.0; //find actual value 
-    public static final double kDriveLinearKA = 12.0 / (((1.0 / kDriveGearRatio) * kFalconStallTorque * kDriveAssumedTorqueEff * 6) / (kDriveLinearInertia * Math.pow(Units.inchesToMeters(kDriveWheelRadiusInches), 2))); //purely theoretical characterize to find actual 
-    public static final double kDriveAngularKA = 0.08189; 
+    public static final double kDriveLinearKA = 0.000597 / 2.0 * kDriveWheelDiameterInches; // 12.0 / (((1.0 / kDriveGearRatio) * kFalconStallTorque * kDriveAssumedTorqueEff * 6) / (kDriveLinearInertia * Math.pow(Units.inchesToMeters(kDriveWheelRadiusInches), 2))); //purely theoretical characterize to find actual 
+    public static final double kDriveAngularKA = 0.000517 / 2.0 * kDriveWheelDiameterInches; 
     public static final double kDriveAngularInertia = kDriveAngularKA / kDriveLinearKA * Math.pow(Units.inchesToMeters(kDriveWheelTrackWidthInches / 2.0), 2)* kDriveLinearInertia;
-    public static final double kDriveAngularDrag = 15.0; // characterize or ask b  
+    public static final double kDriveAngularDrag = 5.0; // characterize or ask b  
     
     // Drive PID values
     public static final double kDriveVelocityKP = 0.01;
