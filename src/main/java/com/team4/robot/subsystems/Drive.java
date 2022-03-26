@@ -5,14 +5,22 @@ import com.ctre.phoenix.motorcontrol.DemandType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.StatusFrame;
 import com.ctre.phoenix.motorcontrol.TalonFXFeedbackDevice;
+import com.team254.lib.control.Lookahead;
+import com.team254.lib.control.Path;
+import com.team254.lib.control.PathFollower;
+import com.team254.lib.geometry.Pose2d;
 import com.team254.lib.geometry.Rotation2d;
+import com.team254.lib.geometry.Twist2d;
 import com.team254.lib.util.DriveSignal;
 import com.team4.lib.drivers.LazyTalonFX;
 import com.team4.lib.drivers.NavX;
 import com.team4.lib.drivers.TalonFactory;
 import com.team4.lib.drivers.TalonUtil;
 import com.team4.lib.util.ElementMath;
+import com.team4.lib.util.FieldState;
+import com.team4.lib.util.Kinematics;
 import com.team4.robot.Constants;
+import com.team4.robot.Robot;
 
 public class Drive extends Subsystem {
 
@@ -31,6 +39,8 @@ public class Drive extends Subsystem {
 	double mLeftVelocity = 0d;
 	double mRightVelocity = 0d;
 
+	private PathFollower mPathFollower;
+    private Path mCurrentPath = null;
 
 	public Drive() {
 		// Starts all Talons in Coast Mode
@@ -169,23 +179,61 @@ public class Drive extends Subsystem {
 		mRightMaster1.set(ControlMode.Velocity, velocity.getRight(), DemandType.ArbitraryFeedForward, ff.getRight());
 	}
 
-	public synchronized void setPath()
+	public synchronized void setPath(Path path, boolean reversed)
 	{
-		
+		if (mCurrentPath != path) {
+            Robot.mFieldState.resetDistanceDriven();
+            mPathFollower = new PathFollower(path, reversed, new PathFollower.Parameters(
+                    new Lookahead(Constants.kMinLookAhead, Constants.kMaxLookAhead, Constants.kMinLookAheadSpeed,
+                            Constants.kMaxLookAheadSpeed),
+                    Constants.kInertiaSteeringGain, Constants.kPathFollowingProfileKp,
+                    Constants.kPathFollowingProfileKi, Constants.kPathFollowingProfileKv,
+                    Constants.kPathFollowingProfileKffv, Constants.kPathFollowingProfileKffa,
+                    Constants.kPathFollowingProfileKs, Constants.kPathFollowingMaxVel,
+                    Path.kPathFollowingMaxAccel, Constants.kPathFollowingGoalPosTolerance,
+                    Constants.kPathFollowingGoalVelTolerance, Constants.kPathStopSteeringDistance));
+            mCurrentPath = path;
+        } else {
+            setVelocity(new DriveSignal(0, 0), new DriveSignal(0, 0));
+        }
 	}
 
 	public void updatePathFollower(double timestamp)
 	{
+		if (mCurrentPath != null)
+		{
+			FieldState fieldState = Robot.mFieldState;
+            Pose2d fieldToVehicle = fieldState.getLatestFieldToVehicle().getValue();
+            Twist2d currentSpeed = mPathFollower.calculate(timestamp, fieldToVehicle, fieldState.getDistanceDriven(),
+                    fieldState.getPredictedVelocity().dx);
+            if (!mPathFollower.isFinished()) {
 
-		DriveSignal velocity = DriveSignal.NEUTRAL;
-		DriveSignal ff = DriveSignal.NEUTRAL;
-		
-		setVelocity(velocity, ff);
+                
+                DriveSignal setpoint = Kinematics.inverseKinematics(currentSpeed);
+                setOpenLoop(setpoint);
+            } else {
+                if (!mPathFollower.isForceFinished()) {
+                    setVelocity(new DriveSignal(0, 0), new DriveSignal(0, 0));
+                }
+            }
+		}
+		else
+		{
+			setOpenLoop(DriveSignal.NEUTRAL);
+		}
 	}
 
 	public boolean isDoneWithTrajectory() {
-		return false;
+		return mPathFollower.isFinished();
 	}
+
+	public synchronized boolean hasPassedMarker(String marker) {
+        if (mPathFollower != null) {
+            return mPathFollower.hasPassedMarker(marker);
+        } else {
+            return false;
+        }
+    }
 
 	public double getLeftDistanceInches()
 	{

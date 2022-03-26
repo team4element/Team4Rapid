@@ -17,7 +17,7 @@ import com.team254.lib.motion.MotionState;
  */
 
 public class Path {
-    public static double kPathFollowingMaxAccel = 0.0; 
+    public static double kPathFollowingMaxAccel = 12.0 * 12.0; 
 
     List<PathSegment> segments;
     PathSegment prevSegment;

@@ -116,7 +116,7 @@ public class PathFollower {
      * @param velocity     The current robot velocity.
      * @return The velocity command to apply
      */
-    public synchronized Twist2d update(double t, Pose2d pose, double displacement, double velocity) {
+    public synchronized Twist2d calculate(double t, Pose2d pose, double displacement, double velocity) {
         if (!mSteeringController.isFinished()) {
             final PurePursuitController.Command steering_command = mSteeringController.update(pose);
             mDebugOutput.lookahead_point_x = steering_command.lookahead_point.x();
