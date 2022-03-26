@@ -90,7 +90,7 @@ public class Intake extends Subsystem {
 	}
 
 	private void motorsForward() {
-		mRollerMotor.set(ControlMode.PercentOutput, Constants.kDriveEnconderPPR);
+		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
 		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
 	}
 

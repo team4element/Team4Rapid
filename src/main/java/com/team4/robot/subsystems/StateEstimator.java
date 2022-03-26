@@ -21,7 +21,11 @@ public class StateEstimator extends Subsystem {
     
 
     @Override
-    public void readPeriodicInputs() { }
+    public void readPeriodicInputs() {
+        System.out.println("Robot X: " + 
+                mFieldState.getFieldToVehicle(Timer.getFPGATimestamp()).getTranslation().x()
+                );
+     }
 
     @Override
     public void writePeriodicOutputs() { }
@@ -43,7 +47,7 @@ public class StateEstimator extends Subsystem {
             Pose2d last_measurement = mFieldState.getLatestFieldToVehicle().getValue();
             odometry = Kinematics.forwardKinematics(last_measurement.getRotation(), dLeft,
                     dRight, angle);
-        }
+        } 
 
         Twist2d measuredVel = Kinematics.forwardKinematics(
                     dLeft, 

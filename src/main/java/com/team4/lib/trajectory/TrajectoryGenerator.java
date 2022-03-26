@@ -20,8 +20,8 @@ public class TrajectoryGenerator {
     private static final double kMaxDy = 0.25;
     private static final double kMaxDTheta = Math.toRadians(5.0);
 
-    private static final double kMaxVel = 150.0;
-    private static final double kMaxAccel = 100.0;
+    private static final double kMaxVel = 50.0; // i/s
+    private static final double kMaxAccel = 50.0;
     private static final double kMaxVoltage = 9.0;
 
     public static Trajectory<TimedState<Pose2dWithCurvature>> generateTrajectory(Waypoint waypoint, DifferentialDrive driveModel) {
