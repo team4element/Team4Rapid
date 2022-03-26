@@ -27,6 +27,26 @@ public class Constants {
     public static final double kFalconStallTorque = 4.69; // documentation
     public static final double kDriveAssumedTorqueEff = 1.0; // Ask B and maybe characterize
     
+    // Drive Path Follower
+    public static final double kMinLookAhead = 12.0; // inches
+    public static final double kMinLookAheadSpeed = 12.0; // inches per second
+    public static final double kMaxLookAhead = 48.0; // inches
+    public static final double kMaxLookAheadSpeed = 120.0; // inches per second
+    public static final double kDeltaLookAhead = kMaxLookAhead - kMinLookAhead;
+    public static final double kDeltaLookAheadSpeed = kMaxLookAheadSpeed - kMinLookAheadSpeed;
+
+    public static final double kInertiaSteeringGain = 0.0; 
+    public static final double kPathFollowingMaxVel = 16.0 * 12.0; 
+    // Grab from drive characterize and tune
+    public static final double kPathFollowingProfileKp = 0.3 / 12.0;  
+    public static final double kPathFollowingProfileKi = 0.0;
+    public static final double kPathFollowingProfileKv = 0.01 / 12.0;  
+    public static final double kPathFollowingProfileKffv = 0.003889;  
+    public static final double kPathFollowingProfileKffa = 0.001415;  
+    public static final double kPathFollowingProfileKs = 0.1801 / 12.0;  
+    public static final double kPathFollowingGoalPosTolerance = 3.0;
+    public static final double kPathFollowingGoalVelTolerance = 12.0;
+    public static final double kPathStopSteeringDistance = 12.0;
     
     // Drive PID values
     public static final double kDriveVelocityKP = 0.0;
