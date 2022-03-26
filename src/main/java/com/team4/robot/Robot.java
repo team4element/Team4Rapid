@@ -14,6 +14,7 @@ import com.team4.robot.subsystems.StateEstimator;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends TimedRobot {
   
@@ -32,6 +33,8 @@ public class Robot extends TimedRobot {
   public static Compressor mCompressor = new Compressor(Constants.kCompressorID, PneumaticsModuleType.CTREPCM);
   TeleopControls mTeleopControls = new TeleopControls();
   AutoExecutor mAutoExecutor = new AutoExecutor();
+
+  double lastTimestamp;
 
   @Override
   public void robotInit() {
@@ -75,6 +78,8 @@ public class Robot extends TimedRobot {
     mSubsystemManager.onEnabledStart();
 
     mDrive.resetSensors();
+
+    lastTimestamp = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -82,6 +87,9 @@ public class Robot extends TimedRobot {
     // Controller Inputs
     mTeleopControls.runTeleop();
     mSubsystemManager.onEnabledLoop();
+
+    System.out.println("Current DT: " + (Timer.getFPGATimestamp() - lastTimestamp));
+    lastTimestamp = Timer.getFPGATimestamp();
   }
   
   @Override
