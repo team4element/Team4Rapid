@@ -29,6 +29,10 @@ public class ParallelCommand extends CommandBase{
             {
                 return false;
             }
+            else
+            {
+                c.stop();
+            }
         }
         return true;
     }

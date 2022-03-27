@@ -25,7 +25,7 @@ public class ShootAndConveyCommand extends CommandBase {
     @Override
     public void execute() {
         mShooter.state = Shooter.mState.HIGH_VELOCITY;
-        if(mShooter.getBottomVelocity() >= Constants.kHighVelocityBottom){
+        if(mShooter.getBottomVelocity() >= Constants.kHighVelocityBottom - 100){
                 mConveyor.state = Conveyor.mState.FORWARD; 
         }else{
             mConveyor.state = Conveyor.mState.IDLE;

@@ -1,6 +1,6 @@
 package com.team4.lib.auto;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import com.team254.lib.util.CrashTrackingRunnable;
 
 public class AutoExecutor {
     private Thread mRunner = null;
@@ -8,20 +8,15 @@ public class AutoExecutor {
 
     public void setAutoMode(AutoBase mode)
     {
-        mRunner = new Thread(new Runnable()
-        {
+        mRunner = new Thread(new CrashTrackingRunnable() {
             @Override
-            public void run() {
-                try{
+            public void runCrashTracked() {
+                if (mode != null)
+                {
                     mode.routine();
-                } catch (Exception e) {
-                    DriverStation.reportError("Auto Mode ended earlier than expected", false);
-                    return;
                 }
-
-                mode.done();
             }
-        } );
+        });
     }
 
     public void start()

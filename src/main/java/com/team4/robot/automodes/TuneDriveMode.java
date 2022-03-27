@@ -7,7 +7,7 @@ public class TuneDriveMode extends AutoBase {
 
     @Override
     public void routine() {
-        runCommand(new SetDriveCommand(120));        
+        runCommand(new SetDriveCommand(-84.0));        
     }
     
 }

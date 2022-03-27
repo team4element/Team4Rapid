@@ -17,7 +17,7 @@ public class Constants {
     public static final int kDriveRightFollower2 = 2;
 
 	// Drivetrain Dynamics
-    public static final double kDriveWheelTrackWidthInches = 32;
+    public static final double kDriveWheelTrackWidthInches = 21;
     public static final double kDriveWheelDiameterInches = 4;
     public static final double kDriveWheelCircumferenceInches = Math.PI * kDriveWheelDiameterInches;
     public static final double kDriveWheelRadiusInches = kDriveWheelDiameterInches / 2.0;
@@ -49,15 +49,15 @@ public class Constants {
     public static final double kPathStopSteeringDistance = 12.0;
     
     // Drive PID values
-    public static final double kDriveVelocityKP = 0.0;
+    public static final double kDriveVelocityKP = 0.01;
     public static final double kDriveVelocityKI = 0.0;
-    public static final double kDriveVelocityKD = 0.0;
-    public static final double kDriveVelocityKF = 0.0;    
+    public static final double kDriveVelocityKD = 5.0;
+    public static final double kDriveVelocityKF = 0.049;    
 
     public static final double kDriveDistanceKP = 0.025;
     public static final double kDriveDistanceKI = 0.0;
     public static final double kDriveDistanceKD = 0.0;
-		
+
     public static final double kDriveAngleKP = 0.0;
     public static final double kDriveAngleKI = 0.0;
     public static final double kDriveAngleKD = 0.0;
@@ -84,8 +84,8 @@ public class Constants {
     public static final int kArmMotorID = 0;
     public static final int kIntakeFirst = 8;
 
-    public static final double kIntakeForwardPower = 0.75;
-    public static final double kIntakeReversePower = -0.75;
+    public static final double kIntakeForwardPower = 0.6;
+    public static final double kIntakeReversePower = -0.6;
     public static final double kIntakeOff = 0d;
 	
     // Conveyor
