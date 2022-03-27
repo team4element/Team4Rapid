@@ -102,7 +102,7 @@ public class Drive extends Subsystem {
 					Constants.kDriveWheelCircumferenceInches, 
 					Constants.kDriveGearRatio) / 60.0;
 
-		// System.out.println("Left Velocity:  " + mLeftVelocity + " Right Velocity: " + mRightVelocity);
+		// System.out.println("Distnace: " + getDistance());
 	}
 
 	@Override

@@ -17,15 +17,14 @@ public class TwoBallShootAndDriveMode extends AutoBase {
     @Override
     public void routine() {
         runCommand(new MoveArmCommand());
-        runCommand(new TimedCommand(new ShootAndConveyCommand(), 3));
+        runCommand(new TimedCommand(new ShootAndConveyCommand(), 2.0));
         runCommand(new ParallelCommand(Arrays.asList(
-            new TimedCommand(new SetDriveCommand(10.0 * 12.0), 4),
+            new TimedCommand(new SetDriveCommand(86.0), 1.0),
             new SeriesCommand(Arrays.asList(
-                new WaitCommand(2),
-                new TimedCommand(new SetIntakeCommand(), 3) 
+                new WaitCommand(0.5),
+                new TimedCommand(new SetIntakeCommand(), 1.25) 
             )))));
-        runCommand(new TimedCommand(new SetDriveCommand(-10.0 * 12.0), 4));
-        runCommand(new TimedCommand(new ShootAndConveyCommand(), 3));
-        runCommand(new WaitCommand(15.0));
+        runCommand(new TimedCommand(new SetDriveCommand(0.0), 1.0));
+        runCommand(new TimedCommand(new ShootAndConveyCommand(), 2.0));
     }
 }

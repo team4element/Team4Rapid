@@ -2,7 +2,7 @@ package com.team4.robot;
 
 import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.FieldState;
-import com.team4.robot.automodes.TestTrajectoryMode;
+import com.team4.robot.automodes.TwoBallShootAndDriveMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
 import com.team4.robot.subsystems.Conveyor;
@@ -88,13 +88,16 @@ public class Robot extends TimedRobot {
     mTeleopControls.runTeleop();
     mSubsystemManager.onEnabledLoop();
 
-    System.out.println("Current DT: " + (Timer.getFPGATimestamp() - lastTimestamp));
-    lastTimestamp = Timer.getFPGATimestamp();
+    // System.out.println("Current DT: " + (Timer.getFPGATimestamp() - lastTimestamp));
+    // lastTimestamp = Timer.getFPGATimestamp();
   }
   
+
   @Override
   public void disabledInit() {
+    mDrive.resetSensors();
     mAutoExecutor.stop();
+    mAutoExecutor = new AutoExecutor();
     mSubsystemManager.onEnabledStop();
     mSubsystemManager.onDisabledStart();
   }
@@ -102,7 +105,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     mSubsystemManager.onDisabledLoop();
-    mAutoExecutor.setAutoMode(new TestTrajectoryMode());
+    mAutoExecutor.setAutoMode(new TwoBallShootAndDriveMode());
   }
 
   @Override

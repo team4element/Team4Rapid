@@ -2,6 +2,7 @@ package com.team4.robot.commands;
 
 import com.team4.lib.commands.CommandBase;
 import com.team4.robot.Robot;
+import com.team4.robot.subsystems.Conveyor;
 import com.team4.robot.subsystems.Intake;
 
 public class SetIntakeCommand extends CommandBase {
@@ -14,6 +15,7 @@ public class SetIntakeCommand extends CommandBase {
     @Override
     public void start() {
         Robot.mIntake.state = Intake.mState.FORWARD;
+        Robot.mConveyor.state = Conveyor.mState.FORWARD;
     }
 
     @Override
@@ -29,6 +31,7 @@ public class SetIntakeCommand extends CommandBase {
     @Override
     public void stop() {
         Robot.mIntake.state = Intake.mState.IDLE;
+        Robot.mConveyor.state = Conveyor.mState.IDLE;
     }
     
 }

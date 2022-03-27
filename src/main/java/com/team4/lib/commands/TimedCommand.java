@@ -26,7 +26,7 @@ public class TimedCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        return mCommand.isFinished() || (Timer.getFPGATimestamp() - mStartTime > mDuration);
+        return mCommand.isFinished() || (Timer.getFPGATimestamp() - mStartTime >= mDuration);
     }
 
     @Override
