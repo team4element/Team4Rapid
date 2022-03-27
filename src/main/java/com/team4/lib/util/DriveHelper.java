@@ -45,7 +45,7 @@ public class DriveHelper{
         wheel *= kWheelGain;
         wheel *= .5;
         
-        DriveSignal signal = Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, wheel));
+        DriveSignal signal = Kinematics.inverseKinematics(new Twist2d(throttle, 0.0, -wheel));
         double scaling_factor = Math.max(1.0, Math.max(Math.abs(signal.getLeft()), Math.abs(signal.getRight())));
         
         return new DriveSignal(signal.getLeft() / scaling_factor, signal.getRight() / scaling_factor);

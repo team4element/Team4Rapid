@@ -16,7 +16,7 @@ public class TestStraightPath implements PathContainer{
     public Path buildPath() {
         List<Waypoint> points = new ArrayList<>();
         points.add(new Waypoint(0.0, 0.0, 0.0, 0.0));
-        points.add(new Waypoint(120.0, 0.0, 0.0, 4.0));
+        points.add(new Waypoint(80.0, 0.0, 0.0, 80.0));
         return PathBuilder.buildPathFromWaypoints(points);
     }
     

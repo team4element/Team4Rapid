@@ -235,6 +235,14 @@ public class Drive extends Subsystem {
         }
     }
 
+	public synchronized void forceFinishPath()
+	{
+		if (mPathFollower != null)
+		{
+			mPathFollower.forceFinish();
+		}
+	}
+
 	public double getLeftDistanceInches()
 	{
 		return mLeftPositionInches;

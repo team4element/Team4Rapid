@@ -36,7 +36,7 @@ public class Constants {
     public static final double kDeltaLookAheadSpeed = kMaxLookAheadSpeed - kMinLookAheadSpeed;
 
     public static final double kInertiaSteeringGain = 0.0; 
-    public static final double kPathFollowingMaxVel = 16.0 * 12.0; 
+    public static final double kPathFollowingMaxVel = 5.0 * 12.0; 
     // Grab from drive characterize and tune
     public static final double kPathFollowingProfileKp = 0.3 / 12.0;  
     public static final double kPathFollowingProfileKi = 0.0;

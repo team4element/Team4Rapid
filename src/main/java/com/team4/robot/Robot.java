@@ -2,7 +2,8 @@ package com.team4.robot;
 
 import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.FieldState;
-import com.team4.robot.automodes.TwoBallShootAndDriveMode;
+import com.team4.lib.wpilib.TimedRobot;
+import com.team4.robot.automodes.TestDrivePathMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
 import com.team4.robot.subsystems.Conveyor;
@@ -13,7 +14,6 @@ import com.team4.robot.subsystems.StateEstimator;
 
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 
 public class Robot extends TimedRobot {
@@ -78,6 +78,7 @@ public class Robot extends TimedRobot {
     mSubsystemManager.onEnabledStart();
 
     mDrive.resetSensors();
+    mFieldState.reset();
 
     lastTimestamp = Timer.getFPGATimestamp();
   }
@@ -100,12 +101,13 @@ public class Robot extends TimedRobot {
     mAutoExecutor = new AutoExecutor();
     mSubsystemManager.onEnabledStop();
     mSubsystemManager.onDisabledStart();
+    mDrive.forceFinishPath();
   }
 
   @Override
   public void disabledPeriodic() {
     mSubsystemManager.onDisabledLoop();
-    mAutoExecutor.setAutoMode(new TwoBallShootAndDriveMode());
+    mAutoExecutor.setAutoMode(new TestDrivePathMode());
   }
 
   @Override
