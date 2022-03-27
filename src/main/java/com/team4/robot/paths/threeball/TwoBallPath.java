@@ -18,8 +18,8 @@ public class TwoBallPath implements PathContainer {
         points.add(new Waypoint(0.0, 0.0, 0.0, 0.0));
         points.add(new Waypoint(11.0, 0.0, 5.0, 50.0));
         points.add(new Waypoint(28.3, -80.0, 5.0, 60.0));
-        points.add(new Waypoint(90.0, -58.7, 15.0, 60.0, "Intake 1"));
-        points.add(new Waypoint(80.0, 73.0, 0.0, 60.0, "Intake 2"));
+        points.add(new Waypoint(90.0, -58.7, 12.5, 60.0, "Intake One"));
+        points.add(new Waypoint(75.0, 76.0, 0.0, 60.0));
         return PathBuilder.buildPathFromWaypoints(points);
     }
 

@@ -3,7 +3,7 @@ package com.team4.robot;
 import com.team4.lib.auto.AutoExecutor;
 import com.team4.lib.util.FieldState;
 import com.team4.lib.wpilib.TimedRobot;
-import com.team4.robot.automodes.TestDrivePathMode;
+import com.team4.robot.automodes.ThreeBallShootAndDriveMode;
 import com.team4.robot.controllers.TeleopControls;
 import com.team4.robot.subsystems.Climber;
 import com.team4.robot.subsystems.Conveyor;
@@ -79,6 +79,7 @@ public class Robot extends TimedRobot {
 
     mDrive.resetSensors();
     mFieldState.reset();
+    mDrive.setCoastMode();
 
     lastTimestamp = Timer.getFPGATimestamp();
   }
@@ -107,7 +108,7 @@ public class Robot extends TimedRobot {
   @Override
   public void disabledPeriodic() {
     mSubsystemManager.onDisabledLoop();
-    mAutoExecutor.setAutoMode(new TestDrivePathMode());
+    mAutoExecutor.setAutoMode(new ThreeBallShootAndDriveMode());
   }
 
   @Override
