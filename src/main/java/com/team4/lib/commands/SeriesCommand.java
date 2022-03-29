@@ -1,13 +1,16 @@
 package com.team4.lib.commands;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SeriesCommand extends CommandBase{
-    private List<CommandBase> mCommands = null;
-
+    private CommandBase mCurrentCommand;
+    private final ArrayList<CommandBase> mRemainingCommands;
+    
     public SeriesCommand(List<CommandBase> commands)
     {
-        mCommands = commands;
+        mRemainingCommands = new ArrayList<>(commands);
+        mCurrentCommand = null;
     }
 
     @Override
@@ -16,22 +19,26 @@ public class SeriesCommand extends CommandBase{
     @Override
     public void execute() {
 
-        for (CommandBase c : mCommands)
-        {
-            c.start();
-            while(!c.isFinished())
-            {
-                c.execute();
+        if (mCurrentCommand == null) {
+            if (mRemainingCommands.isEmpty()) {
+                return;
             }
-            c.stop();
+
+            mCurrentCommand = mRemainingCommands.remove(0);
+            mCurrentCommand.start();
         }
 
-        mCommands.clear();
+        mCurrentCommand.execute();
+
+        if (mCurrentCommand.isFinished()) {
+            mCurrentCommand.stop();
+            mCurrentCommand = null;
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return mCommands.isEmpty();
+        return mRemainingCommands.isEmpty() && mCurrentCommand == null;
     }
 
     @Override

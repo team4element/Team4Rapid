@@ -16,9 +16,9 @@ public class TalonFactory {
         // factory default
         public double NEUTRAL_DEADBAND = 0.04;
 
-        public int CONTROL_FRAME_PERIOD_MS = 10;
+        public int CONTROL_FRAME_PERIOD_MS = 20;
         public int MOTION_CONTROL_FRAME_PERIOD_MS = 100;
-        public int GENERAL_STATUS_FRAME_RATE_MS = 10;
+        public int GENERAL_STATUS_FRAME_RATE_MS = 20;
         public int FEEDBACK_STATUS_FRAME_RATE_MS = 100;
         public int QUAD_ENCODER_STATUS_FRAME_RATE_MS = 1000;
         public int ANALOG_TEMP_VBAT_STATUS_FRAME_RATE_MS = 1000;
@@ -51,12 +51,12 @@ public class TalonFactory {
     }
 
     // create a CANTalon with the default (out of the box) configuration
-    public static WPI_TalonFX createDefaultTalonFX(int id) {
+    public static LazyTalonFX createDefaultTalonFX(int id) {
         return createTalonFX(id, kDefaultConfiguration);
     }
         
-    public static WPI_TalonFX createPermanentSlaveTalonFX(int id, WPI_TalonFX master) {
-        final WPI_TalonFX talon = createTalonFX(id, kSlaveConfiguration);
+    public static LazyTalonFX createPermanentSlaveTalonFX(int id, WPI_TalonFX master) {
+        final LazyTalonFX talon = createTalonFX(id, kSlaveConfiguration);
         talon.follow(master);
         return talon;
     }
@@ -101,8 +101,8 @@ public class TalonFactory {
         return talon;
     }
 
-    public static WPI_TalonFX createTalonFX(int id, Configuration config) {
-        WPI_TalonFX talon = new LazyTalonFX(id);
+    public static LazyTalonFX createTalonFX(int id, Configuration config) {
+        LazyTalonFX talon = new LazyTalonFX(id);
         talon.set(ControlMode.PercentOutput, 0.0);
 
         talon.changeMotionControlFramePeriod(config.MOTION_CONTROL_FRAME_PERIOD_MS);

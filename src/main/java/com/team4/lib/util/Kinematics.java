@@ -52,6 +52,6 @@ public class Kinematics {
             return new DriveSignal(velocity.dx, velocity.dx);
         }
         double delta_v = Constants.kDriveWheelTrackWidthInches * velocity.dtheta / (2 * Constants.kDriveTrackScrubFactor);
-        return new DriveSignal(velocity.dx - delta_v, velocity.dx + delta_v);
+        return new DriveSignal(velocity.dx + delta_v, velocity.dx - delta_v);
     }
 }

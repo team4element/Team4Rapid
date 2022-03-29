@@ -54,8 +54,8 @@ public class Shooter extends Subsystem {
 					break;
 				case IDLE:
 					stopMotors();
-				default:
-					break;
+				default: 
+					state = mState.IDLE;
 			}
 		}
 	}
@@ -72,7 +72,7 @@ public class Shooter extends Subsystem {
 			Constants.kShooterEnconderPPR), Constants.kShooterBottomGearRatio);
         mTopVelocity = ElementMath.unscaleRPM(ElementMath.tickPer100msToRPM(mTopMotor.getSelectedSensorVelocity(0),
 			Constants.kShooterEnconderPPR), Constants.kShooterTopGearRatio);
-		System.out.println("Bottom velocity " + mBottomVelocity + " Top velocity: " + mTopVelocity);
+		// System.out.println("Bottom velocity " + mBottomVelocity + " Top velocity: " + mTopVelocity);
 	}
 
 	@Override
@@ -123,6 +123,16 @@ public class Shooter extends Subsystem {
         mTopMotor.setSelectedSensorPosition(0, 0, 0);
     }
 
+	public synchronized double getBottomVelocity()
+	{
+		return mBottomVelocity;
+	}
+
+	public synchronized double getTopVelocity()
+	{
+		return mTopVelocity;
+	}
+
 	private void configureVelocityTalon(){
         mBottomMotor.selectProfileSlot(0, 0);
 		mBottomMotor.configClosedloopRamp(0);
@@ -141,9 +151,5 @@ public class Shooter extends Subsystem {
 					"could not detect motor encoder"); 
 
 		talon.setSensorPhase(true);
-	}
-
-	public double getBottomVelocity(){
-		return mBottomVelocity;
 	}
 }
