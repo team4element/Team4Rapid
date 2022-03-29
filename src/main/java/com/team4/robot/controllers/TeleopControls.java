@@ -11,6 +11,7 @@ import com.team4.robot.commands.teleop.ClimbCommand;
 import com.team4.robot.commands.teleop.ConveyorCommand;
 import com.team4.robot.commands.teleop.DriveCommand;
 import com.team4.robot.commands.teleop.IntakeCommand;
+import com.team4.robot.commands.teleop.SecondaryClimbCommand;
 import com.team4.robot.commands.teleop.ShooterCommand;
 import com.team4.robot.commands.teleop.ToggleWinchCommand;
 
@@ -51,9 +52,12 @@ public class TeleopControls extends TeleopCommandRunner{
 			Robot.mCompressor.disable();
         } 		
 	
-
         if(mDriverController.changeWinch()){
             runCommand(new ToggleWinchCommand());
-        }    
+        }
+
+        if(mOperatorController.changeSecondaryClimb()){
+            runCommand(new SecondaryClimbCommand());
+        }
     }
 }

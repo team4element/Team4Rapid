@@ -36,8 +36,11 @@ public class Constants {
 	//Pnuematics
 	public static final int kIntakeSolenoidLeft = 7;
 	public static final int kIntakeSolenoidRight = 4;
-	public static final int kClimbSolenoidLeft = 6;
-    public static final int kClimbSolenoidRight = 5;
+	public static final int kWinchSolenoidLeft = 6;
+    public static final int kWinchSolenoidRight = 5;
+	public static final int kClimbSolenoidLeft = 0;
+    public static final int kClimbSolenoidRight = 0;
+
 	public static final int kCompressorID = 1;
 
 	//Drive PID values

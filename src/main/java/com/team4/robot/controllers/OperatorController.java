@@ -10,7 +10,6 @@ public class OperatorController {
     private final XboxController mController;
 
     public OperatorController() {
-        // TODO: Add Constant
         mController = new XboxController(Constants.kOperatorControlSlot);
     }
 
@@ -48,5 +47,9 @@ public class OperatorController {
 
     public boolean getDeployIntake(){
         return mController.getXButtonPressed();
+    }
+
+    public boolean changeSecondaryClimb(){
+        return mController.getAButtonPressed();
     }
 }
