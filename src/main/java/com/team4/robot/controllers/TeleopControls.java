@@ -56,7 +56,7 @@ public class TeleopControls extends TeleopCommandRunner{
             runCommand(new ToggleWinchCommand());
         }
 
-        if(mOperatorController.changeSecondaryClimb()){
+        if(mDriverController.changeSecondaryClimb()){
             runCommand(new SecondaryClimbCommand());
         }
     }

@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.Solenoid;
 
 public class Intake extends Subsystem {
 	// Hardware
-	private final TalonSRX mRollerMotor, mArmMotor;
+	private final TalonSRX mRollerMotor, mArmMotorLeft, mArmMotorRight;
 	private final Solenoid mLeftPiston, mRightPiston;
 
 	// State of pistons
@@ -36,11 +36,19 @@ public class Intake extends Subsystem {
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
 		mRollerMotor.setInverted(true);
 		
-		mArmMotor = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorID);
-		mArmMotor.changeMotionControlFramePeriod(100);
-		mArmMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
-		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
-		mArmMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		mArmMotorLeft = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorLeftID);
+		mArmMotorLeft.changeMotionControlFramePeriod(100);
+		mArmMotorLeft.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		mArmMotorLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		mArmMotorLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+			
+		mArmMotorRight = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorRightID);
+		mArmMotorRight.changeMotionControlFramePeriod(100);
+		mArmMotorRight.setControlFramePeriod(ControlFrame.Control_3_General, 20);
+		mArmMotorRight.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
+		mArmMotorRight.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
+		//mArmMotorRight.setInverted(true);
+
 		
 		
 		mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
@@ -91,16 +99,19 @@ public class Intake extends Subsystem {
 
 	private void motorsForward() {
 		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
-		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
+		mArmMotorLeft.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
+		mArmMotorRight.set(ControlMode.PercentOutput, Constants.kIntakeForwardPower);
 	}
 
 	private void motorsReverse() {
 		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
-		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
+		mArmMotorLeft.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
+		mArmMotorRight.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
 	}
 
 	private void motorsOff(){
 		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeOff);
-		mArmMotor.set(ControlMode.PercentOutput, Constants.kIntakeOff);
+		mArmMotorLeft.set(ControlMode.PercentOutput, Constants.kIntakeOff);
+		mArmMotorRight.set(ControlMode.PercentOutput, Constants.kIntakeOff);
 	}
 }

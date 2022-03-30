@@ -30,5 +30,8 @@ public class DriverController {
 		public boolean changeWinch(){
 			return mController.getYButtonPressed();
 		}
-		
+
+	public boolean changeSecondaryClimb(){
+            return mController.getAButtonPressed();
+        }
 }

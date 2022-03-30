@@ -83,18 +83,20 @@ public class Constants {
     public static final int kIntakeSolenoidLeft = 7;
     public static final int kIntakeSolenoidRight = 4;
     public static final int kClimbSolenoidLeft = 0;
-    public static final int kClimbSolenoidRight = 0;
+    public static final int kClimbSolenoidRight = 3;
 	public static final int kWinchSolenoidLeft = 6;
     public static final int kWinchSolenoidRight = 5;
     public static final int kCompressorID = 1;
 	
     // Intake
     public static final int kRollerMotorID = 7;
-    public static final int kArmMotorID = 0;
-    public static final int kIntakeFirst = 8;
+    //public static final int kArmMotorID = 0;
+    public static final int kArmMotorLeftID = 0;
+    public static final int kArmMotorRightID = 9;
+    //public static final int kIntakeFirst = 8;
 
-    public static final double kIntakeForwardPower = 0.6;
-    public static final double kIntakeReversePower = -0.6;
+    public static final double kIntakeForwardPower = 0.75;
+    public static final double kIntakeReversePower = -0.75;
     public static final double kIntakeOff = 0d;
 	
     // Conveyor
