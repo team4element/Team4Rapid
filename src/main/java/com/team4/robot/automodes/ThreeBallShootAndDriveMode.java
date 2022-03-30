@@ -21,11 +21,13 @@ public class ThreeBallShootAndDriveMode extends AutoBase{
     @Override
     public void routine() {
         runCommand(new MoveArmCommand());
-        runCommand(new TimedCommand(new ShootAndConveyCommand(), 2.0));
+        runCommand(new TimedCommand(new ShootAndConveyCommand(), 1.75));
+        runCommand(new MoveArmCommand());
         runCommand(new ParallelCommand(Arrays.asList(
             new DrivePathCommand(new TwoBallPath()),
             new SeriesCommand(Arrays.asList(
                 new WaitForMarkerCommand("Intake One"),
+                new MoveArmCommand(),
                 new TimedCommand(new SetIntakeCommand(), 0.4)
             )),
             new SeriesCommand(Arrays.asList(
