@@ -22,13 +22,6 @@ public class StateEstimator extends Subsystem {
 
     @Override
     public void readPeriodicInputs() {
-        System.out.println("Robot X: " + 
-                mFieldState.getFieldToVehicle(Timer.getFPGATimestamp()).getTranslation().x() +
-                " Robot Y: " +
-                mFieldState.getFieldToVehicle(Timer.getFPGATimestamp()).getTranslation().y()
-                );
-
-        
      }
 
     @Override

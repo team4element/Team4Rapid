@@ -53,11 +53,17 @@ public class Robot extends TimedRobot {
 
   @Override
   public void robotPeriodic() {
+    System.out.println("Robot X: " + 
+                mFieldState.getFieldToVehicle(Timer.getFPGATimestamp()).getTranslation().x() +
+                " Robot Y: " +
+                mFieldState.getFieldToVehicle(Timer.getFPGATimestamp()).getTranslation().y()
+                );
   }
 
   @Override
   public void autonomousInit() {
     mDrive.resetSensors();
+    mFieldState.reset(); // remove if messes with path
     mAutoExecutor.start();
     mSubsystemManager.onDisabledStop();
     mSubsystemManager.onEnabledStart();
