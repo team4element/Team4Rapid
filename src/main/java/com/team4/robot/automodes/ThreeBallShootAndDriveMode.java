@@ -19,6 +19,11 @@ import com.team4.robot.paths.threeball.TwoBallPath;
 public class ThreeBallShootAndDriveMode extends AutoBase{
 
     @Override
+    public String getName() {
+        return "Three Ball Auto Mode";
+    }
+
+    @Override
     public void routine() {
         runCommand(new MoveArmCommand());
         runCommand(new TimedCommand(new ShootAndConveyCommand(), 1.75));

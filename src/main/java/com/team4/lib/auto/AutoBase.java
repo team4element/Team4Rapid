@@ -4,11 +4,17 @@ import com.team4.lib.commands.CommandBase;
 
 public abstract class AutoBase {
     public abstract void routine();
+    
+    public String getName()
+    {
+        return "Default name! Override Me!";
+    }
 
     public void done()
     {
         System.out.println("Auto mode finished");
     }
+
 
     public void runCommand(CommandBase command)
     {

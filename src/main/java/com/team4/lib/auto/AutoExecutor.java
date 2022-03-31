@@ -4,19 +4,25 @@ import com.team254.lib.util.CrashTrackingRunnable;
 
 public class AutoExecutor {
     private Thread mRunner = null;
-
+    private AutoBase mAutoMode = null;
 
     public void setAutoMode(AutoBase mode)
     {
+        mAutoMode = mode;
         mRunner = new Thread(new CrashTrackingRunnable() {
             @Override
             public void runCrashTracked() {
-                if (mode != null)
+                if (mAutoMode != null)
                 {
-                    mode.routine();
+                    mAutoMode.routine();
                 }
             }
         });
+    }
+
+    public AutoBase getAutoMode()
+    {
+        return mAutoMode;
     }
 
     public void start()

@@ -15,6 +15,11 @@ import com.team4.robot.commands.ShootAndConveyCommand;
 public class TwoBallShootAndDriveMode extends AutoBase {
 
     @Override
+    public String getName() {
+        return "Two Ball Auto Mode";
+    }
+
+    @Override
     public void routine() {
         runCommand(new MoveArmCommand());
         runCommand(new TimedCommand(new ShootAndConveyCommand(), 2.0));
