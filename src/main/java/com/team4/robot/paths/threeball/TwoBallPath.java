@@ -12,14 +12,19 @@ import com.team4.lib.path.PathContainer;
 
 public class TwoBallPath implements PathContainer {
 
+    /**
+     * When modifying based off comp field only change the first 2 values of each Waypoint 
+     * 3rd and 4th need to stay the same for the path to work
+     */
+
     @Override
     public Path buildPath() {
         List<Waypoint> points = new ArrayList<>();
-        points.add(new Waypoint(0.0, 0.0, 0.0, 0.0));
-        points.add(new Waypoint(11.0, 0.0, 5.0, 50.0));
-        points.add(new Waypoint(28.3, -80.0, 5.0, 60.0));
-        points.add(new Waypoint(90.0, -58.7, 12.5, 60.0, "Intake One"));
-        points.add(new Waypoint(75.0, 76.0, 0.0, 60.0));
+        points.add(new Waypoint(0.0, 0.0, 0.0, 0.0)); // Point A
+        points.add(new Waypoint(11.0, 0.0, 5.0, 50.0)); // Point B
+        points.add(new Waypoint(28.3, -80.0, 5.0, 60.0)); // Point C
+        points.add(new Waypoint(90.0, -58.7, 12.5, 60.0, "Intake One")); // Point D
+        points.add(new Waypoint(75.0, 76.0, 0.0, 60.0)); // Point E
         return PathBuilder.buildPathFromWaypoints(points);
     }
 

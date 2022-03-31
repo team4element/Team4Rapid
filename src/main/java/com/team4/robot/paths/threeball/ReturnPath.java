@@ -15,7 +15,7 @@ public class ReturnPath implements PathContainer {
     @Override
     public Path buildPath() {
         List<Waypoint> points = new ArrayList<>();
-        points.add(new Waypoint(80.0, 73.0, 0.0, 0.0));
+        points.add(new Waypoint(80.0, 73.0, 0.0, 0.0)); // Point E
         points.add(new Waypoint(45.0, 10.0, 5.0, 50.0));
         points.add(new Waypoint(-5.0, -5.0, 0.0, 60.0));
         return PathBuilder.buildPathFromWaypoints(points);
@@ -23,7 +23,7 @@ public class ReturnPath implements PathContainer {
 
     @Override
     public Pose2d getStartPose() {
-        return new Pose2d(80.0, 73.0, Robot.mDrive.getAngle());
+        return new Pose2d(80.0, 73.0, Robot.mDrive.getAngle()); // Point E
     }
 
     @Override
