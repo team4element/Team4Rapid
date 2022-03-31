@@ -29,6 +29,9 @@ public class Climber extends Subsystem {
         mRightMotor.follow(mLeftMotor);
         mLeftMotor.setInverted(true);  
         
+        mLeftMotor.configReverseSoftLimitEnable(false, 0);
+        mRightMotor.configReverseSoftLimitEnable(false, 0);
+
         mLeftWinchPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kWinchSolenoidLeft);
 		mRightWinchPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kWinchSolenoidRight);
 
