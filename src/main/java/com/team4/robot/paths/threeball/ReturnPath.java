@@ -17,7 +17,7 @@ public class ReturnPath implements PathContainer {
         List<Waypoint> points = new ArrayList<>();
         points.add(new Waypoint(80.0, 73.0, 0.0, 0.0)); // Point E
         points.add(new Waypoint(45.0, 10.0, 5.0, 50.0));
-        points.add(new Waypoint(-5.0, -5.0, 0.0, 60.0));
+        points.add(new Waypoint(0.0, 0.0, 0.0, 60.0));
         return PathBuilder.buildPathFromWaypoints(points);
     }
 

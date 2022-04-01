@@ -27,7 +27,7 @@ public class TwoBallShootAndDriveMode extends AutoBase {
             new TimedCommand(new SetDriveCommand(86.0), 1.0),
             new SeriesCommand(Arrays.asList(
                 new WaitCommand(0.5),
-                new TimedCommand(new SetIntakeCommand(), 1.25) 
+                new TimedCommand(new SetIntakeCommand(), 0.95) 
             )))));
         runCommand(new TimedCommand(new SetDriveCommand(0.0), 1.0));
         runCommand(new TimedCommand(new ShootAndConveyCommand(), 2.0));
