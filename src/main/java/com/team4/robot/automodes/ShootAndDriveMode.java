@@ -18,7 +18,8 @@ public class ShootAndDriveMode extends AutoBase {
     public void routine() {
         runCommand(new MoveArmCommand());
         runCommand(new TimedCommand(new ShootAndConveyCommand(), 2));
-        runCommand(new TimedCommand(new SetDriveCommand(10 * 12), 5));        
+        runCommand(new MoveArmCommand());
+        runCommand(new TimedCommand(new SetDriveCommand(10 * 8), 5));        
         runCommand(new WaitCommand(15));
     }
 }
