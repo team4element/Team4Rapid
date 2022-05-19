@@ -9,8 +9,8 @@ import edu.wpi.first.wpilibj.PneumaticsModuleType;
 public class Climber extends Subsystem {
 
     private final TalonFX mLeftMotor, mRightMotor;
-	private final Solenoid mRightWinchPiston, mLeftWinchPiston;
-    private final Solenoid mRightClimbPiston, mLeftClimbPiston;
+	private final Solenoid mWinchPiston;
+    private final Solenoid mClimbPiston;
     private ClimberControlState mControlState = ClimberControlState.IDLE;
     private static double kClimbPower = 1;
     private static double kClimbOff = 0;
@@ -32,11 +32,9 @@ public class Climber extends Subsystem {
         mLeftMotor.configReverseSoftLimitEnable(false, 0);
         mRightMotor.configReverseSoftLimitEnable(false, 0);
 
-        mLeftWinchPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kWinchSolenoidLeft);
-		mRightWinchPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kWinchSolenoidRight);
+        mWinchPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kWinchSolenoid);
 
-        mLeftClimbPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidLeft);
-		mRightClimbPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoidRight);
+        mClimbPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kClimbSolenoid);
     }
 
     @Override
@@ -88,13 +86,11 @@ public class Climber extends Subsystem {
     }
 
     public void toggleWinch(){
-        mLeftWinchPiston.toggle();
-        mRightWinchPiston.toggle();
+        mWinchPiston.toggle();
     }
 
     public void toggleSecondaryClimb(){
-        mLeftClimbPiston.toggle();
-        mRightClimbPiston.toggle();
+        mClimbPiston.toggle();
     }
 
     public void resetEncoders(){

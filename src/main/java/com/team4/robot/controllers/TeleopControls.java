@@ -50,8 +50,8 @@ public class TeleopControls extends TeleopCommandRunner{
 
 		} else {
 			Robot.mCompressor.disable();
-        } 		
-	
+        } 	
+        
         if(mDriverController.changeWinch()){
             runCommand(new ToggleWinchCommand());
         }

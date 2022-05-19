@@ -80,17 +80,13 @@ public class Constants {
     public static final int kClimberRightMotor = 14;
 	
     // Pnuematics
-    public static final int kIntakeSolenoidLeft = 7;
-    public static final int kIntakeSolenoidRight = 4;
-    public static final int kClimbSolenoidLeft = 0;
-    public static final int kClimbSolenoidRight = 3;
-	public static final int kWinchSolenoidLeft = 6;
-    public static final int kWinchSolenoidRight = 5;
+    public static final int kIntakeSolenoid = 5;
+    public static final int kClimbSolenoid = 6;
+	public static final int kWinchSolenoid = 7;
     public static final int kCompressorID = 1;
 	
     // Intake
     public static final int kRollerMotorID = 7;
-    //public static final int kArmMotorID = 0;
     public static final int kArmMotorLeftID = 0;
     public static final int kArmMotorRightID = 9;
     //public static final int kIntakeFirst = 8;
@@ -108,8 +104,8 @@ public class Constants {
     public static final int kShooterBottom = 6; 
     public static final int kShooterTop = 5; 
 
-	public static final double kHighVelocityBottom = 3700;
-	public static final double kHighVelocityTop = 3500;
+	public static final double kHighVelocityBottom = 3700 * 1.1;
+	public static final double kHighVelocityTop = 3500 * 1.1;
 	public static final double kLowVelocityBottom = 600; 
 	public static final double kLowVelocityTop = 400;
 

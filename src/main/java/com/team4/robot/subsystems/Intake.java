@@ -13,10 +13,10 @@ import edu.wpi.first.wpilibj.Solenoid;
 public class Intake extends Subsystem {
 	// Hardware
 	private final TalonSRX mRollerMotor, mArmMotorLeft, mArmMotorRight;
-	private final Solenoid mLeftPiston, mRightPiston;
+	private final Solenoid mPiston;
 
 	// State of pistons
-	private static boolean mLeftPos, mRightPos = false;
+	private static boolean mPos = false;
 
 	public mState state = mState.IDLE;
 
@@ -51,8 +51,7 @@ public class Intake extends Subsystem {
 
 		
 		
-		mLeftPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidLeft);
-		mRightPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoidRight);
+		mPiston = new Solenoid(1, PneumaticsModuleType.CTREPCM, Constants.kIntakeSolenoid);
 	}
 
 	@Override
@@ -76,8 +75,7 @@ public class Intake extends Subsystem {
 	@Override
 	public void onDisableLoop() {
 		state = mState.IDLE;
-		mLeftPiston.set(mLeftPos);
-		mRightPiston.set(mRightPos);
+		mPiston.set(mPos);
 	}
 
 	@Override
@@ -87,14 +85,11 @@ public class Intake extends Subsystem {
 
 	@Override
 	public synchronized void writePeriodicOutputs() {
-		mLeftPos = mLeftPiston.get();
-		mRightPos = mRightPiston.get();
+		mPos = mPiston.get();
 	}
 
-	public void moveArm()
-	{
-		mLeftPiston.toggle();;
-		mRightPiston.toggle();
+	public void moveArm() {
+		mPiston.toggle();;
 	}
 
 	private void motorsForward() {
@@ -109,7 +104,7 @@ public class Intake extends Subsystem {
 		mArmMotorRight.set(ControlMode.PercentOutput, Constants.kIntakeReversePower);
 	}
 
-	private void motorsOff(){
+	private void motorsOff() {
 		mRollerMotor.set(ControlMode.PercentOutput, Constants.kIntakeOff);
 		mArmMotorLeft.set(ControlMode.PercentOutput, Constants.kIntakeOff);
 		mArmMotorRight.set(ControlMode.PercentOutput, Constants.kIntakeOff);
