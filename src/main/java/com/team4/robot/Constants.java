@@ -76,8 +76,8 @@ public class Constants {
     public static final int kConveyorRight = 11;
 
     // Climber Motors
-    public static final int kClimberLeftMotor = 13;
-    public static final int kClimberRightMotor = 14;
+    public static final int kClimberLeftMotor = 12;
+    public static final int kClimberRightMotor = 13;
 	
     // Pnuematics
     public static final int kIntakeSolenoid = 5;
@@ -86,10 +86,9 @@ public class Constants {
     public static final int kCompressorID = 1;
 	
     // Intake
-    public static final int kRollerMotorID = 7;
-    public static final int kArmMotorLeftID = 0;
-    public static final int kArmMotorRightID = 9;
-    //public static final int kIntakeFirst = 8;
+    public static final int kRollerMotorID = 9;
+    public static final int kArmMotorLeftID = 7;
+    public static final int kArmMotorRightID = 8;
 
     public static final double kIntakeForwardPower = 0.75;
     public static final double kIntakeReversePower = -0.75;

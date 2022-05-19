@@ -34,14 +34,15 @@ public class Intake extends Subsystem {
 		mRollerMotor.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mRollerMotor.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
-		mRollerMotor.setInverted(true);
+		//mRollerMotor.setInverted(true);
 		
 		mArmMotorLeft = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorLeftID);
 		mArmMotorLeft.changeMotionControlFramePeriod(100);
 		mArmMotorLeft.setControlFramePeriod(ControlFrame.Control_3_General, 20);
 		mArmMotorLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_1_General, 20, Constants.kCANTimeoutMs);
 		mArmMotorLeft.setStatusFramePeriod(StatusFrameEnhanced.Status_2_Feedback0, 100, Constants.kCANTimeoutMs);
-			
+		mArmMotorLeft.setInverted(true);
+		
 		mArmMotorRight = TalonFactory.createDefaultTalonSRX(Constants.kArmMotorRightID);
 		mArmMotorRight.changeMotionControlFramePeriod(100);
 		mArmMotorRight.setControlFramePeriod(ControlFrame.Control_3_General, 20);
